@@ -1,28 +1,26 @@
 ﻿using Dapper;
 using EquipmentManagement.Domain.Abstractions.Repositories;
 using EquipmentManagement.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Data;
 
 namespace EquipmentManagement.DAL.Repositories;
 
 internal class EmployeeRepository : IEmployeeRepository
 {
-    private readonly IDbConnection _connection;
+    private readonly ApplicationDbContext _context;
     private bool _disposed;
 
-    public EmployeeRepository(IDbConnection connection)
+    public EmployeeRepository(ApplicationDbContext context)
     {
-        _connection = connection;
+        _context = context;
     }
     public async Task CreateAsync(Employee entity, CancellationToken cancellationToken)
     {
         if (_disposed)
             throw new ObjectDisposedException(GetType().Name);
 
-        const string sql =
-            "INSERT INTO Employees (Id, Firstname, Lastname, Patronymic) " +
-            "VALUES (@Id, @Firstname, @Lastname, @Patronymic)";
-        await _connection.ExecuteAsync(sql, entity);
+        await _context.Employees.AddAsync(entity, cancellationToken);
     }
 
     public async Task DeleteAsync(Employee entity, CancellationToken cancellationToken)
@@ -30,9 +28,7 @@ internal class EmployeeRepository : IEmployeeRepository
         if (_disposed)
             throw new ObjectDisposedException(GetType().Name);
 
-        const string sql =
-            "DELETE FROM Employees WHERE Id = @Id";
-        await _connection.ExecuteAsync(sql, entity);
+        _context.Employees.Remove(entity);
     }
 
     public void Dispose()
@@ -40,16 +36,15 @@ internal class EmployeeRepository : IEmployeeRepository
         if (_disposed)
             return;
         _disposed = true;
-        _connection?.Dispose();
+        _context.Dispose();
     }
 
-    public ValueTask DisposeAsync()
+    public async ValueTask DisposeAsync()
     {
         if (_disposed)
-            return ValueTask.CompletedTask;
+            return;
         _disposed = true;
-        _connection.Dispose();
-        return ValueTask.CompletedTask;
+        await _context.DisposeAsync();        
     }
 
     public async Task<IEnumerable<Employee>> GetAllAsync(CancellationToken cancellationToken)
@@ -57,10 +52,7 @@ internal class EmployeeRepository : IEmployeeRepository
         if (_disposed)
             throw new ObjectDisposedException(GetType().Name);
 
-        const string sql =
-            "SELECT * FROM Employees";
-        var result = await _connection.QueryAsync<Employee>(sql);
-        return result;
+        return _context.Employees;
     }    
 
     public async Task<Employee> GetByIdAsync(Guid id, CancellationToken cancellationToken)
@@ -68,10 +60,8 @@ internal class EmployeeRepository : IEmployeeRepository
         if (_disposed)
             throw new ObjectDisposedException(GetType().Name);
 
-        const string sql =
-            "SELECT * FROM Employees WHERE Id = @Id";
-        var result = await _connection.QueryFirstAsync<Employee>(sql, id);
-        return result;
+        return await _context.Employees.FirstOrDefaultAsync(e => e.Id == id, cancellationToken)
+            ?? throw new Exception();
     }
 
     public async Task UpdateAsync(Employee entity, CancellationToken cancellationToken)
@@ -79,9 +69,6 @@ internal class EmployeeRepository : IEmployeeRepository
         if (_disposed)
             throw new ObjectDisposedException(GetType().Name);
 
-        const string sql =
-            "UPDATE Employees " +
-            "SET Firstname = @Firstname, Lastname = @Lastname, Patronymic = @Patronymic";
-        await _connection.ExecuteAsync(sql, entity);
+        _context.Employees.Update(entity);
     }
 }

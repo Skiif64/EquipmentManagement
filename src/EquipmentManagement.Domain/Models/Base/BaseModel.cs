@@ -2,7 +2,7 @@
 
 public abstract class BaseModel : IEquatable<BaseModel>
 {
-    public Guid Id { get; }
+    public Guid Id { get; init; }
 
     public BaseModel()
     {

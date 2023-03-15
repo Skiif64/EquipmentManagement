@@ -1,6 +1,5 @@
 using EquipmentManagement.Application;
 using EquipmentManagement.DAL;
-using FluentMigrator.Runner;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);

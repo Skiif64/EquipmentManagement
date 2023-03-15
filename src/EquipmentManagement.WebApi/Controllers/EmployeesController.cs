@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using EquipmentManagement.Application.Abstractions;
-using EquipmentManagement.Application.AddEmployee;
+using EquipmentManagement.Application.Employees.Add;
+using EquipmentManagement.Application.Employees.Get;
+using EquipmentManagement.Application.Employees.GetAll;
 using EquipmentManagement.Domain.Abstractions.Repositories;
 using EquipmentManagement.WebApi.Requests;
 using MediatR;
@@ -28,6 +30,18 @@ namespace EquipmentManagement.WebApi.Controllers
             var command = _mapper.Map<AddEmployeeCommand>(request);
             await _sender.Send(command, cancellationToken);
             return Ok();
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetAllAsync(CancellationToken cancellationToken)
+        {
+            var employees = await _sender.Send(new GetAllEmployeeQuery(), cancellationToken);
+            return Ok(employees);
+        }
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> GetEmployeeById(Guid id, CancellationToken cancellationToken)
+        {
+            var employee = await _sender.Send(new GetEmployeeQuery(id), cancellationToken);
+            return Ok(employee);
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using EquipmentManagement.Application.AddEmployee;
+using EquipmentManagement.Application.Employees.Add;
 using EquipmentManagement.Domain.Models;
 using EquipmentManagement.WebApi.Requests;
 

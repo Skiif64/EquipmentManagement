@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
 using EquipmentManagement.Application.Abstractions;
+using EquipmentManagement.Application.Employees.Add;
 using EquipmentManagement.Domain.Abstractions.Repositories;
 using EquipmentManagement.Domain.Models;
 
-namespace EquipmentManagement.Application.AddEmployee;
+namespace EquipmentManagement.Application.Employees.AddEmployee;
 
 public class AddEmployeeCommandHandler : ICommandHandler<AddEmployeeCommand>
 {

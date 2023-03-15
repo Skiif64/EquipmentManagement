@@ -7,11 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Abstractions\" />
     <Folder Include="AddEmployee\" />
     <Folder Include="AddEquipment\" />
     <Folder Include="GetEmployeeEquipment\" />
     <Folder Include="GetEquipmentHistory\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="12.0.1" />
   </ItemGroup>
 
 </Project>

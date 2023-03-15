@@ -9,9 +9,7 @@
   <ItemGroup>
     <Folder Include="AddEquipment\" />
     <Folder Include="EquipmentStatuses\" />
-    <Folder Include="Equipments\" />
-    <Folder Include="GetEmployeeEquipment\" />
-    <Folder Include="GetEquipmentHistory\" />
+    <Folder Include="EquipmentStatuses\GetById\" />
   </ItemGroup>
 
   <ItemGroup>

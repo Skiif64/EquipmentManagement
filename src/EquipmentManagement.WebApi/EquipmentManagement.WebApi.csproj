@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EquipmentManagement.Application\EquipmentManagement.Application.csproj" />
+    <ProjectReference Include="..\EquipmentManagement.DAL\EquipmentManagement.DAL.csproj" />
   </ItemGroup>
 
 </Project>

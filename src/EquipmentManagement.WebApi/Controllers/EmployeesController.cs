@@ -3,6 +3,7 @@ using EquipmentManagement.Application.Abstractions;
 using EquipmentManagement.Application.AddEmployee;
 using EquipmentManagement.Domain.Abstractions.Repositories;
 using EquipmentManagement.WebApi.Requests;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

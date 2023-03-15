@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using EquipmentManagement.Application.Exceptions;
 using EquipmentManagement.Domain.Abstractions.Repositories;
 using EquipmentManagement.Domain.Models;
 using Microsoft.EntityFrameworkCore;
@@ -34,7 +35,7 @@ internal class EmployeeRepository : IEmployeeRepository
     public async Task<Employee> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {  
         return await _context.Employees.SingleOrDefaultAsync(e => e.Id == id, cancellationToken)
-            ?? throw new Exception();
+            ?? throw new NotFoundException("employee"); //TODO: return null?
     }
 
     public async Task UpdateAsync(Employee entity, CancellationToken cancellationToken)

@@ -21,6 +21,7 @@ internal class EmployeeRepository : IEmployeeRepository
             throw new ObjectDisposedException(GetType().Name);
 
         await _context.Employees.AddAsync(entity, cancellationToken);
+        await _context.SaveChangesAsync();
     }
 
     public async Task DeleteAsync(Employee entity, CancellationToken cancellationToken)
@@ -29,6 +30,7 @@ internal class EmployeeRepository : IEmployeeRepository
             throw new ObjectDisposedException(GetType().Name);
 
         _context.Employees.Remove(entity);
+        await _context.SaveChangesAsync();
     }
 
     public void Dispose()
@@ -70,5 +72,6 @@ internal class EmployeeRepository : IEmployeeRepository
             throw new ObjectDisposedException(GetType().Name);
 
         _context.Employees.Update(entity);
+        await _context.SaveChangesAsync();
     }
 }

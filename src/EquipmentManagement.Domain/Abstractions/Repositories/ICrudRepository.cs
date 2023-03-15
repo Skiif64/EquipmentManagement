@@ -8,6 +8,6 @@ public interface ICrudRepository<TEntity> : IDisposable, IAsyncDisposable
     Task CreateAsync(TEntity entity, CancellationToken cancellationToken);    
     Task DeleteAsync(TEntity entity, CancellationToken cancellationToken);    
     Task<TEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken);    
-    IAsyncEnumerable<TEntity> GetAllAsync(CancellationToken cancellationToken);    
+    Task<IEnumerable<TEntity>> GetAllAsync(CancellationToken cancellationToken);    
     Task UpdateAsync(TEntity entity, CancellationToken cancellationToken);
 }

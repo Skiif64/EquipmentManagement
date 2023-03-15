@@ -2,7 +2,7 @@
 
 namespace EquipmentManagement.Domain.Abstractions.Repositories;
 
-public interface ICrudRepository<TEntity> : IDisposable, IAsyncDisposable
+public interface ICrudRepository<TEntity>
     where TEntity : BaseModel
 {    
     Task CreateAsync(TEntity entity, CancellationToken cancellationToken);    

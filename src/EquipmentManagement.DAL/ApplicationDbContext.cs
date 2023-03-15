@@ -11,8 +11,7 @@ internal class ApplicationDbContext : DbContext
     public DbSet<Status> Statuses { get; set; } = null!;
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
-    {
-        Database.EnsureDeleted();
+    {        
         Database.EnsureCreated();
     }
 }

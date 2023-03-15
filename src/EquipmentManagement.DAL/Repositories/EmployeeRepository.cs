@@ -33,7 +33,7 @@ internal class EmployeeRepository : IEmployeeRepository
 
     public async Task<Employee> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {  
-        return await _context.Employees.FirstOrDefaultAsync(e => e.Id == id, cancellationToken)
+        return await _context.Employees.SingleOrDefaultAsync(e => e.Id == id, cancellationToken)
             ?? throw new Exception();
     }
 

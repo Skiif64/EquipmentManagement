@@ -10,7 +10,7 @@ namespace EquipmentManagement.WebApi
         public WebApiMappingProfile()
         {
             CreateMap<AddEmployeeCommand, Employee>();
-            CreateMap<AddEmployeeRequest, AddEmployeeCommand>();
+            CreateMap<AddEmployeeRequest, AddEmployeeCommand>();            
         }
     }
 }

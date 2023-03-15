@@ -1,11 +1,13 @@
 using EquipmentManagement.Application;
 using EquipmentManagement.DAL;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 builder.Services.AddApplication();
 builder.Services.AddDataAccess(builder.Configuration);
 

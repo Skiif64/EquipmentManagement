@@ -9,37 +9,36 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EquipmentManagement.WebApi.Controllers
-{
-    [Route("api/[controller]")]
-    [ApiController]
-    public class EquipmentController : ControllerBase
-    {        
-        private readonly ISender _sender;
-        private readonly IMapper _mapper;
+namespace EquipmentManagement.WebApi.Controllers;
 
-        public EquipmentController(ISender sender, IMapper mapper)
-        {
-            _sender = sender;
-            _mapper = mapper;
-        }
+[Route("api/[controller]")]
+[ApiController]
+public class EquipmentController : ControllerBase
+{        
+    private readonly ISender _sender;
+    private readonly IMapper _mapper;
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllAsync(CancellationToken cancellationToken)
-        {
-            var equipments = await _sender.Send(new GetAllEquipmentQuery(), cancellationToken);
-            return Ok(equipments);
-        }
+    public EquipmentController(ISender sender, IMapper mapper)
+    {
+        _sender = sender;
+        _mapper = mapper;
+    }
 
-        [HttpPost("add")]
-        public async Task<IActionResult> AddEquipmentAsync(AddEquipmentRequest request, CancellationToken cancellationToken)
-        {
-            if(!ModelState.IsValid)
-                return BadRequest(ModelState);
+    [HttpGet]
+    public async Task<IActionResult> GetAllAsync(CancellationToken cancellationToken)
+    {
+        var equipments = await _sender.Send(new GetAllEquipmentQuery(), cancellationToken);
+        return Ok(equipments);
+    }
 
-            var command = _mapper.Map<AddEquipmentCommand>(request);
-            await _sender.Send(command, cancellationToken);
-            return Ok();
-        }
+    [HttpPost("add")]
+    public async Task<IActionResult> AddEquipmentAsync(AddEquipmentRequest request, CancellationToken cancellationToken)
+    {
+        if(!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        var command = _mapper.Map<AddEquipmentCommand>(request);
+        await _sender.Send(command, cancellationToken);
+        return Ok();
     }
 }

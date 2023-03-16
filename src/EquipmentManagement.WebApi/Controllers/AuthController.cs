@@ -1,5 +1,6 @@
 ﻿using EquipmentManagement.Auth;
 using EquipmentManagement.WebApi.Requests;
+using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -17,11 +18,13 @@ public class AuthController : ControllerBase
 {
     private readonly SignInManager<IdentityUser> _signInManager;
     private readonly UserManager<IdentityUser> _userManager;
+    private readonly ILogger<AuthController> _logger;
 
-    public AuthController(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager)
+    public AuthController(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, ILogger<AuthController> logger)
     {
         _signInManager = signInManager;
         _userManager = userManager;
+        _logger = logger;
     }
 
     [HttpPost("login")]
@@ -33,7 +36,8 @@ public class AuthController : ControllerBase
 
         var result = await _signInManager.PasswordSignInAsync(request.Login, request.Password, request.RememberMe, false);
         if(!result.Succeeded)
-            return BadRequest();        
+            return BadRequest();    
+        _logger.LogInformation("User {username} is logged in", request.Login);
         return Ok();
     }
 
@@ -50,14 +54,14 @@ public class AuthController : ControllerBase
             result = await _userManager.AddToRoleAsync(user, request.Role);
         if(!result.Succeeded)
             return BadRequest(result.Errors);
-
+        _logger.LogInformation("User {username} is registered", request.Login);
         return Ok();
     }
 
     [HttpGet("logout")]
     public async Task<IActionResult> LogoutAsync()
     {
-        await _signInManager.SignOutAsync();
+        await _signInManager.SignOutAsync();        
         return Ok();
     }
 }

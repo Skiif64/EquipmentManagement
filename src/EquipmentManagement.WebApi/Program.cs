@@ -16,7 +16,7 @@ builder.Services.AddAutoMapper(cfg =>
 });
 builder.Services.AddApplication();
 builder.Services.AddDataAccess(builder.Configuration);
-builder.Services.AddApiKeyAuthorization();
+builder.Services.AddAuth(builder.Configuration);
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -24,7 +24,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

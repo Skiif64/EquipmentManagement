@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using EquipmentManagement.Application.Employees.Add;
+using EquipmentManagement.Application.Equipments.Add;
 using EquipmentManagement.Domain.Models;
 using EquipmentManagement.WebApi.Requests;
 
@@ -10,7 +11,8 @@ namespace EquipmentManagement.WebApi
         public WebApiMappingProfile()
         {
             CreateMap<AddEmployeeCommand, Employee>();
-            CreateMap<AddEmployeeRequest, AddEmployeeCommand>();            
+            CreateMap<AddEmployeeRequest, AddEmployeeCommand>();
+            CreateMap<AddEquipmentRequest, AddEquipmentCommand>();
         }
     }
 }

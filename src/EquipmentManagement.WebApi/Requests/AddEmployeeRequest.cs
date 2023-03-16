@@ -1,8 +1,11 @@
-﻿namespace EquipmentManagement.WebApi.Requests;
+﻿using System.ComponentModel.DataAnnotations;
+namespace EquipmentManagement.WebApi.Requests;
 
 public class AddEmployeeRequest
 {
-    public string Firstname { get; set; }
-    public string Lastname { get; set; }
-    public string Patronymic { get; set; }
+    [Required]
+    public string Firstname { get; init; } = string.Empty;
+    [Required]
+    public string Lastname { get; init; } = string.Empty;
+    public string? Patronymic { get; init; }
 }

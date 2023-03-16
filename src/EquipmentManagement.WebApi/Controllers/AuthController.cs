@@ -1,4 +1,5 @@
-﻿using EquipmentManagement.WebApi.Requests;
+﻿using EquipmentManagement.Auth;
+using EquipmentManagement.WebApi.Requests;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -11,6 +12,7 @@ namespace EquipmentManagement.WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class AuthController : ControllerBase
 {
     private readonly SignInManager<IdentityUser> _signInManager;
@@ -36,12 +38,16 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
+    [Authorize(Roles = Roles.Admin)]    
     public async Task<IActionResult> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
             return BadRequest();
         var user = new IdentityUser(request.Login);
+        
         var result = await _userManager.CreateAsync(user, request.Password);
+        if(result.Succeeded)
+            result = await _userManager.AddToRoleAsync(user, request.Role);
         if(!result.Succeeded)
             return BadRequest(result.Errors);
 

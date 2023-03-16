@@ -7,5 +7,5 @@ public interface IApplicationDbContext
     IQueryable<TEntity> Set<TEntity>() where TEntity : BaseModel;
 
     int SaveChanges();
-    Task<int> SaveChangesAsync();
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

@@ -1,9 +1,10 @@
-﻿using EquipmentManagement.Domain.Models;
+﻿using EquipmentManagement.Application.Abstractions;
+using EquipmentManagement.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace EquipmentManagement.DAL;
 
-internal class ApplicationDbContext : DbContext
+internal class ApplicationDbContext : DbContext, IApplicationDbContext
 {
     public DbSet<Employee> Employees { get; set; } = null!;
     public DbSet<Equipment> Equipments { get; set; } = null!;
@@ -14,4 +15,8 @@ internal class ApplicationDbContext : DbContext
     {        
         Database.EnsureCreated();
     }
+
+    IQueryable<TEntity> IApplicationDbContext.Set<TEntity>()
+        => Set<TEntity>();
+    
 }

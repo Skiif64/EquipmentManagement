@@ -27,8 +27,8 @@ namespace EquipmentManagement.WebApi.Controllers
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
             var command = _mapper.Map<AddEmployeeCommand>(request);
-            await _sender.Send(command, cancellationToken);
-            return Ok();
+            var id = await _sender.Send(command, cancellationToken);
+            return Ok(id);
         }
         [HttpGet]
         public async Task<IActionResult> GetAllAsync(CancellationToken cancellationToken)

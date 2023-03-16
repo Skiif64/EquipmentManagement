@@ -2,7 +2,7 @@
 
 namespace EquipmentManagement.Application.Employees.Add;
 
-public class AddEmployeeCommand : ICommand
+public class AddEmployeeCommand : ICommand<Guid>
 {
     public string Firstname { get; set; } = string.Empty;
     public string Lastname { get; set; } = string.Empty;

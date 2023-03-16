@@ -5,7 +5,7 @@ using EquipmentManagement.Domain.Models;
 
 namespace EquipmentManagement.Application.Employees.AddEmployee;
 
-public class AddEmployeeCommandHandler : ICommandHandler<AddEmployeeCommand>
+public class AddEmployeeCommandHandler : ICommandHandler<AddEmployeeCommand, Guid>
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
@@ -16,12 +16,13 @@ public class AddEmployeeCommandHandler : ICommandHandler<AddEmployeeCommand>
         _mapper = mapper;
     }
 
-    public async Task Handle(AddEmployeeCommand request, CancellationToken cancellationToken)
+    public async Task<Guid> Handle(AddEmployeeCommand request, CancellationToken cancellationToken)
     {
         var employee = _mapper.Map<Employee>(request);
         await _context
             .Set<Employee>()
             .AddAsync(employee, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
+        return employee.Id;
     }
 }

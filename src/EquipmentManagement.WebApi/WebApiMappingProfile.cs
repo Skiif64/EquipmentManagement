@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using EquipmentManagement.Application.Employees.Add;
 using EquipmentManagement.Application.EquipmentRecords.Add;
+using EquipmentManagement.Application.EquipmentRecords.Update;
 using EquipmentManagement.Application.Equipments.Add;
 using EquipmentManagement.WebApi.Requests;
 
@@ -13,5 +14,6 @@ public class WebApiMappingProfile : Profile
         CreateMap<AddEmployeeRequest, AddEmployeeCommand>();
         CreateMap<AddEquipmentRequest, AddEquipmentCommand>();
         CreateMap<AddEquipmentRecordRequest, AddEquipmentRecordCommand>();
+        CreateMap<UpdateEquipmentRecordRequest, UpdateEquipmentRecordCommand>();
     }
 }

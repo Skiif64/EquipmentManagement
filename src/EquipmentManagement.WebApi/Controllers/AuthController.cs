@@ -47,4 +47,11 @@ public class AuthController : ControllerBase
 
         return Ok();
     }
+
+    [HttpGet("logout")]
+    public async Task<IActionResult> LogoutAsync()
+    {
+        await _signInManager.SignOutAsync();
+        return Ok();
+    }
 }

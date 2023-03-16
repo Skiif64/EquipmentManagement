@@ -12,7 +12,7 @@ namespace EquipmentManagement.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = Roles.UserAdmin)]
+    [Authorize]
     public class EmployeesController : ControllerBase   
     {
         private readonly ISender _sender;

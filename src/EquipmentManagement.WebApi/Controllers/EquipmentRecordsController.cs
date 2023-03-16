@@ -14,7 +14,7 @@ namespace EquipmentManagement.WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize(Roles = Roles.UserAdmin)]
+[Authorize]
 public class EquipmentRecordsController : ControllerBase
 {
     private readonly ISender _sender;

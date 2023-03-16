@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using EquipmentManagement.Application.Employees.Add;
+using EquipmentManagement.Application.EquipmentRecords.Add;
 using EquipmentManagement.Application.Equipments.Add;
 using EquipmentManagement.Domain.Models;
 
@@ -11,6 +12,7 @@ public class ApplicationMappingProfile : Profile
     {
         CreateMap<AddEmployeeCommand, Employee>();
         CreateMap<AddEquipmentCommand, Equipment>();
+        CreateMap<AddEquipmentRecordCommand, EquipmentRecord>();
         
     }
 }

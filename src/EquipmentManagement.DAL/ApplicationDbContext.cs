@@ -12,8 +12,8 @@ internal class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<Status> Statuses { get; set; } = null!;
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
-    {        
-        Database.EnsureCreated();
+    {
+        Database.Migrate();        
     }
 
     DbSet<TEntity> IApplicationDbContext.Set<TEntity>()

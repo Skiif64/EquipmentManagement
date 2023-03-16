@@ -12,8 +12,7 @@ public class UpdateEquipmentRecordCommandHandler : ICommandHandler<UpdateEquipme
 
     public UpdateEquipmentRecordCommandHandler(IApplicationDbContext context, IMapper mapper)
     {
-        _context = context;
-        _mapper = mapper;
+        _context = context;        
     }
 
     public async Task<EquipmentRecord> Handle(UpdateEquipmentRecordCommand request, CancellationToken cancellationToken)

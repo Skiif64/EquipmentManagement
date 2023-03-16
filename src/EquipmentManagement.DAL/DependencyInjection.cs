@@ -1,10 +1,7 @@
 ﻿using EquipmentManagement.Application.Abstractions;
-using EquipmentManagement.DAL.Repositories;
-using EquipmentManagement.Domain.Abstractions.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Data;
 
 namespace EquipmentManagement.DAL;
 

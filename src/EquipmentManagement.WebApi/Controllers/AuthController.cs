@@ -1,13 +1,8 @@
 ﻿using EquipmentManagement.Auth;
 using EquipmentManagement.WebApi.Requests;
-using MediatR;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace EquipmentManagement.WebApi.Controllers;
 

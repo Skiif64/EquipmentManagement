@@ -1,4 +1,5 @@
-﻿using EquipmentManagement.Auth;
+﻿using EquipmentManagement.Application;
+using EquipmentManagement.Auth;
 using EquipmentManagement.WebApi.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -32,7 +33,7 @@ public class AuthController : ControllerBase
         var result = await _signInManager.PasswordSignInAsync(request.Login, request.Password, request.RememberMe, false);
         if(!result.Succeeded)
             return BadRequest();    
-        _logger.LogInformation("User {username} is logged in", request.Login);
+        _logger.LogInformation(AppLogEvents.Login, "User {username} is logged in", request.Login);
         return Ok();
     }
 
@@ -49,7 +50,7 @@ public class AuthController : ControllerBase
             result = await _userManager.AddToRoleAsync(user, request.Role);
         if(!result.Succeeded)
             return BadRequest(result.Errors);
-        _logger.LogInformation("User {username} is registered", request.Login);
+        _logger.LogInformation(AppLogEvents.Register, "User {username} is registered", request.Login);
         return Ok();
     }
 

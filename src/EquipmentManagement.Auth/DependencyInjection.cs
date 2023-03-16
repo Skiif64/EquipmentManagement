@@ -10,8 +10,6 @@ public static class DependencyInjection
         services.AddSingleton<IApiKeyValidator, ApiKeyValidator>();
         services.AddSingleton<ApiKeyAuthorizationFilter>();
 
-        services.AddAuthentication();
-
         return services;
     }
 }

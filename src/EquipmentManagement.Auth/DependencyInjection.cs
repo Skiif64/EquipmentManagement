@@ -14,7 +14,11 @@ public static class DependencyInjection
         services.AddDbContext<UserStoreDbContext>(opt => opt.UseNpgsql(connectionString));
         services.AddIdentity<IdentityUser, IdentityRole>()
             .AddEntityFrameworkStores<UserStoreDbContext>();
-            
+        var provider = services.BuildServiceProvider();
+
+        var roleManager = provider.GetRequiredService<RoleManager<IdentityRole>>();
+        
+        RoleInitializer.Initialize(roleManager).Wait();
         return services;
     }
 }

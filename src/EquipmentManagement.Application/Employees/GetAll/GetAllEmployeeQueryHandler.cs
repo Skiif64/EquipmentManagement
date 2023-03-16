@@ -1,20 +1,20 @@
 ﻿using EquipmentManagement.Application.Abstractions;
-using EquipmentManagement.Domain.Abstractions.Repositories;
 using EquipmentManagement.Domain.Models;
 
 namespace EquipmentManagement.Application.Employees.GetAll;
 
-public class GetAllEmployeeQueryHandler : IQueryHandler<GetAllEmployeeQuery, IEnumerable<Employee>>
+public class GetAllEmployeeQueryHandler : IQueryHandler<GetAllEmployeeQuery, IEnumerable<Employee>?>
 {
-    private readonly IEmployeeRepository _employeeRepository;
+    private readonly IApplicationDbContext _context;
 
-    public GetAllEmployeeQueryHandler(IEmployeeRepository employeeRepository)
+    public GetAllEmployeeQueryHandler(IApplicationDbContext context)
     {
-        _employeeRepository = employeeRepository;
+        _context = context;
     }
 
-    public async Task<IEnumerable<Employee>> Handle(GetAllEmployeeQuery request, CancellationToken cancellationToken)
+    public Task<IEnumerable<Employee>?> Handle(GetAllEmployeeQuery request, CancellationToken cancellationToken)
     {
-        return await _employeeRepository.GetAllAsync(cancellationToken);
+        var set = _context.Set<Employee>();
+        return Task.FromResult(set?.AsEnumerable());
     }
 }

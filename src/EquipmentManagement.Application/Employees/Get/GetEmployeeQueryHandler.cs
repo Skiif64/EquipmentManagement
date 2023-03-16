@@ -1,21 +1,23 @@
 ﻿using EquipmentManagement.Application.Abstractions;
-using EquipmentManagement.Domain.Abstractions.Repositories;
 using EquipmentManagement.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace EquipmentManagement.Application.Employees.Get;
 
-public class GetEmployeeQueryHandler : IQueryHandler<GetEmployeeQuery, Employee>
+public class GetEmployeeQueryHandler : IQueryHandler<GetEmployeeQuery, Employee?>
 {
-    private readonly IEmployeeRepository _employeeRepository;
+    private readonly IApplicationDbContext _context;
 
-    public GetEmployeeQueryHandler(IEmployeeRepository employeeRepository)
+    public GetEmployeeQueryHandler(IApplicationDbContext context)
     {
-        _employeeRepository = employeeRepository;
+        _context = context;
     }
 
-    public async Task<Employee> Handle(GetEmployeeQuery request, CancellationToken cancellationToken)
+    public async Task<Employee?> Handle(GetEmployeeQuery request, CancellationToken cancellationToken)
     {
-        var employee = await _employeeRepository.GetByIdAsync(request.Id, cancellationToken);
+        var employee = await _context
+            .Set<Employee>()
+            .SingleOrDefaultAsync(e => e.Id == request.Id, cancellationToken);
         return employee;
     }
 }

@@ -16,7 +16,7 @@ internal class ApplicationDbContext : DbContext, IApplicationDbContext
         Database.EnsureCreated();
     }
 
-    IQueryable<TEntity> IApplicationDbContext.Set<TEntity>()
+    DbSet<TEntity> IApplicationDbContext.Set<TEntity>()
         => Set<TEntity>();
     
 }

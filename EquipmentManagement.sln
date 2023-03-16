@@ -7,17 +7,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{28C37318-3EE
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{A63BEA07-F7C8-4AF1-B299-7E23AB77A570}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EquipmentManagement.Domain", "src\EquipmentManagement.Domain\EquipmentManagement.Domain.csproj", "{C0C0B020-D907-47D6-A804-98638D6D0963}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EquipmentManagement.Domain", "src\EquipmentManagement.Domain\EquipmentManagement.Domain.csproj", "{C0C0B020-D907-47D6-A804-98638D6D0963}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EquipmentManagement.Application", "src\EquipmentManagement.Application\EquipmentManagement.Application.csproj", "{A758D988-6143-4C2F-ADC9-98763830DE95}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EquipmentManagement.Application", "src\EquipmentManagement.Application\EquipmentManagement.Application.csproj", "{A758D988-6143-4C2F-ADC9-98763830DE95}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EquipmentManagement.DAL", "src\EquipmentManagement.DAL\EquipmentManagement.DAL.csproj", "{1EE41D2B-9B6C-4219-A45D-013AB63D7B61}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EquipmentManagement.DAL", "src\EquipmentManagement.DAL\EquipmentManagement.DAL.csproj", "{1EE41D2B-9B6C-4219-A45D-013AB63D7B61}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EquipmentManagement.Tests", "test\EquipmentManagement.Tests\EquipmentManagement.Tests.csproj", "{1660974B-7E23-4220-89DF-6F95330B33BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EquipmentManagement.Tests", "test\EquipmentManagement.Tests\EquipmentManagement.Tests.csproj", "{1660974B-7E23-4220-89DF-6F95330B33BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EquipmentManagement.WebApi", "src\EquipmentManagement.WebApi\EquipmentManagement.WebApi.csproj", "{D8DDA274-68BD-49BB-805C-4B296BD5F14E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EquipmentManagement.WebApi", "src\EquipmentManagement.WebApi\EquipmentManagement.WebApi.csproj", "{D8DDA274-68BD-49BB-805C-4B296BD5F14E}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{3244F4AF-AD4E-4D64-85C7-022987874192}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EquipmentManagement.Auth", "src\EquipmentManagement.Auth\EquipmentManagement.Auth.csproj", "{D79968F1-4654-40B7-8BC7-AA61569F431F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,6 +51,10 @@ Global
 		{3244F4AF-AD4E-4D64-85C7-022987874192}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3244F4AF-AD4E-4D64-85C7-022987874192}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3244F4AF-AD4E-4D64-85C7-022987874192}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D79968F1-4654-40B7-8BC7-AA61569F431F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D79968F1-4654-40B7-8BC7-AA61569F431F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D79968F1-4654-40B7-8BC7-AA61569F431F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D79968F1-4654-40B7-8BC7-AA61569F431F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -59,6 +65,7 @@ Global
 		{1EE41D2B-9B6C-4219-A45D-013AB63D7B61} = {28C37318-3EEB-40CD-A9BB-4AF03CFA836C}
 		{1660974B-7E23-4220-89DF-6F95330B33BF} = {A63BEA07-F7C8-4AF1-B299-7E23AB77A570}
 		{D8DDA274-68BD-49BB-805C-4B296BD5F14E} = {28C37318-3EEB-40CD-A9BB-4AF03CFA836C}
+		{D79968F1-4654-40B7-8BC7-AA61569F431F} = {28C37318-3EEB-40CD-A9BB-4AF03CFA836C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {376E8470-B622-45C5-AA1C-F7D6F2DC6444}

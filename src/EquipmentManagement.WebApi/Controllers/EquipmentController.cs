@@ -45,4 +45,12 @@ public class EquipmentController : ControllerBase
         var id = await _sender.Send(command, cancellationToken);
         return Ok(id);
     }
+
+    [HttpGet("employee/{employeeId:guid}")]
+    public async Task<IActionResult> GetByEmployeeId(Guid employeeId, CancellationToken cancellationToken)
+    {
+        var query = new GetEquipmentsByEmployeeIdQuery(employeeId);
+        var equipments = await _sender.Send(query, cancellationToken);
+        return Ok(equipments);
+    }
 }

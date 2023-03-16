@@ -14,7 +14,7 @@ public class GetEquipmentByEmployeeQueryHandler : IQueryHandler<GetEquipmentsByE
     public Task<IEnumerable<Equipment>?> Handle(GetEquipmentsByEmployeeIdQuery request, CancellationToken cancellationToken)
     {
         var recordsIds = _context
-            .Set<EquipmentStatus>()
+            .Set<EquipmentRecord>()
             .Where(r => r.EmployeeId == request.EmployeeId)
             .Select(r => r.EquipmentId)
             ;

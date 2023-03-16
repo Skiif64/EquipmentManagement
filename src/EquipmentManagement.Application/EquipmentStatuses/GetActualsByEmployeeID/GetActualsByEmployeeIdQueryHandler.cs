@@ -5,7 +5,7 @@ using EquipmentManagement.Domain.Models;
 
 namespace EquipmentManagement.Application.EquipmentStatuses.GetActualsByEmployeeID;
 
-public class GetActualsByEmployeeIdQueryHandler : IQueryHandler<GetActualsByEmployeeIdQuery, IEnumerable<EquipmentStatus>>
+public class GetActualsByEmployeeIdQueryHandler : IQueryHandler<GetActualsByEmployeeIdQuery, IEnumerable<EquipmentRecord>>
 {
     private readonly IEquipmentStatusRepository _equipmentStatusRepository;
 
@@ -14,7 +14,7 @@ public class GetActualsByEmployeeIdQueryHandler : IQueryHandler<GetActualsByEmpl
         _equipmentStatusRepository = equipmentStatusRepository;
     }
 
-    public async Task<IEnumerable<EquipmentStatus>> Handle(GetActualsByEmployeeIdQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<EquipmentRecord>> Handle(GetActualsByEmployeeIdQuery request, CancellationToken cancellationToken)
     {
         var statuses = await _equipmentStatusRepository.GetAllAsync(cancellationToken);
         return statuses

@@ -2,13 +2,13 @@
 
 namespace EquipmentManagement.Domain.Models;
 
-public class EquipmentStatus : BaseModel
+public class EquipmentRecord : BaseModel
 {
 	public Guid? EmployeeId { get; init; }
 	public Guid EquipmentId { get; init; }
 	public Guid StatusId { get; init; }
 	public DateTimeOffset Modified { get; init; }
-    public EquipmentStatus(Guid? employeeId,
+    public EquipmentRecord(Guid? employeeId,
                            Guid equipmentId,
                            Guid statusId,
                            DateTimeOffset modified)
@@ -19,7 +19,7 @@ public class EquipmentStatus : BaseModel
         Modified = modified;
     }
 
-    protected EquipmentStatus() : base()
+    protected EquipmentRecord() : base()
     {
 
     }

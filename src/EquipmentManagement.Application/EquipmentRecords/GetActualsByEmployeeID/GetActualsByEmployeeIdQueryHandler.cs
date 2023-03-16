@@ -18,7 +18,8 @@ public class GetActualsByEmployeeIdQueryHandler : IQueryHandler<GetActualsByEmpl
             .Set<EquipmentRecord>()
             .Where(r => r.EmployeeId == request.EmployeeId)
             .OrderBy(r => r.Modified)
-            .DistinctBy(r => r.EquipmentId)
+            .AsEnumerable()
+            .DistinctBy(r => r.EquipmentId)            
             ;
 
         return Task.FromResult(records?.AsEnumerable());

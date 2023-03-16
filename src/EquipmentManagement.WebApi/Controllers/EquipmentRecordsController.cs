@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using EquipmentManagement.Application.EquipmentRecords.Add;
+using EquipmentManagement.Application.EquipmentRecords.GetActualsByEmployeeID;
 using EquipmentManagement.Application.EquipmentRecords.Update;
+using EquipmentManagement.Application.Equipments.GetByEmployeeId;
 using EquipmentManagement.WebApi.Requests;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -41,5 +43,13 @@ public class EquipmentRecordsController : ControllerBase
         var command = _mapper.Map<UpdateEquipmentRecordCommand>(request);
         var record = await _sender.Send(command, cancellationToken);
         return Ok(record);
+    }
+
+    [HttpGet("{employeeId:guid}")]
+    public async Task<IActionResult> GetActualEquipmentRecords(Guid employeeId, CancellationToken cancellationToken)
+    {
+        var command = new GetActualsByEmployeeIdQuery(employeeId);
+        var records = await _sender.Send(command, cancellationToken);
+        return Ok(records);
     }
 }

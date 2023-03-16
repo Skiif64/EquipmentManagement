@@ -38,7 +38,7 @@ public class EquipmentController : ControllerBase
             return BadRequest(ModelState);
 
         var command = _mapper.Map<AddEquipmentCommand>(request);
-        await _sender.Send(command, cancellationToken);
-        return Ok();
+        var id = await _sender.Send(command, cancellationToken);
+        return Ok(id);
     }
 }

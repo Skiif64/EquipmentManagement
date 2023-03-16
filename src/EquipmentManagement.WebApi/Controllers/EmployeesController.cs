@@ -1,12 +1,9 @@
 ﻿using AutoMapper;
-using EquipmentManagement.Application.Abstractions;
 using EquipmentManagement.Application.Employees.Add;
 using EquipmentManagement.Application.Employees.Get;
 using EquipmentManagement.Application.Employees.GetAll;
-using EquipmentManagement.Domain.Abstractions.Repositories;
 using EquipmentManagement.WebApi.Requests;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EquipmentManagement.WebApi.Controllers

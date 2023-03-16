@@ -1,4 +1,5 @@
-﻿using EquipmentManagement.DAL.Repositories;
+﻿using EquipmentManagement.Application.Abstractions;
+using EquipmentManagement.DAL.Repositories;
 using EquipmentManagement.Domain.Abstractions.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -13,9 +14,8 @@ public static class DependencyInjection
     {
         var connectionString = configuration.GetConnectionString("Data");        
        
-        services.AddDbContext<ApplicationDbContext>(opt => opt.UseNpgsql(connectionString));
-        services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-
+        services.AddDbContext<IApplicationDbContext, ApplicationDbContext>(opt => opt.UseNpgsql(connectionString));
+        
         return services;
     }
 }

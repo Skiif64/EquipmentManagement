@@ -24,6 +24,8 @@ namespace EquipmentManagement.WebApi.Controllers
         [HttpPost("add")]
         public async Task<IActionResult> AddAsync(AddEmployeeRequest request, CancellationToken cancellationToken)
         {
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
             var command = _mapper.Map<AddEmployeeCommand>(request);
             await _sender.Send(command, cancellationToken);
             return Ok();
@@ -31,6 +33,8 @@ namespace EquipmentManagement.WebApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllAsync(CancellationToken cancellationToken)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             var employees = await _sender.Send(new GetAllEmployeeQuery(), cancellationToken);
             return Ok(employees);
         }

@@ -2,6 +2,7 @@
 using EquipmentManagement.Application.Employees.Add;
 using EquipmentManagement.Application.Employees.Get;
 using EquipmentManagement.Application.Employees.GetAll;
+using EquipmentManagement.Auth;
 using EquipmentManagement.WebApi.Requests;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -11,7 +12,7 @@ namespace EquipmentManagement.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = Roles.UserAdmin)]
     public class EmployeesController : ControllerBase   
     {
         private readonly ISender _sender;
@@ -24,6 +25,7 @@ namespace EquipmentManagement.WebApi.Controllers
             _logger = logger;
         }
         [HttpPost("add")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> AddAsync(AddEmployeeRequest request, CancellationToken cancellationToken)
         {
             if(!ModelState.IsValid)

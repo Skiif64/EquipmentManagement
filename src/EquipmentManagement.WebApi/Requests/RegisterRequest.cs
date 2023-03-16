@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
+using EquipmentManagement.Auth;
 
 namespace EquipmentManagement.WebApi.Requests
 {
@@ -13,5 +14,7 @@ namespace EquipmentManagement.WebApi.Requests
         [Required]
         [Compare(nameof(Password))]
         public string ConfirmPassword { get; init; } = string.Empty;
+        [Required]        
+        public string Role { get; init; } = string.Empty;
     }
 }

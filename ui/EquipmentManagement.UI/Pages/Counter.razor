@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Authorization;
 @using Microsoft.AspNetCore.Components.Authorization
 @attribute [Authorize]
+@inject NavigationManager NavigationManager
 <PageTitle>Counter</PageTitle>
 
 <h1>Counter</h1>
@@ -11,6 +12,7 @@
     </Authorized>
     <NotAuthorized>
         <h2>Not authorized!</h2>
+        
     </NotAuthorized>
 </AuthorizeView>
 <p role="status">Current count: @currentCount</p>

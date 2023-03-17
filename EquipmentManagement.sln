@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EquipmentManagement.Auth", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ui", "ui", "{8A3B7096-981C-4D32-93AC-EC5B79C046DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EquipmentManagement.UI", "ui\EquipmentManagement.UI\EquipmentManagement.UI.csproj", "{F3174920-0977-4618-8412-FE4A874DE115}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EquipmentManagement.UI", "ui\EquipmentManagement.UI\EquipmentManagement.UI.csproj", "{F3174920-0977-4618-8412-FE4A874DE115}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{25EC9E0F-DBBE-4EED-A836-09BD224972E8}"
 EndProject

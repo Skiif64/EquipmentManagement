@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
+using EquimentManagement.Contracts.Requests;
 using EquipmentManagement.Application.Employees.Add;
 using EquipmentManagement.Application.Employees.Get;
 using EquipmentManagement.Application.Employees.GetAll;
 using EquipmentManagement.Auth;
-using EquipmentManagement.WebApi.Requests;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

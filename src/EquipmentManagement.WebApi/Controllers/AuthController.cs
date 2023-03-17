@@ -1,6 +1,6 @@
-﻿using EquipmentManagement.Application;
+﻿using EquimentManagement.Contracts.Requests;
+using EquipmentManagement.Application;
 using EquipmentManagement.Auth;
-using EquipmentManagement.WebApi.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

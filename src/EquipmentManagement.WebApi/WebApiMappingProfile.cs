@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
+using EquimentManagement.Contracts.Requests;
 using EquipmentManagement.Application.Employees.Add;
 using EquipmentManagement.Application.EquipmentRecords.Add;
 using EquipmentManagement.Application.EquipmentRecords.Update;
 using EquipmentManagement.Application.Equipments.Add;
-using EquipmentManagement.WebApi.Requests;
 
 namespace EquipmentManagement.WebApi;
 

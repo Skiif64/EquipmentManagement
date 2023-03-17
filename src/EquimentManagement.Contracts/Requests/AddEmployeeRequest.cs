@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-namespace EquipmentManagement.WebApi.Requests;
+namespace EquimentManagement.Contracts.Requests;
 
 public class AddEmployeeRequest
 {

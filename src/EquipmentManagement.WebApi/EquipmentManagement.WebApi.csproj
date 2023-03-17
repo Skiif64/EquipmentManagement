@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\EquimentManagement.Contracts\EquimentManagement.Contracts.csproj" />
     <ProjectReference Include="..\EquipmentManagement.Application\EquipmentManagement.Application.csproj" />
     <ProjectReference Include="..\EquipmentManagement.Auth\EquipmentManagement.Auth.csproj" />
     <ProjectReference Include="..\EquipmentManagement.DAL\EquipmentManagement.DAL.csproj" />

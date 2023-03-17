@@ -1,13 +1,11 @@
 ﻿using AutoMapper;
+using EquimentManagement.Contracts.Requests;
 using EquipmentManagement.Application.EquipmentRecords.Add;
 using EquipmentManagement.Application.EquipmentRecords.GetActualsByEmployeeID;
 using EquipmentManagement.Application.EquipmentRecords.Update;
-using EquipmentManagement.Application.Equipments.GetByEmployeeId;
 using EquipmentManagement.Auth;
-using EquipmentManagement.WebApi.Requests;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EquipmentManagement.WebApi.Controllers;

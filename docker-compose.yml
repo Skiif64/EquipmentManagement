@@ -1,13 +1,22 @@
 version: '3.4'
 
 services:
-  equipmentmanagement.webapi:
+  webapi:
     image: ${DOCKER_REGISTRY-}equipmentmanagementwebapi
     build:
       context: .
       dockerfile: src/EquipmentManagement.WebApi/Dockerfile
     depends_on:
       - db
+  ui:
+    image: ${DOCKER_REGISTRY-}equipmentmanagementui
+    build:
+      context: .
+      dockerfile: ui/EquipmentManagement.UI/Dockerfile
+    depends_on:
+      - webapi
+    ports:
+      - 80:80
   db:
     image: postgres
     restart: always

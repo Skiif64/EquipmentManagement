@@ -5,7 +5,7 @@ namespace EquimentManagement.Contracts.Requests;
 public class UpdateEquipmentRecordRequest
 {
     [Required]
-    public Guid EquipmentRecordId { get; init; }
-    public Guid? EmployeeId { get; init; }
-    public Guid? StatusId { get; init; }
+    public Guid EquipmentRecordId { get; set; }
+    public Guid? EmployeeId { get; set; }
+    public Guid? StatusId { get; set; }
 }

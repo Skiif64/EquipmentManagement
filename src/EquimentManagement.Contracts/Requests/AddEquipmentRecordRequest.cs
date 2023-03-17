@@ -4,9 +4,9 @@ namespace EquimentManagement.Contracts.Requests;
 
 public class AddEquipmentRecordRequest
 {
-    public Guid? EmployeeId { get; init; }
+    public Guid? EmployeeId { get; set; }
     [Required]
-    public Guid EquipmentId { get; init; }
+    public Guid EquipmentId { get; set; }
     [Required]
-    public Guid StatusId { get; init; }
+    public Guid StatusId { get; set; }
 }

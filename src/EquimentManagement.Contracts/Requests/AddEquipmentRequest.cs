@@ -6,10 +6,10 @@ namespace EquimentManagement.Contracts.Requests;
 public class AddEquipmentRequest
 {
     [Required]
-    public string Type { get; init; } = string.Empty;
+    public string Type { get; set; } = string.Empty;
     [Required]
-    public string Article { get; init; } = string.Empty;
+    public string Article { get; set; } = string.Empty;
     [Required]
-    public string SerialNumber { get; init; } = string.Empty;
-    public string? Description { get; init; }
+    public string SerialNumber { get; set; } = string.Empty;
+    public string? Description { get; set; }
 }

@@ -22,16 +22,17 @@ internal class UserInitializer
             await roleManager.CreateAsync(new IdentityRole(Roles.Admin));
         }
 
-        if (await userManager.GetUsersInRoleAsync(Roles.Admin) is null)
+        if ((await userManager.GetUsersInRoleAsync(Roles.Admin)).Count() == 0)
         {
             var adminUsername = configuration.GetRequiredSection("AdminUsername").Value;
             var adminPassword = configuration.GetRequiredSection("AdminPassword").Value;
-            
-            var result = await userManager.CreateAsync(new IdentityUser(adminUsername), adminPassword);
+            var adminUser = new IdentityUser(adminUsername);
+            var result = await userManager.CreateAsync(adminUser, adminPassword);
             if(!result.Succeeded)
             {
                 throw new Exception();//TODO: normal exception
             }
+            await userManager.AddToRoleAsync(adminUser, Roles.Admin);
         }
     }
 }

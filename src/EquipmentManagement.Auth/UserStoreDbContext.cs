@@ -11,5 +11,16 @@ public class UserStoreDbContext : DbContext
     public UserStoreDbContext(DbContextOptions options) : base(options)
 	{
 		Database.Migrate();
-	}    
+	}
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<ApplicationUser>()
+            .HasData(new ApplicationUser
+            {
+                Login = "Admin",
+                Password = "example",
+                Role = "Admin"
+            });
+    }
 }

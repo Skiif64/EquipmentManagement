@@ -12,14 +12,12 @@ namespace EquipmentManagement.WebApi.Controllers;
 [Authorize]
 public class AuthController : ControllerBase
 {
-    private readonly SignInManager<IdentityUser> _signInManager;
-    private readonly UserManager<IdentityUser> _userManager;
+    private readonly JwtAuthentificationService _jwtAuthentificationService;
     private readonly ILogger<AuthController> _logger;
 
-    public AuthController(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, ILogger<AuthController> logger)
+    public AuthController(JwtAuthentificationService jwtAuthentificationService, ILogger<AuthController> logger)
     {
-        _signInManager = signInManager;
-        _userManager = userManager;
+        _jwtAuthentificationService = jwtAuthentificationService;
         _logger = logger;
     }
 
@@ -30,11 +28,11 @@ public class AuthController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest();
 
-        var result = await _signInManager.PasswordSignInAsync(request.Login, request.Password, request.RememberMe, false);
-        if(!result.Succeeded)
+        var result = await _jwtAuthentificationService.SignInAsync(request.Login, request.Password, cancellationToken);
+        if(!result.Success)
             return BadRequest();    
         _logger.LogInformation(AppLogEvents.Login, "User {username} is logged in", request.Login);
-        return Ok();
+        return Ok(result.Token);
     }
 
     [HttpPost("register")]
@@ -45,11 +43,11 @@ public class AuthController : ControllerBase
             return BadRequest();
         var user = new IdentityUser(request.Login);
         
-        var result = await _userManager.CreateAsync(user, request.Password);
-        if(result.Succeeded)
-            result = await _userManager.AddToRoleAsync(user, request.Role);
-        if(!result.Succeeded)
-            return BadRequest(result.Errors);
+        //var result = await _userManager.CreateAsync(user, request.Password);
+        //if(result.Succeeded)
+            //result = await _userManager.AddToRoleAsync(user, request.Role);
+        //if(!result.Succeeded)
+            //return BadRequest(result.Errors);
         _logger.LogInformation(AppLogEvents.Register, "User {username} is registered", request.Login);
         return Ok();
     }
@@ -57,7 +55,7 @@ public class AuthController : ControllerBase
     [HttpGet("logout")]
     public async Task<IActionResult> LogoutAsync()
     {
-        await _signInManager.SignOutAsync();        
+        //await _signInManager.SignOutAsync();        
         return Ok();
     }
 }

@@ -5,11 +5,5 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
-      - "80"
-
-  #ui:
-    #environment:
-      #- ASPNETCORE_ENVIRONMENT=Development
-   # ports:
-      #- 80:80
+      - 80:80      
 

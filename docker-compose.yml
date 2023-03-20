@@ -8,18 +8,12 @@ services:
       dockerfile: src/EquipmentManagement.WebApi/Dockerfile
     depends_on:
       - db
-    ports:
-      - 80:80
-
-  #ui:
-    #image: ${DOCKER_REGISTRY-}equipmentmanagementui
-    #build:
-      #context: .
-      #dockerfile: ui/EquipmentManagement.UI/Dockerfile
-    #depends_on:
-      #- webapi
   db:
     image: postgres
     restart: always
     environment:
       POSTGRES_PASSWORD: example
+  adminer:
+    image: adminer
+    ports:
+      - 8080:8080

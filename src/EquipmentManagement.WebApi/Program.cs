@@ -19,6 +19,7 @@ builder.Services.AddDataAccess(builder.Configuration);
 builder.Services.AddAuth(builder.Configuration);
 builder.Services.AddRazorPages();
 builder.Services.AddControllersWithViews();
+builder.Services.AddCors(opt => opt.AddPolicy("CorsPolicy", policy => policy.AllowAnyOrigin()));
 
 var app = builder.Build();
 
@@ -34,6 +35,7 @@ app.UseStaticFiles();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseCors("CorsPolicy");
 
 app.MapControllers();
 app.MapRazorPages();

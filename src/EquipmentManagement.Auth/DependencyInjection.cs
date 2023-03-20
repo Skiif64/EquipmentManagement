@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using EquipmentManagement.Auth.Abstractions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -27,6 +28,9 @@ public static class DependencyInjection
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("super-secret-key"))
                 };
             });
+
+        services.AddTransient<IJwtTokenProvider, JwtTokenProvider>();
+        services.AddScoped<JwtAuthentificationService>();
         //var provider = services.BuildServiceProvider();
 
         //var roleManager = provider.GetRequiredService<RoleManager<IdentityRole>>();

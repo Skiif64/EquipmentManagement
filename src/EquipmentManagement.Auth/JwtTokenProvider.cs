@@ -1,6 +1,5 @@
-﻿using EquipmentManagement.Auth.Models;
-using EquipmentManagement.Domain.Models;
-using Microsoft.IdentityModel.JsonWebTokens;
+﻿using EquipmentManagement.Application.Models;
+using EquipmentManagement.Auth.Abstractions;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -8,23 +7,16 @@ using System.Text;
 
 namespace EquipmentManagement.Auth;
 
-internal class JwtAuthentificationProvider
+public class JwtTokenProvider : IJwtTokenProvider
 {
-    private readonly UserStoreDbContext _userStoreDbContext;
-
-    public JwtAuthentificationProvider(UserStoreDbContext userStoreDbContext)
-    {
-        _userStoreDbContext = userStoreDbContext;
-    }
-
-    private string CreateJWT(IdentityUser user)
+    public string Generate(ApplicationUser user)
     {
         var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("super-secret-key"));
         var credentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
 
         var claims = new[]
         {
-            new Claim(ClaimTypes.Name, user.Username),
+            new Claim(ClaimTypes.Name, user.Login),
             new Claim(ClaimTypes.Role, user.Role)
         };
 
@@ -36,11 +28,6 @@ internal class JwtAuthentificationProvider
             signingCredentials: credentials
             );
         var tokenHandler = new JwtSecurityTokenHandler();
-        return tokenHandler.WriteToken(token);        
-    }
-
-    public async Task<bool> SigninAsync(IdentityUser user, string password, CancellationToken cancellationToken)
-    {
-
+        return tokenHandler.WriteToken(token);
     }
 }

@@ -15,7 +15,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EquipmentManagement.Domain\EquipmentManagement.Domain.csproj" />
+    <ProjectReference Include="..\EquipmentManagement.Application\EquipmentManagement.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
   </ItemGroup>
 
 </Project>

@@ -17,12 +17,15 @@ builder.Services.AddAutoMapper(cfg =>
 builder.Services.AddApplication();
 builder.Services.AddDataAccess(builder.Configuration);
 builder.Services.AddAuth(builder.Configuration);
+builder.Services.AddRazorPages();
+builder.Services.AddControllersWithViews();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI();    
 }
 app.UseAuthentication();
 app.UseAuthorization();

@@ -1,17 +1,26 @@
 ﻿@page "/Login"
+@using EquimentManagement.Contracts.Requests;
+@inject HttpClient Client;
 <div class="container">
     <div class="col-lg-3"></div>
     <div class="col-lg-6">
         <div class="align-content-center">
             <h3>Login</h3>
-            <EditForm Model="@model">
+            <EditForm Model="@request" OnValidSubmit="@OnLoginSuccess">
                 <div class="mb-3">
                     <label class="form-label">Username</label>
-                    <InputText class="form-control"></InputText>
+                    <InputText @bind-Value="@request.Login" class="form-control"></InputText>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Password</label>
-                    <InputText type="password" class="form-control"></InputText>
+                    <InputText @bind-Value="@request.Password" type="password" class="form-control"></InputText>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Remember Me?</label>
+                    <InputCheckbox @bind-Value="@request.RememberMe" class="form-check-inline"></InputCheckbox>
+                </div>
+                <div class="mb-3 align-content-center">
+                    <button type="submit" class="btn btn-primary">Login</button>
                 </div>
             </EditForm>
         </div>
@@ -21,5 +30,10 @@
 
 
 @code {
-    private readonly object model = new();
+    private readonly LoginRequest request = new();
+
+    private async Task OnLoginSuccess()
+    {
+        var response = await Client.PostAsJsonAsync("/api/auth/login", request);
+    }
 }

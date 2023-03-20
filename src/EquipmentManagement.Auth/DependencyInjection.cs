@@ -17,8 +17,8 @@ public static class DependencyInjection
         var provider = services.BuildServiceProvider();
 
         var roleManager = provider.GetRequiredService<RoleManager<IdentityRole>>();
-        
-        RoleInitializer.Initialize(roleManager).Wait();
+        var userManager = provider.GetRequiredService<UserManager<IdentityUser>>();
+        UserInitializer.Initialize(roleManager, userManager, configuration).Wait();
         return services;
     }
 }

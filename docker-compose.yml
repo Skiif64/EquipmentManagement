@@ -8,6 +8,8 @@ services:
       dockerfile: src/EquipmentManagement.WebApi/Dockerfile
     depends_on:
       - db
+    ports:
+      - 5134:80
 
   #ui:
     #image: ${DOCKER_REGISTRY-}equipmentmanagementui

@@ -1,4 +1,4 @@
-﻿@if (Show)
+﻿@if (IsVisible)
 {
     <div class="modal fade show" style="display: block" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -20,7 +20,7 @@
 
 @code {
     [Parameter]
-    public bool Show { get; set; } = false;
+    public bool IsVisible { get; set; } = false;
     [Parameter]
     public string? Title { get; set; }
     [Parameter]
@@ -35,4 +35,16 @@
     private Task SubmitInvoke()
     => OnSubmitClick?.Invoke()
     ?? Task.CompletedTask;
+
+    public void Show()
+    {
+        IsVisible = true;
+        StateHasChanged();
+    }
+
+    public void Hide()
+    {
+        IsVisible = false;
+        StateHasChanged();
+    }
 }

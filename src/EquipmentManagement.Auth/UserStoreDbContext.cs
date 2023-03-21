@@ -1,18 +1,26 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using EquipmentManagement.Application.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace EquipmentManagement.Auth;
 
-internal class UserStoreDbContext : IdentityDbContext
+public class UserStoreDbContext : DbContext
 {
-	public UserStoreDbContext(DbContextOptions options) : base(options)
+	public DbSet<ApplicationUser> Users { get; set; } = null!;
+    public UserStoreDbContext(DbContextOptions options) : base(options)
 	{
 		Database.Migrate();
 	}
 
-    protected override void OnModelCreating(ModelBuilder builder)
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(builder);        
+        modelBuilder.Entity<ApplicationUser>()
+            .HasData(new ApplicationUser
+            {
+                Login = "Admin",
+                Password = "example",
+                Role = "Admin"
+            });
     }
 }

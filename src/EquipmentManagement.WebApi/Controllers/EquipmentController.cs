@@ -1,21 +1,18 @@
 ﻿using AutoMapper;
-using EquipmentManagement.Application.Abstractions;
+using EquimentManagement.Contracts.Requests;
 using EquipmentManagement.Application.Equipments.Add;
 using EquipmentManagement.Application.Equipments.GetAll;
 using EquipmentManagement.Application.Equipments.GetByEmployeeId;
 using EquipmentManagement.Auth;
-using EquipmentManagement.Domain.Models;
-using EquipmentManagement.WebApi.Requests;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EquipmentManagement.WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
+//[Authorize]
 public class EquipmentController : ControllerBase
 {        
     private readonly ISender _sender;
@@ -35,7 +32,7 @@ public class EquipmentController : ControllerBase
     }
 
     [HttpPost("add")]
-    [Authorize(Roles = Roles.Admin)]
+    //[Authorize(Roles = Roles.Admin)]
     public async Task<IActionResult> AddEquipmentAsync(AddEquipmentRequest request, CancellationToken cancellationToken)
     {
         if(!ModelState.IsValid)

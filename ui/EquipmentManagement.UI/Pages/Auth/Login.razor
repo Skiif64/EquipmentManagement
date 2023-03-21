@@ -1,0 +1,88 @@
+﻿@page "/auth/Login"
+@using EquimentManagement.Contracts.Requests;
+@using EquipmentManagement.UI.Authentification;
+@using Microsoft.AspNetCore.Components.Authorization;
+@using System.Security.Claims;
+@inject HttpClient Client;
+@inject UserCredentialStorage UserStorage;
+
+<div class="container p-2">
+    <div class="row">
+        <div class="col-lg-3 col-md-2"></div>
+        <div class="col-lg-6 col-md-8">
+            <div class="align-content-center">
+                <h3>Login</h3>
+                <EditForm Model="@request" OnValidSubmit="@OnLoginSuccess">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                    <div class="mb-3">
+                        <label class="form-label">Username</label>
+                        <InputText @bind-Value="@request.Login" class="form-control"></InputText>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <InputText @bind-Value="@request.Password" type="password" class="form-control"></InputText>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Remember Me?</label>
+                        <InputCheckbox @bind-Value="@request.RememberMe" class="form-check-inline mx-3"></InputCheckbox>
+                    </div>
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-2"></div>
+    </div>
+</div>
+
+
+
+@code {
+    private readonly LoginRequest request = new();
+    private ValidationMessageStore? messageStorage;
+    [CascadingParameter] private EditContext? editContext { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (editContext is not null)
+        {
+            messageStorage = new(editContext);
+            editContext.OnValidationRequested += (s, e) => messageStorage?.Clear();
+            editContext.OnFieldChanged += (s, e) => messageStorage?.Clear(e.FieldIdentifier);
+        }
+    }
+
+    private void DisplayErrors(IDictionary<string, IEnumerable<string>> errors)
+    {
+        if (editContext is not null)
+        {
+            foreach (var error in errors)
+            {
+                messageStorage?.Add(editContext.Field(error.Key), error.Value);
+            }
+
+            editContext.NotifyValidationStateChanged();
+        }
+    }
+
+    private async Task OnLoginSuccess()
+    {
+        var response = await Client.PostAsJsonAsync("/api/auth/login", request);
+        if (!response.IsSuccessStatusCode)
+        {
+            DisplayErrors(new Dictionary<string, IEnumerable<string>>
+                {
+                    ["Login"] = new[] { "Invalid login or password" }
+                });
+        }
+        var claims = new ClaimsIdentity(new[]
+        {
+            new Claim(ClaimTypes.Name, "User"),
+            new Claim(ClaimTypes.Role, "User")
+    });
+        UserStorage.SetClaims(new[] { claims });
+    }
+}

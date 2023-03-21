@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
+using EquimentManagement.Contracts.Requests;
+using EquimentManagement.Contracts.Responses;
 using EquipmentManagement.Application.Employees.Add;
 using EquipmentManagement.Application.Employees.Get;
 using EquipmentManagement.Application.Employees.GetAll;
 using EquipmentManagement.Auth;
-using EquipmentManagement.WebApi.Requests;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +13,7 @@ namespace EquipmentManagement.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class EmployeesController : ControllerBase   
     {
         private readonly ISender _sender;
@@ -25,8 +26,8 @@ namespace EquipmentManagement.WebApi.Controllers
             _logger = logger;
         }
         [HttpPost("add")]
-        [Authorize(Roles = Roles.Admin)]
-        public async Task<IActionResult> AddAsync(AddEmployeeRequest request, CancellationToken cancellationToken)
+        //[Authorize(Roles = Roles.Admin)]
+        public async Task<ActionResult<Guid>> AddAsync(AddEmployeeRequest request, CancellationToken cancellationToken)
         {
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -35,18 +36,20 @@ namespace EquipmentManagement.WebApi.Controllers
             return Ok(id);
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync(CancellationToken cancellationToken)
+        public async Task<ActionResult<IEnumerable<EmployeeResponse>>> GetAllAsync(CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var employees = await _sender.Send(new GetAllEmployeeQuery(), cancellationToken);
-            return Ok(employees);
+            var response = _mapper.Map<IEnumerable<EmployeeResponse>>(employees);
+            return Ok(response);
         }
         [HttpGet("{id:guid}")]
-        public async Task<IActionResult> GetEmployeeById(Guid id, CancellationToken cancellationToken)
+        public async Task<ActionResult<EmployeeResponse>> GetEmployeeById(Guid id, CancellationToken cancellationToken)
         {
             var employee = await _sender.Send(new GetEmployeeQuery(id), cancellationToken);
-            return Ok(employee);
+            var response = _mapper.Map<EmployeeResponse>(employee);
+            return Ok(response);
         }
     }
 }

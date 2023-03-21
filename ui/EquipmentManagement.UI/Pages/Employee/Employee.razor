@@ -1,0 +1,86 @@
+﻿@page "/employee/"
+@inject HttpClient Client;
+@inject NavigationManager Manager;
+@attribute [Authorize]
+@using EquimentManagement.Contracts.Responses;
+@using EquipmentManagement.UI.Shared.Modal;
+
+<h3>Employee</h3>
+<div class="navbar-dark">
+    <NavLink class="btn btn-primary" href="/employee/add">Добавить соотрудника</NavLink>
+</div>
+<Modal OnSubmitClick="DeleteSelectedEmployee"
+       OnCancelClick="HideDeleteModal"
+       Title="Удаление сотрудника"
+       Text=@($"Вы уверены что хотите удалить сотрудника {selectedEmployee?.Lastname}")
+       @ref="deleteModal" />
+    @if (employees is not null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    <span class="text-center">ФИО</span>
+                </th>
+                <th>
+
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var employee in employees)
+            {
+                <tr>
+                    <td>
+                        <span>@employee.Lastname @employee.Firstname @employee.Patronymic</span>
+                    </td>
+                    <td>
+                        <button class="btn btn-danger" @onclick="() => ShowDeleteModal(employee)">Удалить</button>
+                        <button class="btn btn-secondary">Изменить</button>
+                        <button class="btn btn-secondary">Оборудование</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="d-flex">
+        <div class="my-auto mx-auto">
+            <LoadingCircle />
+        </div>
+    </div>
+}
+@code {
+    private IEnumerable<EmployeeResponse>? employees;
+    private EmployeeResponse? selectedEmployee;
+    private Modal deleteModal = null!;
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadEmployeesAsync();
+    }
+
+    private async Task LoadEmployeesAsync()
+    {
+        employees = await Client.GetFromJsonAsync<IEnumerable<EmployeeResponse>>("/api/employees");
+    }
+
+    private void ShowDeleteModal(EmployeeResponse? employee)
+    {
+        selectedEmployee = employee;
+        deleteModal.Show();
+    }
+
+    private void HideDeleteModal()
+    {
+        deleteModal.Hide();
+        selectedEmployee = null;
+    }
+
+    private async Task DeleteSelectedEmployee()
+    {
+
+    }
+}

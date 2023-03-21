@@ -1,7 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using EquipmentManagement.Auth.Abstractions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace EquipmentManagement.Auth;
 
@@ -12,13 +16,26 @@ public static class DependencyInjection
         var connectionString = configuration.GetConnectionString("Users");
         
         services.AddDbContext<UserStoreDbContext>(opt => opt.UseNpgsql(connectionString));
-        services.AddIdentity<IdentityUser, IdentityRole>()
-            .AddEntityFrameworkStores<UserStoreDbContext>();
-        var provider = services.BuildServiceProvider();
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(opt =>
+            {
+                opt.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateAudience = false,
+                    ValidateIssuer = false,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("super-secret-key"))
+                };
+            });
 
-        var roleManager = provider.GetRequiredService<RoleManager<IdentityRole>>();
-        
-        RoleInitializer.Initialize(roleManager).Wait();
+        services.AddTransient<IJwtTokenProvider, JwtTokenProvider>();
+        services.AddScoped<JwtAuthentificationService>();
+        //var provider = services.BuildServiceProvider();
+
+        //var roleManager = provider.GetRequiredService<RoleManager<IdentityRole>>();
+        //var userManager = provider.GetRequiredService<UserManager<IdentityUser>>();
+        //UserInitializer.Initialize(roleManager, userManager, configuration).Wait();
         return services;
     }
 }

@@ -1,0 +1,49 @@
+﻿@page "/equipment/add/"
+@using EquimentManagement.Contracts.Requests;
+@inject HttpClient Client;
+@inject NavigationManager Navigation;
+@attribute [Authorize]
+<h3>Add</h3>
+
+<div class="container">
+    <div class="row">
+        <div class="align-content-center justify-content-center">
+            <h3>Add</h3>
+            <EditForm Model="@request" OnValidSubmit="@OnValidSubmitAsync">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <div class="mb-3">
+                    <label class="form-label">Тип</label>
+                    <InputText class="form-control" @bind-Value="@request.Type"></InputText>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Артикул</label>
+                    <InputText class="form-control" @bind-Value="@request.Article"></InputText>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Серийный номер</label>
+                    <InputText class="form-control" @bind-Value="@request.SerialNumber"></InputText>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Описание</label>
+                    <InputTextArea class="form-control" @bind-Value="@request.Description"></InputTextArea>
+                </div>
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-primary">Создать</button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+@code {
+    private AddEquipmentRequest request = new();
+
+    private async Task OnValidSubmitAsync()
+    {
+        var response = await Client.PostAsJsonAsync("/api/equipment/add/", request);
+        if(response.IsSuccessStatusCode)
+        {
+            Navigation.NavigateTo("/equipment/");
+        }
+    }
+}

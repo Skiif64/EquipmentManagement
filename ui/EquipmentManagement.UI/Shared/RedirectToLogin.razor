@@ -1,0 +1,10 @@
+﻿@using Microsoft.AspNetCore.Authorization;
+@inject NavigationManager Navigation
+@attribute [AllowAnonymous]
+<h3></h3>
+
+@code {
+    protected override void OnInitialized() 
+    => Navigation.NavigateTo("/auth/login");
+
+}

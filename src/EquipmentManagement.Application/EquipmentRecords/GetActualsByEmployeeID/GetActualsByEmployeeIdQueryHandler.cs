@@ -21,7 +21,9 @@ public class GetActualsByEmployeeIdQueryHandler : IQueryHandler<GetActualsByEmpl
             .GroupBy(r => r.EquipmentId)            
             ;
         var records = groupedRecords
-            .Select(r => r.MaxBy(r => r.Modified))            
+            .Select(x => x
+            .OrderByDescending(y => y.Modified)
+            .FirstOrDefault())              
             ;
 
         return Task.FromResult(records?.AsEnumerable());

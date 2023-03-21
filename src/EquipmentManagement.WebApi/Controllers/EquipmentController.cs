@@ -12,7 +12,7 @@ namespace EquipmentManagement.WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
+//[Authorize]
 public class EquipmentController : ControllerBase
 {        
     private readonly ISender _sender;
@@ -32,7 +32,7 @@ public class EquipmentController : ControllerBase
     }
 
     [HttpPost("add")]
-    [Authorize(Roles = Roles.Admin)]
+    //[Authorize(Roles = Roles.Admin)]
     public async Task<IActionResult> AddEquipmentAsync(AddEquipmentRequest request, CancellationToken cancellationToken)
     {
         if(!ModelState.IsValid)

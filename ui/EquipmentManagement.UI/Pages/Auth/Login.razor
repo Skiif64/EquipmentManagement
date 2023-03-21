@@ -1,19 +1,20 @@
-﻿@page "/Login"
+﻿@page "/auth/Login"
 @using EquimentManagement.Contracts.Requests;
 @using EquipmentManagement.UI.Authentification;
 @using Microsoft.AspNetCore.Components.Authorization;
 @using System.Security.Claims;
 @inject HttpClient Client;
 @inject UserCredentialStorage UserStorage;
-<div class="d-flex p-2">
-    <div class="container d-inline-flex p-2">
+
+<div class="container p-2">
+    <div class="row">
         <div class="col-lg-3 col-md-2"></div>
         <div class="col-lg-6 col-md-8">
             <div class="align-content-center">
                 <h3>Login</h3>
                 <EditForm Model="@request" OnValidSubmit="@OnLoginSuccess">
-                    <DataAnnotationsValidator/>
-                    <ValidationSummary/>
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
                     <div class="mb-3">
                         <label class="form-label">Username</label>
                         <InputText @bind-Value="@request.Login" class="form-control"></InputText>
@@ -32,9 +33,11 @@
                 </EditForm>
             </div>
         </div>
+
         <div class="col-lg-3 col-md-2"></div>
     </div>
 </div>
+
 
 
 @code {
@@ -44,7 +47,7 @@
 
     protected override void OnInitialized()
     {
-        if(editContext is not null)
+        if (editContext is not null)
         {
             messageStorage = new(editContext);
             editContext.OnValidationRequested += (s, e) => messageStorage?.Clear();
@@ -54,9 +57,9 @@
 
     private void DisplayErrors(IDictionary<string, IEnumerable<string>> errors)
     {
-        if(editContext is not null)
+        if (editContext is not null)
         {
-            foreach(var error in errors)
+            foreach (var error in errors)
             {
                 messageStorage?.Add(editContext.Field(error.Key), error.Value);
             }
@@ -68,12 +71,12 @@
     private async Task OnLoginSuccess()
     {
         var response = await Client.PostAsJsonAsync("/api/auth/login", request);
-        if(!response.IsSuccessStatusCode)
+        if (!response.IsSuccessStatusCode)
         {
             DisplayErrors(new Dictionary<string, IEnumerable<string>>
-            {
-                ["Login"] = new[]{ "Invalid login or password"}
-            });
+                {
+                    ["Login"] = new[] { "Invalid login or password" }
+                });
         }
         var claims = new ClaimsIdentity(new[]
         {

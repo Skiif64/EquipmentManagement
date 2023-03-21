@@ -22,5 +22,6 @@ public class WebApiMappingProfile : Profile
 
         CreateMap<Employee, EmployeeResponse>();
         CreateMap<Equipment, EquipmentResponse>();
+        CreateMap<Status, StatusResponse>();
     }
 }

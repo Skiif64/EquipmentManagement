@@ -13,7 +13,7 @@ namespace EquipmentManagement.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class EmployeesController : ControllerBase   
     {
         private readonly ISender _sender;
@@ -26,7 +26,7 @@ namespace EquipmentManagement.WebApi.Controllers
             _logger = logger;
         }
         [HttpPost("add")]
-        [Authorize(Roles = Roles.Admin)]
+        //[Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult<Guid>> AddAsync(AddEmployeeRequest request, CancellationToken cancellationToken)
         {
             if(!ModelState.IsValid)

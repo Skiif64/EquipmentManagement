@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using EquimentManagement.Contracts.Requests;
+using EquimentManagement.Contracts.Responses;
 using EquipmentManagement.Application.Equipments.Add;
+using EquipmentManagement.Application.Equipments.Get;
 using EquipmentManagement.Application.Equipments.GetAll;
 using EquipmentManagement.Application.Equipments.GetByEmployeeId;
 using EquipmentManagement.Auth;
@@ -25,15 +27,23 @@ public class EquipmentController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllAsync(CancellationToken cancellationToken)
+    public async Task<ActionResult<IEnumerable<EquipmentResponse>>> GetAllAsync(CancellationToken cancellationToken)
     {
         var equipments = await _sender.Send(new GetAllEquipmentQuery(), cancellationToken);
-        return Ok(equipments);
+        var response = _mapper.Map<IEnumerable<EquipmentResponse>>(equipments);
+        return Ok(response);
+    }
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult<EquipmentResponse>> GetById(Guid id, CancellationToken cancellationToken)
+    {
+        var equipment = await _sender.Send(new GetEquipmentByIdQuery(id), cancellationToken);
+        var response = _mapper.Map<EquipmentResponse>(equipment);
+        return Ok(response);
     }
 
     [HttpPost("add")]
     //[Authorize(Roles = Roles.Admin)]
-    public async Task<IActionResult> AddEquipmentAsync(AddEquipmentRequest request, CancellationToken cancellationToken)
+    public async Task<ActionResult<Guid>> AddEquipmentAsync(AddEquipmentRequest request, CancellationToken cancellationToken)
     {
         if(!ModelState.IsValid)
             return BadRequest(ModelState);
@@ -44,10 +54,11 @@ public class EquipmentController : ControllerBase
     }
 
     [HttpGet("employee/{employeeId:guid}")]
-    public async Task<IActionResult> GetByEmployeeId(Guid employeeId, CancellationToken cancellationToken)
+    public async Task<ActionResult<IEnumerable<EquipmentResponse>>> GetByEmployeeId(Guid employeeId, CancellationToken cancellationToken)
     {
         var query = new GetEquipmentsByEmployeeIdQuery(employeeId);
         var equipments = await _sender.Send(query, cancellationToken);
-        return Ok(equipments);
+        var response = _mapper.Map<IEnumerable<EquipmentResponse>>(equipments);
+        return Ok(response);
     }
 }

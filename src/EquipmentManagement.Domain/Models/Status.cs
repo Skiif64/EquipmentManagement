@@ -6,8 +6,7 @@ public class Status : BaseModel
 {
 	public string Title { get; init; } = string.Empty;
 	public string Description { get; init; } = string.Empty;
-    public virtual IList<EquipmentRecord> Records { get; init; }
-
+    public virtual IList<Equipment> Equipments { get; init; }
     protected Status() : base()
     {
 

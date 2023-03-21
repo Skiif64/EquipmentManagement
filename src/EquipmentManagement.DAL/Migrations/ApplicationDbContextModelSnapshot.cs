@@ -57,9 +57,6 @@ namespace EquipmentManagement.DAL.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("EmployeeId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("SerialNumber")
                         .IsRequired()
                         .HasColumnType("text");
@@ -69,8 +66,6 @@ namespace EquipmentManagement.DAL.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("EmployeeId");
 
                     b.ToTable("Equipments");
                 });
@@ -90,16 +85,10 @@ namespace EquipmentManagement.DAL.Migrations
                     b.Property<DateTimeOffset>("Modified")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid?>("StatusId")
+                    b.Property<Guid>("StatusId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("EmployeeId");
-
-                    b.HasIndex("EquipmentId");
-
-                    b.HasIndex("StatusId");
 
                     b.ToTable("EquipmentRecords");
                 });
@@ -121,53 +110,6 @@ namespace EquipmentManagement.DAL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Statuses");
-                });
-
-            modelBuilder.Entity("EquipmentManagement.Domain.Models.Equipment", b =>
-                {
-                    b.HasOne("EquipmentManagement.Domain.Models.Employee", null)
-                        .WithMany("Equipments")
-                        .HasForeignKey("EmployeeId");
-                });
-
-            modelBuilder.Entity("EquipmentManagement.Domain.Models.EquipmentRecord", b =>
-                {
-                    b.HasOne("EquipmentManagement.Domain.Models.Employee", "Employee")
-                        .WithMany("Records")
-                        .HasForeignKey("EmployeeId");
-
-                    b.HasOne("EquipmentManagement.Domain.Models.Equipment", "Equipment")
-                        .WithMany("Records")
-                        .HasForeignKey("EquipmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EquipmentManagement.Domain.Models.Status", "Status")
-                        .WithMany("Records")
-                        .HasForeignKey("StatusId");
-
-                    b.Navigation("Employee");
-
-                    b.Navigation("Equipment");
-
-                    b.Navigation("Status");
-                });
-
-            modelBuilder.Entity("EquipmentManagement.Domain.Models.Employee", b =>
-                {
-                    b.Navigation("Equipments");
-
-                    b.Navigation("Records");
-                });
-
-            modelBuilder.Entity("EquipmentManagement.Domain.Models.Equipment", b =>
-                {
-                    b.Navigation("Records");
-                });
-
-            modelBuilder.Entity("EquipmentManagement.Domain.Models.Status", b =>
-                {
-                    b.Navigation("Records");
                 });
 #pragma warning restore 612, 618
         }

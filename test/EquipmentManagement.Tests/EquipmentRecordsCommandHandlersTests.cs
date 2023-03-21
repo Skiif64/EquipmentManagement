@@ -74,8 +74,8 @@ internal class EquipmentRecordsCommandHandlersTests
         Assert.That(actual.Count, Is.EqualTo(1));
         CollectionAssert.AllItemsAreNotNull(actual);
         Assert.That(actual.First().Modified, Is.EqualTo(newest));
-        Assert.That(actual.First().Employee.Id, Is.EqualTo(employeeId));
-        Assert.That(actual.First().Equipment.Id, Is.EqualTo(equipmentId));
+        Assert.That(actual.First().EmployeeId, Is.EqualTo(employeeId));
+        Assert.That(actual.First().EquipmentId, Is.EqualTo(equipmentId));
     }
 
     private void SetupSet<T>(Mock<IQueryable<T>> set, IQueryable<T> data)

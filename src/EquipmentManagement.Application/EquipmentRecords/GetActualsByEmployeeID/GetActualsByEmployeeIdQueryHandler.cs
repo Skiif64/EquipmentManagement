@@ -17,8 +17,8 @@ public class GetActualsByEmployeeIdQueryHandler : IQueryHandler<GetActualsByEmpl
     {
         var groupedRecords = _context
             .Set<EquipmentRecord>()
-            .Where(r => r.Employee.Id == request.EmployeeId)
-            .GroupBy(r => r.Equipment.Id)            
+            .Where(r => r.EmployeeId == request.EmployeeId)
+            .GroupBy(r => r.EquipmentId)            
             ;
         var records = groupedRecords
             .Select(x => x

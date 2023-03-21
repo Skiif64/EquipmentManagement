@@ -1,0 +1,70 @@
+﻿@page "/employee/"
+@inject HttpClient Client;
+@attribute [Authorize]
+@using EquimentManagement.Contracts.Responses;
+@using EquipmentManagement.UI.Pages.Modal
+
+<h3>Employee</h3>
+<div class="navbar-dark">
+    <NavLink class="btn btn-primary" href="/employee/add">Добавить соотрудника</NavLink>
+</div>
+<h4>@showRemoveEmployeeModal</h4>
+<Modal 
+    OnSubmitClick="DeleteSelectedEmployee"
+    Title="Удаление сотрудника"
+    Text=@($"Вы уверены что хотите удалить сотрудника {selectedEmployee?.Lastname}")
+    @ref="deleteModal"/>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <span class="text-center">ФИО</span>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (employees is not null)
+        {
+            @foreach (var employee in employees)
+            {
+                <tr>
+                    <td>
+                        <span>@employee.Lastname @employee.Firstname @employee.Patronymic</span>
+                    </td>
+                    <td>
+                        <button class="btn btn-danger" @onclick="() => ShowDeleteModal(employee)">Удалить</button>
+                        <button class="btn btn-secondary">Изменить</button>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+@code {
+    private IEnumerable<EmployeeResponse>? employees;
+    private bool showRemoveEmployeeModal = false;
+    private EmployeeResponse? selectedEmployee;
+    private Modal? deleteModal;
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadEmployeesAsync();
+    }
+
+    private async Task LoadEmployeesAsync()
+    {
+        employees = await Client.GetFromJsonAsync<IEnumerable<EmployeeResponse>>("/api/employees");
+    }
+
+    private void ShowDeleteModal(EmployeeResponse? employee)
+    {
+        showRemoveEmployeeModal = true;
+        selectedEmployee = employee;
+        deleteModal.Show = true;
+    }
+
+    private async Task DeleteSelectedEmployee()
+    {
+
+    }
+}

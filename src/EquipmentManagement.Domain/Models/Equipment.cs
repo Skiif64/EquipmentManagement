@@ -8,7 +8,6 @@ public class Equipment : BaseModel
 	public string Article { get; init; } = string.Empty;
     public string SerialNumber { get; init; } = string.Empty;
     public string? Description { get; init; }
-    public virtual Status? Status { get; init; }
 
     protected Equipment() : base()
     {

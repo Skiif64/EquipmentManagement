@@ -17,4 +17,9 @@
     <ProjectReference Include="..\EquipmentManagement.Domain\EquipmentManagement.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Statuses\GetAll\" />
+    <Folder Include="Statuses\Get\" />
+  </ItemGroup>
+
 </Project>

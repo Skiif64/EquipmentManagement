@@ -1,0 +1,81 @@
+﻿@page "/equipment/"
+@using EquimentManagement.Contracts.Responses;
+@inject HttpClient Client;
+
+@attribute [Authorize]
+<h3>Equipment</h3>
+<div class="navbar-dark">
+    <NavLink class="btn btn-primary" href="/equipment/add">Добавить оборудование</NavLink>
+</div>
+   @if (equipments is not null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    <span>Тип</span>
+                </th>
+                <th>
+                    <span>Артикул</span>
+                </th>
+                <th>
+                    <span>Серийный номер</span>
+                </th>
+                <th>
+                    <span>Описание</span>
+                </th>
+                <th>
+                    <span>Статус</span>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var equipment in equipments)
+            {
+                <tr>
+                    <td>
+                        <span>@equipment.Type</span>
+                    </td>
+                    <td>
+                        <span>@equipment.Article</span>
+                    </td>
+                    <td>
+                        <span>@equipment.SerialNumber</span>
+                    </td>
+                    <td>
+                        <textarea readonly="readonly">@equipment.Description</textarea>
+                    </td>
+                    <td>
+
+                    </td>
+                    <td>
+                        <button class="btn btn-danger">Удалить</button>
+                        <button class="btn btn-primary">Изменить статус</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="d-flex">
+        <div class="my-auto mx-auto">
+            <LoadingCircle />
+        </div>
+    </div>
+}
+@code {
+    private IEnumerable<EquipmentResponse>? equipments;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadEquipments();
+    }
+
+    private async Task LoadEquipments()
+    {
+        equipments = await Client.GetFromJsonAsync<IEnumerable<EquipmentResponse>>("/api/equipment/");
+    }
+}

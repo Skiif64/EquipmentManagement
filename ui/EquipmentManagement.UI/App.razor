@@ -1,10 +1,11 @@
-﻿@using Microsoft.AspNetCore.Components.Authorization
+﻿@using EquipmentManagement.UI.Pages.Auth
+@using Microsoft.AspNetCore.Components.Authorization
 <CascadingAuthenticationState>
     <Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
                 <NotAuthorized>
-                    <h1>Disallowed</h1>
+                    <RedirectToLogin />
                 </NotAuthorized>
             </AuthorizeRouteView>>
             <FocusOnNavigate RouteData="@routeData" Selector="h1" />

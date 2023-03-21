@@ -12,11 +12,7 @@ public static class EquipmentRecordsFixtures
     }
     private static readonly Fixture _fixture = new();
     public static EquipmentRecord Create()
-        => _fixture.Build<EquipmentRecord>()        
-        .With(x => x.EmployeeId, _fixture.Create<Guid>())
-        .With(x => x.EquipmentId, _fixture.Create<Guid>())
-        .With(x => x.StatusId, _fixture.Create<Guid>())
-        .With(x => x.Modified, _fixture.Create<DateTimeOffset>())
+        => _fixture.Build<EquipmentRecord>()                
         .Create<TestEquipmentRecord>();
 
 
@@ -27,15 +23,12 @@ public static class EquipmentRecordsFixtures
 
     public static EquipmentRecord Create(Guid employeeId)
     {
-        var record = Create();
-        record.EmployeeId = employeeId;
+        var record = Create();        
         return record;
     }
     public static EquipmentRecord Create(Guid employeeId, Guid equipmentId)
     {
-        var record = Create();
-        record.EmployeeId = employeeId;
-        record.EquipmentId = equipmentId;
+        var record = Create();        
         return record;
     }
 

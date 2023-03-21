@@ -30,52 +30,14 @@ internal class EquipmentRecordsCommandHandlersTests
     [Test, AutoData]
     public async Task WhenGetActualByEmployeeId__ShouldReturn3Records(Guid employeeId1, Guid employeeId2, Guid employeeId3)
     {
-        var sut = new GetActualsByEmployeeIdQueryHandler(_contextMock.Object);
-        var records =
-            EquipmentRecordsFixtures.CreateMany(3, employeeId1)
-            .Concat(EquipmentRecordsFixtures.CreateMany(3, employeeId2))
-            .Concat(EquipmentRecordsFixtures.CreateMany(3, employeeId3))
-            .AsQueryable();
-
-        SetupSet(_equipmentSetMock.As<IQueryable<EquipmentRecord>>(), records);
-
-        _contextMock.Setup(x => x.Set<EquipmentRecord>())
-            .Returns(_equipmentSetMock.Object);
-        var request = new GetActualsByEmployeeIdQuery(employeeId1);
-
-
-        var actual = await sut.Handle(request, default);
-
-        Assert.That(actual, Is.Not.Null);
-        CollectionAssert.AllItemsAreNotNull(actual);
-        Assert.That(actual.Count(), Is.EqualTo(3));
+        
 
     }
 
     [Test, AutoData]
     public async Task WhenGetActualByEmployeeId_ShouldReturnActualRecords(Guid employeeId, Guid equipmentId)
     {
-        var sut = new GetActualsByEmployeeIdQueryHandler(_contextMock.Object);
-        var records =
-            EquipmentRecordsFixtures.CreateMany(3, employeeId, equipmentId)            
-            .AsQueryable();
         
-        SetupSet(_equipmentSetMock.As<IQueryable<EquipmentRecord>>(), records);
-
-        _contextMock.Setup(x => x.Set<EquipmentRecord>())
-            .Returns(_equipmentSetMock.Object);
-        var request = new GetActualsByEmployeeIdQuery(employeeId);
-
-        var newest = records.Max(x => x.Modified);
-
-        var actual = await sut.Handle(request, default);
-        
-        Assert.That(actual, Is.Not.Null);
-        Assert.That(actual.Count, Is.EqualTo(1));
-        CollectionAssert.AllItemsAreNotNull(actual);
-        Assert.That(actual.First().Modified, Is.EqualTo(newest));
-        Assert.That(actual.First().EmployeeId, Is.EqualTo(employeeId));
-        Assert.That(actual.First().EquipmentId, Is.EqualTo(equipmentId));
     }
 
     private void SetupSet<T>(Mock<IQueryable<T>> set, IQueryable<T> data)

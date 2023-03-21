@@ -1,6 +1,9 @@
 ﻿using EquipmentManagement.Application.Abstractions;
+using EquipmentManagement.Application.Exceptions;
 using EquipmentManagement.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.CodeAnalysis;
+using System.Security.Cryptography.X509Certificates;
 
 namespace EquipmentManagement.Application.EquipmentRecords.GetActualsByEmployeeID;
 
@@ -15,16 +18,17 @@ public class GetActualsByEmployeeIdQueryHandler : IQueryHandler<GetActualsByEmpl
 
     public Task<IEnumerable<EquipmentRecord>?> Handle(GetActualsByEmployeeIdQuery request, CancellationToken cancellationToken)
     {
-        var groupedRecords = _context
-            .Set<EquipmentRecord>()
-            .Where(r => r.EmployeeId == request.EmployeeId)
-            .GroupBy(r => r.EquipmentId)            
+        var grouppedRecords = _context.Set<EquipmentRecord>()
+            .Include(x => x.Employee)
+            .Include(x => x.Equipment)
+            .Include(x => x.Status)
+            .GroupBy(x => x.Equipment.Id)
             ;
-        var records = groupedRecords
-            .Select(x => x
-            .OrderByDescending(y => y.Modified)
-            .FirstOrDefault())              
-            ;
+
+        var records = grouppedRecords
+            .Select(x => x.MaxBy(t => t.Modified));
+        if (!records.Any())
+            throw new NotFoundException("EquipmentRecord");
 
         return Task.FromResult(records?.AsEnumerable());
     }

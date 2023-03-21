@@ -1,5 +1,6 @@
 ﻿using EquipmentManagement.Application.Abstractions;
 using EquipmentManagement.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace EquipmentManagement.Application.Employees.GetAll;
 
@@ -14,7 +15,9 @@ public class GetAllEmployeeQueryHandler : IQueryHandler<GetAllEmployeeQuery, IEn
 
     public Task<IEnumerable<Employee>?> Handle(GetAllEmployeeQuery request, CancellationToken cancellationToken)
     {
-        var set = _context.Set<Employee>();
+        var set = _context
+            .Set<Employee>()            
+            ;
         return Task.FromResult(set?.AsEnumerable());
     }
 }

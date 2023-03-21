@@ -19,5 +19,6 @@ public class WebApiMappingProfile : Profile
         CreateMap<UpdateEquipmentRecordRequest, UpdateEquipmentRecordCommand>();
 
         CreateMap<Employee, EmployeeResponse>();
+        CreateMap<Equipment, EquipmentResponse>();
     }
 }

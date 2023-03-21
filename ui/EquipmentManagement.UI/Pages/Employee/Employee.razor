@@ -1,30 +1,31 @@
 ﻿@page "/employee/"
 @inject HttpClient Client;
+@inject NavigationManager Manager;
 @attribute [Authorize]
 @using EquimentManagement.Contracts.Responses;
-@using EquipmentManagement.UI.Pages.Modal
+@using EquipmentManagement.UI.Shared.Modal;
 
 <h3>Employee</h3>
 <div class="navbar-dark">
     <NavLink class="btn btn-primary" href="/employee/add">Добавить соотрудника</NavLink>
 </div>
-<h4>@showRemoveEmployeeModal</h4>
-<Modal 
-    OnSubmitClick="DeleteSelectedEmployee"
-    Title="Удаление сотрудника"
-    Text=@($"Вы уверены что хотите удалить сотрудника {selectedEmployee?.Lastname}")
-    @ref="deleteModal"/>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                <span class="text-center">ФИО</span>
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (employees is not null)
-        {
+<Modal OnSubmitClick="DeleteSelectedEmployee"
+       OnCancelClick="HideDeleteModal"
+       Title="Удаление сотрудника"
+       Text=@($"Вы уверены что хотите удалить сотрудника {selectedEmployee?.Lastname}")
+       @ref="deleteModal" />
+    @if (employees is not null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    <span class="text-center">ФИО</span>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+
             @foreach (var employee in employees)
             {
                 <tr>
@@ -34,18 +35,25 @@
                     <td>
                         <button class="btn btn-danger" @onclick="() => ShowDeleteModal(employee)">Удалить</button>
                         <button class="btn btn-secondary">Изменить</button>
+                        <button class="btn btn-secondary">Оборудование</button>
                     </td>
                 </tr>
             }
-        }
-    </tbody>
-</table>
-
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="d-flex">
+        <div class="my-auto mx-auto">
+            <LoadingCircle />
+        </div>
+    </div>
+}
 @code {
     private IEnumerable<EmployeeResponse>? employees;
-    private bool showRemoveEmployeeModal = false;
     private EmployeeResponse? selectedEmployee;
-    private Modal? deleteModal;
+    private Modal deleteModal = null!;
     protected override async Task OnInitializedAsync()
     {
         await LoadEmployeesAsync();
@@ -58,9 +66,14 @@
 
     private void ShowDeleteModal(EmployeeResponse? employee)
     {
-        showRemoveEmployeeModal = true;
         selectedEmployee = employee;
-        deleteModal.Show = true;
+        deleteModal.Show();
+    }
+
+    private void HideDeleteModal()
+    {
+        deleteModal.Hide();
+        selectedEmployee = null;
     }
 
     private async Task DeleteSelectedEmployee()

@@ -1,7 +1,7 @@
 ﻿@page "/equipment/add/"
 @using EquimentManagement.Contracts.Requests;
 @inject HttpClient Client;
-@inject NavigationManager Manager;
+@inject NavigationManager Navigation;
 @attribute [Authorize]
 <h3>Add</h3>
 
@@ -40,6 +40,10 @@
 
     private async Task OnValidSubmitAsync()
     {
-        
+        var response = await Client.PostAsJsonAsync("/api/equipment/add/", request);
+        if(response.IsSuccessStatusCode)
+        {
+            Navigation.NavigateTo("/equipment/");
+        }
     }
 }

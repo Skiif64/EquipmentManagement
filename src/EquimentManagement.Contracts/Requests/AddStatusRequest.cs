@@ -2,7 +2,7 @@
 
 namespace EquimentManagement.Contracts.Requests;
 
-internal class AddStatusRequest
+public class AddStatusRequest
 {
     [Required]
     public string Title { get; set; } = string.Empty;

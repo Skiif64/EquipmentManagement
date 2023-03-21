@@ -4,9 +4,9 @@ namespace EquipmentManagement.Domain.Models;
 
 public class EquipmentRecord : BaseModel
 {
-	public Guid? EmployeeId { get; set; }
-	public Guid EquipmentId { get; set; }
-	public Guid StatusId { get; set; }
+	public virtual Employee? Employee { get; set; }
+	public virtual Equipment Equipment { get; set; } = null!;
+	public virtual Status Status { get; set; } = null!;
 	public DateTimeOffset Modified { get; set; }    
 
     protected EquipmentRecord() : base()

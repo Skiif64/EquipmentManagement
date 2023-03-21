@@ -23,9 +23,20 @@ public class UpdateEquipmentRecordCommandHandler : ICommandHandler<UpdateEquipme
             ?? throw new NotFoundException("EquipmentRecord")
             ;
 
-        record.EmployeeId = request.EmployeeId;
+        var employee = await _context
+            .Set<Employee>()
+            .SingleOrDefaultAsync(e => e.Id == request.EmployeeId, cancellationToken)
+            ?? throw new NotFoundException("Employee");
+        
+        record.Employee = employee;
         if (request.StatusId is not null)
-            record.StatusId = (Guid)request.StatusId;
+        {
+            var status = await _context
+            .Set<Status>()
+            .SingleOrDefaultAsync(s => s.Id == request.StatusId, cancellationToken)
+            ?? throw new NotFoundException("Status");
+            record.Status = status;
+        }
         record.Modified= request.Modified;
         _context.Set<EquipmentRecord>().Update(record);
         await _context.SaveChangesAsync(cancellationToken);

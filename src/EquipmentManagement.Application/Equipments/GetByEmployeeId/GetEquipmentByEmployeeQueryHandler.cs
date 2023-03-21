@@ -15,8 +15,8 @@ public class GetEquipmentByEmployeeQueryHandler : IQueryHandler<GetEquipmentsByE
     {
         var recordsIds = _context
             .Set<EquipmentRecord>()
-            .Where(r => r.EmployeeId == request.EmployeeId)
-            .Select(r => r.EquipmentId)
+            .Where(r => r.Employee.Id == request.EmployeeId)
+            .Select(r => r.Equipment.Id)
             ;
         var equipments = _context
             .Set<Equipment>()

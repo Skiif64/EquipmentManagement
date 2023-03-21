@@ -32,7 +32,7 @@ public class StatusController : ControllerBase
     {
         var status = await _sender.Send(new GetStatusByIdQuery(id), cancellationToken);
         var response = _mapper.Map<StatusResponse>(status);
-        return Ok();
+        return Ok(response);
     }
     [HttpPost("add")]
     public async Task<ActionResult<Guid>> AddAsync(AddStatusRequest request, CancellationToken cancellationToken)

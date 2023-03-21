@@ -7,4 +7,6 @@ public class EquipmentResponse
     public string Article { get; init; } = string.Empty;
     public string SerialNumber { get; init; } = string.Empty;
     public string? Description { get; init; }
+    public Guid? StatusId { get; set; }
+    public string? StatusTitle { get; set; }
 }

@@ -7,10 +7,10 @@ namespace EquipmentManagement.Auth;
 
 public class JwtAuthentificationService
 {
-    private readonly UserStoreDbContext _userStoreDbContext;
+    private readonly UsersDbContext _userStoreDbContext;
     private readonly IJwtTokenProvider _tokenProvider;
 
-    public JwtAuthentificationService(UserStoreDbContext userStoreDbContext, IJwtTokenProvider tokenProvider)
+    public JwtAuthentificationService(UsersDbContext userStoreDbContext, IJwtTokenProvider tokenProvider)
     {
         _userStoreDbContext = userStoreDbContext;
         _tokenProvider = tokenProvider;

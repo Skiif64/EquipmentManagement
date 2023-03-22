@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace EquipmentManagement.Auth.Migrations
 {
-    [DbContext(typeof(UserStoreDbContext))]
+    [DbContext(typeof(UsersDbContext))]
     partial class UserStoreDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

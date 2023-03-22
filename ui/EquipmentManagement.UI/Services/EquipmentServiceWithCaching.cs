@@ -17,14 +17,15 @@ public class EquipmentServiceWithCaching : IEquipmentService
         _client = client;
     }
 
-    public async Task<IEnumerable<EquipmentResponse>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<EquipmentResponse>?> GetAllAsync(CancellationToken cancellationToken = default)
     {        
-        var equipments = await _client.GetFromJsonAsync<IEnumerable<EquipmentResponse>>("/api/equipment/");
+        var equipments = await _client.GetFromJsonAsync<IEnumerable<EquipmentResponse>>("/api/equipment/", cancellationToken);
         return equipments;
     }
 
-    public Task<EquipmentResponse> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<EquipmentResponse?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var equipment = await _client.GetFromJsonAsync<EquipmentResponse>($"/api/equipment/{id}", cancellationToken);
+        return equipment;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using EquipmentManagement.Application.Abstractions;
+using EquipmentManagement.DAL.EntityConfiguration;
 using EquipmentManagement.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +17,11 @@ internal class ApplicationDbContext : DbContext, IApplicationDbContext
         Database.Migrate();        
     }
 
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+        modelBuilder.ApplyConfiguration(new EquipmentTypeConfiguration());
+    }
     DbSet<TEntity> IApplicationDbContext.Set<TEntity>()
         => Set<TEntity>();
     

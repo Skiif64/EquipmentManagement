@@ -17,4 +17,8 @@
     <ProjectReference Include="..\..\src\EquimentManagement.Contracts\EquimentManagement.Contracts.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Pages\EquipmentRecord\" />
+  </ItemGroup>
+
 </Project>

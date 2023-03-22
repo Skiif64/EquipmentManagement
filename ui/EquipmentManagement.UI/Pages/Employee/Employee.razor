@@ -38,10 +38,16 @@
                     </td>
                     <td>
                         <button class="btn btn-danger"
-                        @onclick="() => ShowDeleteModal(employee)">Удалить</button>
+                        @onclick="() => ShowDeleteModal(employee)">
+                            Удалить
+                        </button>
+                        <button class="btn btn-secondary">
+                            Изменить
+                        </button>
                         <button class="btn btn-secondary"
-                        @onclick="() => NavigateToEmployeeEquipment(employee.Id)">Изменить</button>
-                        <button class="btn btn-secondary">Оборудование</button>
+                        @onclick="() => NavigateToEmployeeEquipment(employee.Id)">
+                            Оборудование
+                        </button>
                     </td>
                 </tr>
             }
@@ -92,13 +98,12 @@ else
     {
         if (selectedEmployee is null)
             return;
+        employees?.Remove(selectedEmployee);
+        var employeeId = selectedEmployee.Id;
+        HideDeleteModal();
 
-        var response = await Client.DeleteAsync($"/api/employees/{selectedEmployee.Id}");
-        if (response.IsSuccessStatusCode)
-        {
-            employees?.Remove(selectedEmployee);
-            HideDeleteModal();
-        }
+        var response = await Client.DeleteAsync($"/api/employees/{employeeId}");
+
     }
 
     public void NavigateToEmployeeEquipment(Guid employeeId)

@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EquipmentManagement.Auth;
 
-public class UserStoreDbContext : DbContext
+public class UsersDbContext : DbContext
 {
 	public DbSet<ApplicationUser> Users { get; set; } = null!;
-    public UserStoreDbContext(DbContextOptions options) : base(options)
+    public UsersDbContext(DbContextOptions options) : base(options)
 	{
 		
 	}

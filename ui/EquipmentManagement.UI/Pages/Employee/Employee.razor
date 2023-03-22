@@ -1,6 +1,6 @@
 ﻿@page "/employee/"
 @inject HttpClient Client;
-@inject NavigationManager Manager;
+@inject NavigationManager Navigation;
 @attribute [Authorize]
 @using EquimentManagement.Contracts.Responses;
 @using EquipmentManagement.UI.Shared.Modal;
@@ -37,8 +37,10 @@
                         <span>@employee.Lastname @employee.Firstname @employee.Patronymic</span>
                     </td>
                     <td>
-                        <button class="btn btn-danger" @onclick="() => ShowDeleteModal(employee)">Удалить</button>
-                        <button class="btn btn-secondary">Изменить</button>
+                        <button class="btn btn-danger"
+                        @onclick="() => ShowDeleteModal(employee)">Удалить</button>
+                        <button class="btn btn-secondary"
+                        @onclick="() => NavigateToEmployeeEquipment(employee.Id)">Изменить</button>
                         <button class="btn btn-secondary">Оборудование</button>
                     </td>
                 </tr>
@@ -97,5 +99,10 @@ else
             employees?.Remove(selectedEmployee);
             HideDeleteModal();
         }
+    }
+
+    public void NavigateToEmployeeEquipment(Guid employeeId)
+    {
+        Navigation.NavigateTo($"/equipment/employee/{employeeId}");
     }
 }

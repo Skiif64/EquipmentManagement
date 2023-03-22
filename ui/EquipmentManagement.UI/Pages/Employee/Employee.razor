@@ -4,6 +4,7 @@
 @attribute [Authorize]
 @using EquimentManagement.Contracts.Responses;
 @using EquipmentManagement.UI.Shared.Modal;
+@using System.Collections.ObjectModel;
 
 <h3>Employee</h3>
 <div class="navbar-dark">
@@ -54,7 +55,7 @@ else
     </div>
 }
 @code {
-    private IEnumerable<EmployeeResponse>? employees;
+    private ObservableCollection<EmployeeResponse>? employees;
     private EmployeeResponse? selectedEmployee;
     private Modal deleteModal = null!;
     protected override async Task OnInitializedAsync()
@@ -64,7 +65,13 @@ else
 
     private async Task LoadEmployeesAsync()
     {
-        employees = await Client.GetFromJsonAsync<IEnumerable<EmployeeResponse>>("/api/employees");
+        var response = await Client.GetFromJsonAsync<IEnumerable<EmployeeResponse>>("/api/employees");
+        if (response is not null)
+        {
+            employees = new ObservableCollection<EmployeeResponse>(response);
+            employees.CollectionChanged += (sender, e) => StateHasChanged();
+
+        }
     }
 
     private void ShowDeleteModal(EmployeeResponse? employee)
@@ -81,6 +88,14 @@ else
 
     private async Task DeleteSelectedEmployee()
     {
+        if (selectedEmployee is null)
+            return;
 
+        var response = await Client.DeleteAsync($"/api/employees/{selectedEmployee.Id}");
+        if (response.IsSuccessStatusCode)
+        {
+            employees?.Remove(selectedEmployee);
+            HideDeleteModal();
+        }
     }
 }

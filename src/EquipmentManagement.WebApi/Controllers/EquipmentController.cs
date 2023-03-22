@@ -4,6 +4,7 @@ using EquimentManagement.Contracts.Responses;
 using EquipmentManagement.Application.Equipments.Add;
 using EquipmentManagement.Application.Equipments.Get;
 using EquipmentManagement.Application.Equipments.GetAll;
+using EquipmentManagement.Application.Equipments.GetAllWithStatus;
 using EquipmentManagement.Application.Equipments.GetByEmployeeId;
 using EquipmentManagement.Auth;
 using MediatR;
@@ -27,10 +28,10 @@ public class EquipmentController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<EquipmentResponse>>> GetAllAsync(CancellationToken cancellationToken)
+    public async Task<ActionResult<IEnumerable<EquipmentWithStatusResponse>>> GetAllAsync(CancellationToken cancellationToken)
     {
-        var equipments = await _sender.Send(new GetAllEquipmentQuery(), cancellationToken);
-        var response = _mapper.Map<IEnumerable<EquipmentResponse>>(equipments);
+        var equipments = await _sender.Send(new GetAllEquipmentWithStatusQuery(), cancellationToken);
+        var response = _mapper.Map<IEnumerable<EquipmentWithStatusResponse>>(equipments);
         return Ok(response);
     }
     [HttpGet("{id:guid}")]

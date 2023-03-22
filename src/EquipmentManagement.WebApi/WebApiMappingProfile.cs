@@ -5,6 +5,7 @@ using EquipmentManagement.Application.Employees.Add;
 using EquipmentManagement.Application.EquipmentRecords.Add;
 using EquipmentManagement.Application.EquipmentRecords.Update;
 using EquipmentManagement.Application.Equipments.Add;
+using EquipmentManagement.Application.Models;
 using EquipmentManagement.Application.Statuses.Add;
 using EquipmentManagement.Domain.Models;
 
@@ -23,7 +24,10 @@ public class WebApiMappingProfile : Profile
         CreateMap<Employee, EmployeeResponse>();
         CreateMap<Equipment, EquipmentResponse>()
             .ForMember(dest => dest.LastRecordId,
-            opt => opt.MapFrom(src => src.LastRecord));           
+            opt => opt.MapFrom(src => src.LastRecord));
+        CreateMap<EquipmentWithStatus, EquipmentWithStatusResponse>()
+            .ForMember(dest => dest.LastRecordId,
+            opt => opt.MapFrom(src => src.LastRecord));            
         CreateMap<Status, StatusResponse>();
     }
 }

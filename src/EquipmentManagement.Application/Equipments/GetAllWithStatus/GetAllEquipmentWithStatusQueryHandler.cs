@@ -2,6 +2,7 @@
 using EquipmentManagement.Application.Abstractions;
 using EquipmentManagement.Application.Models;
 using EquipmentManagement.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace EquipmentManagement.Application.Equipments.GetAllWithStatus;
 
@@ -20,7 +21,11 @@ public class GetAllEquipmentWithStatusQueryHandler
     public Task<IEnumerable<EquipmentWithStatus>?> Handle(GetAllEquipmentWithStatusQuery request, CancellationToken cancellationToken)
     {
         var entities = _context
-            .Set<Equipment>();
+            .Set<Equipment>()
+            .Include(x => x.Records)            
+            .ThenInclude(x => x.Status)
+            .Include(x => x.Records)
+            .ThenInclude(x => x.Employee);
         var statuses = _mapper.Map<IEnumerable<EquipmentWithStatus>>(entities);
         return Task.FromResult(statuses);
     }

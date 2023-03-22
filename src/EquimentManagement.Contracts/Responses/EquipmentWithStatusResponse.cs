@@ -2,9 +2,10 @@
 
 public class EquipmentWithStatusResponse : EquipmentResponse
 {
-    public Guid? AssignedTo { get; set; }
+    public Guid? EmployeeId { get; set; }
+    public string? EmployeeFullname { get; set; }
     public Guid? StatusId { get; set; }
-    public string? StatusTitle { get; set; }
+    public string? StatusTitle { get; set; }    
     public EquipmentWithStatusResponse() : base()
     {
         

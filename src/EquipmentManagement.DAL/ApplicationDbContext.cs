@@ -28,6 +28,7 @@ internal class ApplicationDbContext : DbContext, IApplicationDbContext, IMigrati
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfiguration(new EquipmentTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new EmployeeTypeConfiguration());
     }    
     
     DbSet<TEntity> IApplicationDbContext.Set<TEntity>()

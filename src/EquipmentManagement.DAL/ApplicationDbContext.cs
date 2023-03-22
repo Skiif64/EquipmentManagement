@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EquipmentManagement.DAL;
 
-internal class ApplicationDbContext : DbContext, IApplicationDbContext
+internal class ApplicationDbContext : DbContext, IApplicationDbContext, IMigrationableDatabase
 {
     public DbSet<Employee> Employees { get; set; } = null!;
     public DbSet<Equipment> Equipments { get; set; } = null!;
@@ -17,12 +17,21 @@ internal class ApplicationDbContext : DbContext, IApplicationDbContext
         
     }
 
+    public void Migrate()
+        => Database.Migrate();
+
+
+    public async Task MigrateAsync(CancellationToken cancellationToken)
+        => await Database.MigrateAsync(cancellationToken);
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfiguration(new EquipmentTypeConfiguration());
-    }
+    }    
+    
     DbSet<TEntity> IApplicationDbContext.Set<TEntity>()
         => Set<TEntity>();
+
     
 }

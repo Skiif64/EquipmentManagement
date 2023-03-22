@@ -11,7 +11,9 @@ public static class DependencyInjection
     {
         var connectionString = configuration.GetConnectionString("Data");        
        
-        services.AddDbContext<IApplicationDbContext, ApplicationDbContext>(opt => opt.UseNpgsql(connectionString));
+        services.AddDbContext<IApplicationDbContext, ApplicationDbContext>(opt => opt
+        .UseNpgsql(connectionString, cfg => cfg
+        .MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
         
         return services;
     }

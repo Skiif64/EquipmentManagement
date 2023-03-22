@@ -23,10 +23,10 @@ public class EquipmentServiceWithCaching : IEquipmentService
         await _client.PostAsJsonAsync("/api/equipment/add/", request, cancellationToken);
     }
 
-    public async Task<IEnumerable<EquipmentResponse>?> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<EquipmentWithStatusResponse>?> GetAllAsync(CancellationToken cancellationToken = default)
     {
         
-        var equipments = await _client.GetFromJsonAsync<IEnumerable<EquipmentResponse>>("/api/equipment/", cancellationToken);
+        var equipments = await _client.GetFromJsonAsync<IEnumerable<EquipmentWithStatusResponse>>("/api/equipment/", cancellationToken);
         
         return equipments;
     }

@@ -17,6 +17,16 @@ public class AddEquipmentRecordCommandHandler : ICommandHandler<AddEquipmentReco
     public async Task<Guid> Handle(AddEquipmentRecordCommand request, CancellationToken cancellationToken)
     {
         var record = _mapper.Map<EquipmentRecord>(request);
+        if (request.EmployeeId is not null)
+        {
+            var employee = await _context.Set<Employee>().FindAsync(request.EmployeeId, cancellationToken);
+
+            record.Employee = employee;
+        }
+        var equipment = await _context.Set<Equipment>().FindAsync(request.EquipmentId, cancellationToken);
+        record.Equipment = equipment;
+        var status = await _context.Set<Status>().FindAsync(request.StatusId, cancellationToken);
+        record.Status = status;
         await _context.Set<EquipmentRecord>().AddAsync(record, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
         return record.Id;

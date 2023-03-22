@@ -10,7 +10,7 @@
 <div class="navbar-dark">
     <NavLink class="btn btn-primary" href="/equipment/add">Добавить оборудование</NavLink>
 </div>
-   @if (equipments is not null && records is not null)
+   @if (equipments is not null)
 {
     <table class="table">
         <thead>
@@ -53,7 +53,7 @@
                         <textarea draggable="false" readonly="readonly">@equipment.Description</textarea>
                     </td>
                     <td>
-                        <span>@GetStatusByRecordId(equipment.LastRecordId)</span>
+                        <span>@equipment.StatusTitle</span>
                     </td>
                     <td>
                         <button class="btn btn-danger">Удалить</button>
@@ -73,9 +73,7 @@ else
     </div>
 }
 @code {
-    private IEnumerable<EquipmentResponse>? equipments;
-    private IEnumerable<EquipmentRecordResponse>? records;
-    private IEnumerable<StatusResponse>? statuses;
+    private IEnumerable<EquipmentWithStatusResponse>? equipments;    
 
     protected override async Task OnInitializedAsync()
     {
@@ -85,29 +83,11 @@ else
     private async Task LoadEquipments()
     {
         equipments = await EquipmentService.GetAllAsync();
-        records = await Client.GetFromJsonAsync<IEnumerable<EquipmentRecordResponse>>("/api/equipmentrecords/");
-        statuses = await StatusService.GetAll();
+        
     }
 
     private void EditEquipmentStatus()
     {
         Navigation.NavigateTo($"/record/edit");
-    }
-
-    private StatusResponse? GetStatusByRecordId(Guid? recordId)
-    {
-        if (recordId is null)
-            return null;
-        var record = GetRecordById((Guid)recordId);
-        if (record is null)
-            return null;
-
-        return statuses?.SingleOrDefault(x => x.Id == record.StatusId);
-
-    }
-
-    private EquipmentRecordResponse? GetRecordById(Guid recordId)
-    {
-        return records?.SingleOrDefault(x => x.Id == recordId);
-    }
+    }   
 }

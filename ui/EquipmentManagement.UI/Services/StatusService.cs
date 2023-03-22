@@ -28,5 +28,6 @@ public class StatusService : IStatusService
     public async Task<StatusResponse?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var status = await _client.GetFromJsonAsync<StatusResponse?>($"api/status/{id}");
+        return status;
     }
 }

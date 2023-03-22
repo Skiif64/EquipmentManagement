@@ -21,7 +21,11 @@ public class WebApiMappingProfile : Profile
         CreateMap<UpdateEquipmentRecordRequest, UpdateEquipmentRecordCommand>();
 
         CreateMap<Employee, EmployeeResponse>();
-        CreateMap<Equipment, EquipmentResponse>();
+        CreateMap<Equipment, EquipmentResponse>()
+            .ForMember(dest => dest.StatusId,
+            opt => opt.MapFrom(src => src.LastRecord.Status.Id))
+            .ForMember(dest => dest.StatusId,
+            opt => opt.MapFrom(src => src.LastRecord.Status.Title));
         CreateMap<Status, StatusResponse>();
     }
 }

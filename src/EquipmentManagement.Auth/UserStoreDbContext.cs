@@ -10,7 +10,7 @@ public class UserStoreDbContext : DbContext
 	public DbSet<ApplicationUser> Users { get; set; } = null!;
     public UserStoreDbContext(DbContextOptions options) : base(options)
 	{
-		Database.Migrate();
+		
 	}
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

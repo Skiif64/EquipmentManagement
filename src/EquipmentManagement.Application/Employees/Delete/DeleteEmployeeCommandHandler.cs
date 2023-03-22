@@ -24,7 +24,7 @@ public class DeleteEmployeeCommandHandler : ICommandHandler<DeleteEmployeeComman
         _context
             .Set<Employee>()
             .Remove(employee);
-
+        await _context.SaveChangesAsync(cancellationToken);
         return employee.Id;
     }
 }

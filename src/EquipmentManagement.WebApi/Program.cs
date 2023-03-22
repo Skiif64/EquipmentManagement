@@ -1,4 +1,5 @@
 using EquipmentManagement.Application;
+using EquipmentManagement.Application.Abstractions;
 using EquipmentManagement.Auth;
 using EquipmentManagement.DAL;
 using EquipmentManagement.WebApi;
@@ -22,6 +23,12 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddCors(opt => opt.AddPolicy("CorsPolicy", policy => policy.AllowAnyOrigin()));
 
 var app = builder.Build();
+
+await using(var scope = app.Services.CreateAsyncScope())
+{
+    var migrator = scope.ServiceProvider.GetRequiredService<IDatabaseMigrator>();
+    await migrator.InvokeAsync(default);
+}
 
 if (app.Environment.IsDevelopment())
 {

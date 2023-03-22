@@ -10,7 +10,8 @@ public static class DependencyInjection
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         var assembly = typeof(ICommand).Assembly;
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));        
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));
+        services.AddTransient<IDatabaseMigrator, DatabaseMigrator>();
         return services;
     }
 }

@@ -18,17 +18,19 @@ public class GetActualsByEmployeeIdQueryHandler : IQueryHandler<GetActualsByEmpl
 
     public Task<IEnumerable<EquipmentRecord>?> Handle(GetActualsByEmployeeIdQuery request, CancellationToken cancellationToken)
     {
-        var grouppedRecords = _context.Set<EquipmentRecord>()
+        var equipments = _context
+            .Set<EquipmentRecord>()
             .Include(x => x.Employee)
             .Include(x => x.Equipment)
-            .Include(x => x.Status)
-            .GroupBy(x => x.Equipment.Id)
-            ;
-
-        var records = grouppedRecords
-            .Select(x => x.MaxBy(t => t.Modified));
-        if (!records.Any())
-            throw new NotFoundException("EquipmentRecord");
+            .Where(x => x.Employee.Id == request.EmployeeId)
+            .Select(x => x.Equipment)
+            .AsEnumerable()
+            .DistinctBy(x => x.Id);
+        var records = new List<EquipmentRecord?>();
+        foreach(var equipment in equipments)
+        {
+            records.Add(equipment.LastRecord);
+        }
 
         return Task.FromResult(records?.AsEnumerable());
     }

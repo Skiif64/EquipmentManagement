@@ -1,8 +1,9 @@
 ﻿@page "/employee/"
-@inject HttpClient Client;
+@inject IEmployeeService EmployeeService;
 @inject NavigationManager Navigation;
 @attribute [Authorize]
 @using EquimentManagement.Contracts.Responses;
+@using EquipmentManagement.UI.Abstractions;
 @using EquipmentManagement.UI.Shared.Modal;
 @using System.Collections.ObjectModel;
 
@@ -78,7 +79,7 @@ else
 
     private async Task LoadEmployeesAsync()
     {
-        var response = await Client.GetFromJsonAsync<IEnumerable<EmployeeResponse>>("/api/employees");
+        var response = await EmployeeService.GetAllAsync();
         if (response is not null)
         {
             employees = new ObservableCollection<EmployeeResponse>(response);
@@ -107,7 +108,7 @@ else
         var employeeId = selectedEmployee.Id;
         HideDeleteModal();
 
-        var response = await Client.DeleteAsync($"/api/employees/{employeeId}");
+        await EmployeeService.DeleteAsync(employeeId);
 
     }
 

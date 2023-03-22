@@ -1,6 +1,7 @@
 ﻿@page "/employee/add/"
 @using EquimentManagement.Contracts.Requests;
-@inject HttpClient Client;
+@using EquipmentManagement.UI.Abstractions;
+@inject IEmployeeService EmployeeService;
 @inject NavigationManager Navigation;
 @attribute [Authorize]
 
@@ -37,10 +38,8 @@
 
     private async Task OnValidSubmitAsync()
     {
-        var response = await Client.PostAsJsonAsync("/api/employees/add/", request);
-        if (response.IsSuccessStatusCode)
-        {
-            Navigation.NavigateTo("/employee/");
-        }
+        await EmployeeService.AddAsync(request);
+        Navigation.NavigateTo("/employee/");
     }
+}
 }

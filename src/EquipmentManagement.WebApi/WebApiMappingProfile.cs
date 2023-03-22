@@ -27,7 +27,8 @@ public class WebApiMappingProfile : Profile
             opt => opt.MapFrom(src => src.LastRecord));
         CreateMap<EquipmentWithStatus, EquipmentWithStatusResponse>()
             .ForMember(dest => dest.LastRecordId,
-            opt => opt.MapFrom(src => src.LastRecord));            
+            opt => opt.MapFrom(src => src.LastRecord))
+            .IncludeBase<Equipment, EquipmentResponse>();            
         CreateMap<Status, StatusResponse>();
     }
 }

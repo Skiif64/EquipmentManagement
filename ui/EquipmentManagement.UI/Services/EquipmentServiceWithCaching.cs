@@ -25,16 +25,9 @@ public class EquipmentServiceWithCaching : IEquipmentService
 
     public async Task<IEnumerable<EquipmentResponse>?> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        IEnumerable<EquipmentResponse>? equipments;
-        if(_cache.TryGetValue(CachePrefix, out equipments ))
-        {            
-            return equipments;
-        }
-        equipments = await _client.GetFromJsonAsync<IEnumerable<EquipmentResponse>>("/api/equipment/", cancellationToken);
-        _cache.Set(CachePrefix, equipments, new MemoryCacheEntryOptions
-        {
-            SlidingExpiration = TimeSpan.FromMinutes(5)            
-        });
+        
+        var equipments = await _client.GetFromJsonAsync<IEnumerable<EquipmentResponse>>("/api/equipment/", cancellationToken);
+        
         return equipments;
     }
 

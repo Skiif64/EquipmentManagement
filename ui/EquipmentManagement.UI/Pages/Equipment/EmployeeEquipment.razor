@@ -1,11 +1,15 @@
 ﻿@page "/equipment/employee/"
 @using EquimentManagement.Contracts.Responses;
+@using System.Collections.ObjectModel;
 @inject HttpClient Client;
 @attribute [Authorize]
 
-<h3>EmployeeEquipment</h3>
+@if (employee is not null)
+{
+    <h4>Оборудование сотрудника @employee.Lastname @employee.Firstname @employee.Patronymic</h4>
+}
 
-   @if (equipments is not null)
+@if (equipments is not null)
 {
     <table class="table">
         <thead>
@@ -21,7 +25,7 @@
                 </th>
                 <th>
                     <span>Описание</span>
-                </th>                
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -56,13 +60,23 @@ else
 }
 
 @code {
-    private IEnumerable<EquipmentResponse>? equipments;
+    private ObservableCollection<EquipmentResponse>? equipments;
+    private EmployeeResponse? employee;
     [Parameter]
+    [SupplyParameterFromQuery(Name = "id")]
     public Guid EmployeeId { get; set; }
 
-    private async Task LoadEmployeeEquipmentAsync()
+    protected override async Task OnInitializedAsync()
     {
-        var equipments = await Client.GetFromJsonAsync<IEnumerable<EquipmentResponse>>($"api/equipment/{EmployeeId}");
+        await LoadDataAsync();
+    }
+
+    private async Task LoadDataAsync()
+    {
+        employee = await Client.GetFromJsonAsync<EmployeeResponse>($"api/employees/{EmployeeId}");
+        var equipmentResponse = await Client.GetFromJsonAsync<IEnumerable<EquipmentResponse>>($"api/equipment/employee/{EmployeeId}");
+        if (equipmentResponse is not null)
+            equipments = new ObservableCollection<EquipmentResponse>(equipmentResponse);
 
     }
 }

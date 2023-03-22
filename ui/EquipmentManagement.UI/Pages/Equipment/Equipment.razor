@@ -3,6 +3,7 @@
 @using EquipmentManagement.UI.Abstractions;
 @inject HttpClient Client;
 @inject IEquipmentService EquipmentService;
+@inject IStatusService StatusService;
 @inject NavigationManager Navigation;
 @attribute [Authorize]
 <h3>Equipment</h3>
@@ -85,7 +86,7 @@ else
     {
         equipments = await EquipmentService.GetAllAsync();
         records = await Client.GetFromJsonAsync<IEnumerable<EquipmentRecordResponse>>("/api/equipmentrecords/");
-        statuses = await Client.GetFromJsonAsync<IEnumerable<StatusResponse>>("/api/status/");
+        statuses = await StatusService.GetAll();
     }
 
     private void EditEquipmentStatus()

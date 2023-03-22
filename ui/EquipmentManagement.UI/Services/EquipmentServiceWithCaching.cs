@@ -31,6 +31,12 @@ public class EquipmentServiceWithCaching : IEquipmentService
         return equipments;
     }
 
+    public async Task<IEnumerable<EquipmentResponse>?> GetByEmployeeIdAsync(Guid employeeId, CancellationToken cancellationToken = default)
+    {
+        var equipments = await _client.GetFromJsonAsync<IEnumerable<EquipmentResponse>>($"/api/equipment/employee/{employeeId}", cancellationToken);
+        return equipments;
+    }
+
     public async Task<EquipmentResponse?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var equipment = await _client.GetFromJsonAsync<EquipmentResponse>($"/api/equipment/{id}", cancellationToken);

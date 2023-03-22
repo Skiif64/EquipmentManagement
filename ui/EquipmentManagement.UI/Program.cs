@@ -16,6 +16,7 @@ builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthentificationSt
 builder.Services.AddSingleton<UserCredentialStorage>();
 builder.Services.AddScoped<IEquipmentService, EquipmentServiceWithCaching>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+builder.Services.AddScoped<IStatusService, StatusService>();
 builder.Services.AddAuthorizationCore();
 builder.Services.AddMemoryCache();
 var app = builder.Build();

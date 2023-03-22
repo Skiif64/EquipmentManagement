@@ -1,7 +1,9 @@
 ﻿@page "/equipment/employee/"
 @using EquimentManagement.Contracts.Responses;
 @using System.Collections.ObjectModel;
-@inject HttpClient Client;
+@using EquipmentManagement.UI.Abstractions;
+@inject IEmployeeService EmployeeService;
+@inject IEquipmentService EquipmentService;
 @attribute [Authorize]
 
 @if (employee is not null)
@@ -73,8 +75,8 @@ else
 
     private async Task LoadDataAsync()
     {
-        employee = await Client.GetFromJsonAsync<EmployeeResponse>($"api/employees/{EmployeeId}");
-        var equipmentResponse = await Client.GetFromJsonAsync<IEnumerable<EquipmentResponse>>($"api/equipment/employee/{EmployeeId}");
+        employee = await EmployeeService.GetByIdAsync(EmployeeId);
+        var equipmentResponse = await EquipmentService.GetByEmployeeIdAsync(EmployeeId);
         if (equipmentResponse is not null)
             equipments = new ObservableCollection<EquipmentResponse>(equipmentResponse);
 

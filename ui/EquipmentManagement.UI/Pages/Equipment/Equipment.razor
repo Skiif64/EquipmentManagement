@@ -53,7 +53,11 @@
                         <textarea draggable="false" readonly="readonly">@equipment.Description</textarea>
                     </td>
                     <td>
-                        <span>@equipment.StatusTitle</span>
+                        <strong>@equipment.StatusTitle</strong>
+                        @if (equipment.EmployeeFullname is not null)
+                        {
+                            <span> (@equipment.EmployeeFullname)</span>
+                        }
                     </td>
                     <td>
                         <button class="btn btn-danger">Удалить</button>

@@ -22,9 +22,7 @@ public class GetEquipmentByEmployeeQueryHandler : IQueryHandler<GetEquipmentsByE
             .Select(i => i.Employee.Id)
             .Contains(request.EmployeeId))
             ;
-        if (!equipments.Any())
-            throw new NotFoundException("Equipment");
-        
+               
         return Task.FromResult(equipments?.AsEnumerable());
     }
 }

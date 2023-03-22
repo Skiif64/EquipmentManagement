@@ -1,7 +1,7 @@
 ﻿@page "/equipment/"
 @using EquimentManagement.Contracts.Responses;
 @inject HttpClient Client;
-
+@inject NavigationManager Navigation;
 @attribute [Authorize]
 <h3>Equipment</h3>
 <div class="navbar-dark">
@@ -54,7 +54,7 @@
                     </td>
                     <td>
                         <button class="btn btn-danger">Удалить</button>
-                        <button class="btn btn-primary">Изменить статус</button>
+                        <button class="btn btn-primary" @onclick="EditEquipmentStatus">Изменить статус</button>
                     </td>
                 </tr>
             }
@@ -84,6 +84,11 @@ else
         equipments = await Client.GetFromJsonAsync<IEnumerable<EquipmentResponse>>("/api/equipment/");
         records = await Client.GetFromJsonAsync<IEnumerable<EquipmentRecordResponse>>("/api/equipmentrecords/");
         statuses = await Client.GetFromJsonAsync<IEnumerable<StatusResponse>>("/api/status/");
+    }
+
+    private void EditEquipmentStatus()
+    {
+        Navigation.NavigateTo($"/records/edit");
     }
 
     private StatusResponse? GetStatusByRecordId(Guid? recordId)

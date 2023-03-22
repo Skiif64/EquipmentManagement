@@ -13,6 +13,7 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthentificationStateProvider>();
 builder.Services.AddSingleton<UserCredentialStorage>();
 builder.Services.AddAuthorizationCore();
+builder.Services.AddMemoryCache();
 var app = builder.Build();
 
 await app.RunAsync();

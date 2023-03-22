@@ -17,11 +17,15 @@ public class ApplicationMappingProfile : Profile
         CreateMap<AddEquipmentRecordCommand, EquipmentRecord>();
         CreateMap<AddStatusCommand, Status>();
         CreateMap<Equipment, EquipmentWithStatus>()
-            .ForMember(dest => dest.AssignedTo, opt =>
-            opt.MapFrom(src => src.LastRecord.Employee.Id))
+            .ForMember(dest => dest.EmployeeId, opt =>
+            opt.MapFrom(src => (src.LastRecord != null)? src.LastRecord.EmployeeId : null))
+            .ForMember(dest => dest.EmployeeFullname, opt =>
+            opt.MapFrom(src => (src.LastRecord != null && src.LastRecord.Employee != null) 
+            ? src.LastRecord.Employee.Fullname : null))
             .ForMember(dest => dest.StatusId, opt =>
-            opt.MapFrom(src => src.LastRecord.Status.Id))
+            opt.MapFrom(src => (src.LastRecord != null) ? src.LastRecord.StatusId : default))
             .ForMember(dest => dest.StatusTitle, opt =>
-            opt.MapFrom(src => src.LastRecord.Status.Title));
+            opt.MapFrom(src => (src.LastRecord != null && src.LastRecord.Status != null) 
+            ? src.LastRecord.Status.Title : null));
     }
 }

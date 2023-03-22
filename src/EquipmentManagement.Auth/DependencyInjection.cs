@@ -1,4 +1,5 @@
-﻿using EquipmentManagement.Auth.Abstractions;
+﻿using EquipmentManagement.Application.Abstractions;
+using EquipmentManagement.Auth.Abstractions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -33,6 +34,7 @@ public static class DependencyInjection
 
         services.AddTransient<IJwtTokenProvider, JwtTokenProvider>();
         services.AddScoped<JwtAuthentificationService>();
+        services.AddTransient<IMigrationableDatabase, UsersDbContext>();
         //var provider = services.BuildServiceProvider();
 
         //var roleManager = provider.GetRequiredService<RoleManager<IdentityRole>>();

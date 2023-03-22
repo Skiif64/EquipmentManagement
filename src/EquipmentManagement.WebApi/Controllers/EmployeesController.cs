@@ -2,6 +2,7 @@
 using EquimentManagement.Contracts.Requests;
 using EquimentManagement.Contracts.Responses;
 using EquipmentManagement.Application.Employees.Add;
+using EquipmentManagement.Application.Employees.Delete;
 using EquipmentManagement.Application.Employees.Get;
 using EquipmentManagement.Application.Employees.GetAll;
 using EquipmentManagement.Auth;
@@ -14,22 +15,22 @@ namespace EquipmentManagement.WebApi.Controllers
     [Route("api/[controller]")]
     [ApiController]
     //[Authorize]
-    public class EmployeesController : ControllerBase   
+    public class EmployeesController : ControllerBase
     {
         private readonly ISender _sender;
-        private readonly IMapper _mapper;       
+        private readonly IMapper _mapper;
         private readonly ILogger<EmployeesController>? _logger;
         public EmployeesController(ISender sender, IMapper mapper, ILogger<EmployeesController>? logger = null)
         {
             _sender = sender;
-            _mapper = mapper;            
+            _mapper = mapper;
             _logger = logger;
         }
         [HttpPost("add")]
         //[Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult<Guid>> AddAsync(AddEmployeeRequest request, CancellationToken cancellationToken)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var command = _mapper.Map<AddEmployeeCommand>(request);
             var id = await _sender.Send(command, cancellationToken);
@@ -50,6 +51,14 @@ namespace EquipmentManagement.WebApi.Controllers
             var employee = await _sender.Send(new GetEmployeeQuery(id), cancellationToken);
             var response = _mapper.Map<EmployeeResponse>(employee);
             return Ok(response);
+        }
+
+        [HttpDelete("{id:guid}")]
+        public async Task<ActionResult<Guid>> DeleteByIdAsync(Guid id, CancellationToken cancellationToken)
+        {
+            var command = new DeleteEmployeeCommand(id);
+            var resultId = await _sender.Send(command, cancellationToken);
+            return Ok(resultId);
         }
     }
 }

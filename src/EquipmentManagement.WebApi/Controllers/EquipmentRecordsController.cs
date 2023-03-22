@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using EquimentManagement.Contracts.Requests;
+using EquimentManagement.Contracts.Responses;
 using EquipmentManagement.Application.EquipmentRecords.Add;
 using EquipmentManagement.Application.EquipmentRecords.GetActualsByEmployeeID;
+using EquipmentManagement.Application.EquipmentRecords.GetAll;
 using EquipmentManagement.Application.EquipmentRecords.Update;
 using EquipmentManagement.Auth;
 using MediatR;
@@ -46,6 +48,15 @@ public class EquipmentRecordsController : ControllerBase
         var command = _mapper.Map<UpdateEquipmentRecordCommand>(request);
         var record = await _sender.Send(command, cancellationToken);
         return Ok(record);
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<EquipmentRecordResponse>>> GetAllAsync(CancellationToken cancellationToken)
+    {
+        var query = new GetAllEquipmentRecordsQuery();
+        var records = await _sender.Send(query, cancellationToken);
+        var response = _mapper.Map<IEnumerable<EquipmentRecordResponse>>(records);
+        return Ok(response);
     }
 
     [HttpGet("{employeeId:guid}")]

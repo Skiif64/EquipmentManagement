@@ -6,9 +6,14 @@
 @using EquipmentManagement.UI.Shared.Modal;
 @using System.Collections.ObjectModel;
 
-<h3>Employee</h3>
-<div class="navbar-dark">
-    <NavLink class="btn btn-primary" href="/employee/add">Добавить соотрудника</NavLink>
+<h3>Сотрудники</h3>
+<div class="container">
+    <div class="row justify-content-around align-content-start">
+        <div class="my-2 p-2">
+            <NavLink class="btn btn-primary align-self-start" href="/employee/add">Добавить соотрудника</NavLink>
+        </div>
+        
+    </div>
 </div>
 <Modal OnSubmitClick="DeleteSelectedEmployee"
        OnCancelClick="HideDeleteModal"
@@ -108,6 +113,6 @@ else
 
     public void NavigateToEmployeeEquipment(Guid employeeId)
     {
-        Navigation.NavigateTo($"/equipment/employee/{employeeId}");
+        Navigation.NavigateTo($"/equipment/employee?id={employeeId}");
     }
 }

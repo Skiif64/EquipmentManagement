@@ -18,9 +18,11 @@ public class AuthenticationService : IAuthentificationService
         _storage = storage;
         _notifier = notifier;
     }
-    public Task<AuthentificationResult> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken)
+    public async Task<AuthentificationResult> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var response = await _client.PostAsJsonAsync("/api/auth/register/", request, cancellationToken);
+        //TODO: validate
+        return new AuthentificationResult();
     }
 
     public async Task<AuthentificationResult> SignInAsync(LoginRequest request, CancellationToken cancellationToken)

@@ -1,5 +1,5 @@
 ﻿namespace EquimentManagement.Contracts.Responses;
-public class AuthentificationResult
+public class AuthentificationResponse
 {
     public bool IsSuccess { get; init; }
     public string Token { get; init; } = string.Empty;

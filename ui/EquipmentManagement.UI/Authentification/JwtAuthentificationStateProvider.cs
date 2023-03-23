@@ -1,21 +1,37 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
+﻿using EquipmentManagement.UI.Abstractions;
+using Microsoft.AspNetCore.Components.Authorization;
+using System.Diagnostics;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace EquipmentManagement.UI.Authentification
+namespace EquipmentManagement.UI.Authentification;
+
+public class JwtAuthentificationStateProvider : AuthenticationStateProvider, IAuthenticationStateNotifier
 {
-    public class JwtAuthentificationStateProvider : AuthenticationStateProvider
+    private readonly ITokenStorage _tokenStorage;
+
+    public JwtAuthentificationStateProvider(ITokenStorage tokenStorage)
     {
-        
-        public override Task<AuthenticationState> GetAuthenticationStateAsync()
+        _tokenStorage = tokenStorage;
+    }
+
+    public void StateChanged()
+        => NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+    public override async Task<AuthenticationState> GetAuthenticationStateAsync()
+    {        
+        string? token = await _tokenStorage.GetAccessTokenAsync();
+        var identity = new ClaimsIdentity();
+        if(!string.IsNullOrWhiteSpace(token))
         {
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.Name, "User"),
-                new Claim(ClaimTypes.Role, "Admin")
-            };
-            var claimsIdentity = new ClaimsIdentity(claims, "test");
-            var state = new AuthenticationState(new ClaimsPrincipal(claimsIdentity));
-            return Task.FromResult(state);
+            var handler = new JwtSecurityTokenHandler();
+            var parsedToken = handler.ReadJwtToken(token);
+                        
+            identity = new ClaimsIdentity(parsedToken.Claims, "jwt");            
+            
         }
+        
+        var state = new AuthenticationState(new ClaimsPrincipal(identity));        
+                
+        return state;
     }
 }

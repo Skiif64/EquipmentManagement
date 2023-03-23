@@ -26,9 +26,7 @@ public class JwtAuthentificationStateProvider : AuthenticationStateProvider, IAu
         {
             var handler = new JwtSecurityTokenHandler();
             var parsedToken = handler.ReadJwtToken(token);
-            var expirationDate = DateTimeOffset.FromUnixTimeSeconds((long)parsedToken.Payload.Exp!);
-            if (DateTimeOffset.UtcNow <= expirationDate)
-                identity = new ClaimsIdentity(parsedToken.Claims, "jwt");
+            identity = new ClaimsIdentity(parsedToken.Claims, "jwt");
 
         }
 

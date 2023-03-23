@@ -1,5 +1,6 @@
 ﻿using EquimentManagement.Contracts.Requests;
 using EquimentManagement.Contracts.Responses;
+using EquipmentManagement.UI.Models;
 
 namespace EquipmentManagement.UI.Abstractions;
 

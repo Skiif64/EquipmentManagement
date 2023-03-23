@@ -17,7 +17,7 @@ public class JwtTokenProvider : IJwtTokenProvider
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Name, user.Login),
-            //new Claim(JwtRegisteredClaimNames., user.Role)
+            new Claim("role", user.Role)
         };
 
         var token = new JwtSecurityToken(

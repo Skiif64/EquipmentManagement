@@ -4,19 +4,19 @@ namespace EquipmentManagement.Auth;
 
 public class AuthentificationResult
 {
-    public bool Success { get; }    
+    public bool IsSuccess { get; }    
     public string? Token { get; }
     public IDictionary<string, string>? Errors { get; }
 
     protected AuthentificationResult(string token)
     {
-        Success = true;
+        IsSuccess = true;
         Token = token;
     }
 
     protected AuthentificationResult(IDictionary<string, string> errors)
     {
-        Success = false;
+        IsSuccess = false;
         Errors = errors;
     }    
 

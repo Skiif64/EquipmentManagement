@@ -26,7 +26,7 @@ public static class DependencyInjection
                 {
                     ValidateAudience = false,
                     ValidateIssuer = false,
-                    ValidateLifetime = true,
+                    ValidateLifetime = false,
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("super-secret-key"))
                 };

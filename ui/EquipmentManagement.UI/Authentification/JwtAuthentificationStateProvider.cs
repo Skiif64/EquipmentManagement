@@ -3,15 +3,9 @@ using System.Security.Claims;
 
 namespace EquipmentManagement.UI.Authentification
 {
-    public class CustomAuthentificationStateProvider : AuthenticationStateProvider
+    public class JwtAuthentificationStateProvider : AuthenticationStateProvider
     {
-        private readonly UserCredentialStorage _storage;
-
-        public CustomAuthentificationStateProvider(UserCredentialStorage storage)
-        {
-            _storage = storage;
-        }
-
+        
         public override Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             var claims = new[]

@@ -1,15 +1,22 @@
 ﻿@page "/equipment/"
 @using EquimentManagement.Contracts.Responses;
 @using EquipmentManagement.UI.Abstractions;
+@using Microsoft.AspNetCore.Components.Authorization
 @inject HttpClient Client;
 @inject IEquipmentService EquipmentService;
 @inject IStatusService StatusService;
 @inject NavigationManager Navigation;
 @attribute [Authorize]
 <h3>Equipment</h3>
+
 <div class="navbar-dark">
-    <NavLink class="btn btn-primary"
-             href="/equipment/add">Добавить оборудование</NavLink>
+    <AuthorizeView Roles="Admin">
+        <Authorized>
+            <NavLink class="btn btn-primary"
+                     href="/equipment/add">Добавить оборудование</NavLink>
+        </Authorized>
+    </AuthorizeView>
+
 </div>
    @if (equipments is not null)
 {
@@ -62,13 +69,16 @@
                         }
                     </td>
                     <td>
-                        <button class="btn btn-danger">Удалить</button>
-                        <button class="btn btn-primary"
-                        @onclick="EditEquipmentStatus">
-                            Изменить статус
-                        </button>
-                            
-                        
+                        <AuthorizeView Roles="Admin">
+                            <Authorized>
+                                <button class="btn btn-danger">Удалить</button>
+                                <button class="btn btn-primary"
+                                @onclick="EditEquipmentStatus">
+                                    Изменить статус
+                                </button>
+                            </Authorized>
+                        </AuthorizeView>
+
                     </td>
                 </tr>
             }

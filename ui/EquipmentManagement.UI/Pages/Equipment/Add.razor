@@ -2,7 +2,7 @@
 @using EquimentManagement.Contracts.Requests;
 @inject HttpClient Client;
 @inject NavigationManager Navigation;
-@attribute [Authorize]
+@attribute [Authorize(Roles = "Admin")]
 <h3>Add</h3>
 
 <div class="container">

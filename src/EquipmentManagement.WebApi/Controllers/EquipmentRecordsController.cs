@@ -14,7 +14,7 @@ namespace EquipmentManagement.WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-//[Authorize]
+[Authorize]
 public class EquipmentRecordsController : ControllerBase
 {
     private readonly ISender _sender;
@@ -27,7 +27,7 @@ public class EquipmentRecordsController : ControllerBase
     }
 
     [HttpPost("add")]
-    //[Authorize(Roles = Roles.Admin)]
+    [Authorize(Roles = Roles.Admin)]
     public async Task<IActionResult> AddEquipmentRecord(AddEquipmentRecordRequest request, CancellationToken cancellationToken)
     {
         if(!ModelState.IsValid)
@@ -39,7 +39,7 @@ public class EquipmentRecordsController : ControllerBase
     }
 
     [HttpPatch("update")]
-    //[Authorize(Roles = Roles.Admin)]
+    [Authorize(Roles = Roles.Admin)]
     public async Task<IActionResult> UpdateEquipmentRecord(UpdateEquipmentRecordRequest request, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)

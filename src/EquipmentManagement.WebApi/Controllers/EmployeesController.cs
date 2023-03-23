@@ -54,6 +54,7 @@ namespace EquipmentManagement.WebApi.Controllers
         }
 
         [HttpDelete("{id:guid}")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult<Guid>> DeleteByIdAsync(Guid id, CancellationToken cancellationToken)
         {
             var command = new DeleteEmployeeCommand(id);

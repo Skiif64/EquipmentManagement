@@ -4,12 +4,15 @@ using EquimentManagement.Contracts.Responses;
 using EquipmentManagement.Application.Statuses.Add;
 using EquipmentManagement.Application.Statuses.Get;
 using EquipmentManagement.Application.Statuses.GetAll;
+using EquipmentManagement.Auth;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EquipmentManagement.WebApi.Controllers;
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class StatusController : ControllerBase
 {
     private readonly ISender _sender;
@@ -35,6 +38,7 @@ public class StatusController : ControllerBase
         return Ok(response);
     }
     [HttpPost("add")]
+    [Authorize(Roles = Roles.Admin)]
     public async Task<ActionResult<Guid>> AddAsync(AddStatusRequest request, CancellationToken cancellationToken)
     {
         var command = _mapper.Map<AddStatusCommand>(request);

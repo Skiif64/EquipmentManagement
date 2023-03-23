@@ -1,5 +1,7 @@
-﻿using EquimentManagement.Contracts.Requests;
+﻿using AutoMapper;
+using EquimentManagement.Contracts.Requests;
 using EquipmentManagement.Application;
+using EquipmentManagement.Application.Models;
 using EquipmentManagement.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -13,12 +15,14 @@ namespace EquipmentManagement.WebApi.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly JwtAuthentificationService _jwtAuthentificationService;
+    private readonly IMapper _mapper;
     private readonly ILogger<AuthController> _logger;
 
-    public AuthController(JwtAuthentificationService jwtAuthentificationService, ILogger<AuthController> logger)
+    public AuthController(JwtAuthentificationService jwtAuthentificationService, ILogger<AuthController> logger, IMapper mapper)
     {
         _jwtAuthentificationService = jwtAuthentificationService;
         _logger = logger;
+        _mapper = mapper;
     }
 
     [HttpPost("login")]
@@ -41,13 +45,11 @@ public class AuthController : ControllerBase
     {
         if (!ModelState.IsValid)
             return BadRequest();
-        var user = new IdentityUser(request.Login);
-        
-        //var result = await _userManager.CreateAsync(user, request.Password);
-        //if(result.Succeeded)
-            //result = await _userManager.AddToRoleAsync(user, request.Role);
-        //if(!result.Succeeded)
-            //return BadRequest(result.Errors);
+
+        var user = _mapper.Map<ApplicationUser>(request);
+
+        await _jwtAuthentificationService.RegisterAsync(user, cancellationToken);
+
         _logger.LogInformation(AppLogEvents.Register, "User {username} is registered", request.Login);
         return Ok();
     }

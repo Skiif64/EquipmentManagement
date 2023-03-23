@@ -7,26 +7,35 @@ namespace EquipmentManagement.Auth;
 
 public class JwtAuthentificationService
 {
-    private readonly UsersDbContext _userStoreDbContext;
+    private readonly UsersDbContext _context;
     private readonly IJwtTokenProvider _tokenProvider;
 
-    public JwtAuthentificationService(UsersDbContext userStoreDbContext, IJwtTokenProvider tokenProvider)
+    public JwtAuthentificationService(UsersDbContext context, IJwtTokenProvider tokenProvider)
     {
-        _userStoreDbContext = userStoreDbContext;
+        _context = context;
         _tokenProvider = tokenProvider;
     }
 
 
     public async Task<AuthentificationResult> SignInAsync(string login, string password, CancellationToken cancellationToken)
     {
-        var user = await _userStoreDbContext
+        var user = await _context
             .Set<ApplicationUser>()
             .SingleOrDefaultAsync(x => x.Login == login, cancellationToken);
         if (user is null)
-            return new AuthentificationResult();
+            return AuthentificationResult.CreateFailure(new[] { KeyValuePair.Create("NotFound", "Invalid login.") });
 
         var token = _tokenProvider.Generate(user);
 
-        return new AuthentificationResult(token);
+        return AuthentificationResult.CreateSuccess(token);
+    }
+
+    public async Task<AuthentificationResult> RegisterAsync(ApplicationUser user, CancellationToken cancellationToken)
+    {        
+        await _context
+            .Set<ApplicationUser>()
+            .AddAsync(user, cancellationToken);
+
+        return AuthentificationResult.CreateSuccess("");
     }
 }

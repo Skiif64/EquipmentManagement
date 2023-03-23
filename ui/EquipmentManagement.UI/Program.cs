@@ -16,11 +16,13 @@ builder.Services.AddHttpClient("Api", client
     => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
     .AddHttpMessageHandler<AuthenticationHttpMessageHandler>();
 
-builder.Services.AddScoped(sp => 
-sp.GetRequiredService<IHttpClientFactory>().CreateClient("Api"));
-
-builder.Services.AddScoped<IAuthenticationStateNotifier, JwtAuthentificationStateProvider>();
-builder.Services.AddScoped<AuthenticationStateProvider, JwtAuthentificationStateProvider>();
+builder.Services.AddScoped(sp =>
+    sp.GetRequiredService<IHttpClientFactory>().CreateClient("Api"));
+builder.Services.AddScoped<JwtAuthentificationStateProvider>();
+builder.Services.AddScoped<IAuthenticationStateNotifier>(sp =>
+    sp.GetRequiredService<JwtAuthentificationStateProvider>());
+builder.Services.AddScoped<AuthenticationStateProvider>(sp =>
+    sp.GetRequiredService<JwtAuthentificationStateProvider>());
 builder.Services.AddScoped<IEquipmentService, EquipmentServiceWithCaching>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IStatusService, StatusService>();

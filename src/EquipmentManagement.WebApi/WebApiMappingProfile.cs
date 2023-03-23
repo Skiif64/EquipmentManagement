@@ -34,5 +34,7 @@ public class WebApiMappingProfile : Profile
             .IncludeBase<Equipment, EquipmentResponse>();            
         CreateMap<Status, StatusResponse>();
         CreateMap<AuthentificationResult, AuthentificationResponse>();
+
+        CreateMap<RegisterRequest, ApplicationUser>();
     }
 }

@@ -1,3 +1,4 @@
+using Blazored.LocalStorage;
 using EquipmentManagement.UI;
 using EquipmentManagement.UI.Abstractions;
 using EquipmentManagement.UI.Authentification;
@@ -11,13 +12,24 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+builder.Services.AddHttpClient("Api", client
+    => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
+    .AddHttpMessageHandler<AuthenticationHttpMessageHandler>();
+
+builder.Services.AddScoped(sp => 
+sp.GetRequiredService<IHttpClientFactory>().CreateClient("Api"));
+
+builder.Services.AddScoped<IAuthenticationStateNotifier, JwtAuthentificationStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider, JwtAuthentificationStateProvider>();
 builder.Services.AddScoped<IEquipmentService, EquipmentServiceWithCaching>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IStatusService, StatusService>();
+builder.Services.AddScoped<IAuthentificationService, AuthenticationService>();
+builder.Services.AddScoped<AuthenticationHttpMessageHandler>();
 builder.Services.AddAuthorizationCore();
 builder.Services.AddMemoryCache();
+builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddScoped<ITokenStorage, TokenStorage>();
 var app = builder.Build();
 
 await app.RunAsync();

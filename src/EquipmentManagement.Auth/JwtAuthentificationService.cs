@@ -35,7 +35,7 @@ public class JwtAuthentificationService
         await _context
             .Set<ApplicationUser>()
             .AddAsync(user, cancellationToken);
-
+        await _context.SaveChangesAsync(cancellationToken);
         return AuthentificationResult.CreateSuccess("");
     }
 }

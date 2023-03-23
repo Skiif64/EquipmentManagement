@@ -6,6 +6,7 @@
 @using Microsoft.AspNetCore.Components.Authorization;
 @using System.Security.Claims;
 @inject IAuthentificationService AuthService;
+@inject NavigationManager Navigation;
 
 <div class="container p-2">
     <div class="row">
@@ -60,5 +61,6 @@
     private async Task OnLoginSuccess()
     {
         await AuthService.SignInAsync(request, default);
+        Navigation.NavigateTo("/");
     }
 }

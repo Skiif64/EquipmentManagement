@@ -1,0 +1,61 @@
+﻿@page "/auth/register/"
+@using EquimentManagement.Contracts.Requests;
+@using EquipmentManagement.UI.Abstractions;
+@inject IAuthentificationService AuthService;
+@attribute [Authorize(Roles = "Admin")]
+<div class="container p-2">
+    <div class="row">
+        <div class="col-lg-3 col-md-2"></div>
+        <div class="col-lg-6 col-md-8">
+            <div class="align-content-center">
+                <h3>Регистрация нового пользователя</h3>
+                <EditForm Model="@request"
+                          OnValidSubmit="@OnRegisterSuccessAsync">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                    <div class="mb-3">
+                        <label class="form-label">Логин</label>
+                        <InputText @bind-Value="@request.Login"
+                                   class="form-control"></InputText>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Пароль</label>
+                        <InputText @bind-Value="@request.Password"
+                                   type="password"
+                                   class="form-control"></InputText>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Повторите пароль</label>
+                        <InputText @bind-Value="@request.ConfirmPassword"
+                                   type="password"
+                                   class="form-control"></InputText>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Роль</label>
+                        <InputSelect @bind-Value="@request.Role"
+                                     class="form-select">
+                            <option value="User">Пользователь</option>
+                            <option value="Admin">Администратор</option>
+                        </InputSelect>
+                    </div>
+                    <div class="mb-3">
+                        <button type="submit"
+                                class="btn btn-primary">
+                            Зарегистрировать
+                        </button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-2"></div>
+    </div>
+</div>
+@code {
+    private RegisterRequest request = new();
+
+    private async Task OnRegisterSuccessAsync()
+    {
+        await AuthService.RegisterAsync(request, default);
+    }
+}

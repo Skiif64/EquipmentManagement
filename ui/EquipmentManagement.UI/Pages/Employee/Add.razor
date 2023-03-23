@@ -3,7 +3,7 @@
 @using EquipmentManagement.UI.Abstractions;
 @inject IEmployeeService EmployeeService;
 @inject NavigationManager Navigation;
-@attribute [Authorize]
+@attribute [Authorize(Roles = "Admin")]
 
 
 <div class="container">
@@ -49,4 +49,4 @@
         Navigation.NavigateTo("/employee/");
     }
 }
-}
+

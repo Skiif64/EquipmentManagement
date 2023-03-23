@@ -24,7 +24,9 @@ public class JwtAuthentificationStateProvider : AuthenticationStateProvider, IAu
         {
             var handler = new JwtSecurityTokenHandler();
             var parsedToken = handler.ReadJwtToken(token);
-            identity = new ClaimsIdentity(parsedToken.Claims, "jwt");
+            identity = new ClaimsIdentity(parsedToken.Claims, "jwt",
+                JwtRegisteredClaimNames.Name,
+                ClaimTypes.Role);            
 
         }
 

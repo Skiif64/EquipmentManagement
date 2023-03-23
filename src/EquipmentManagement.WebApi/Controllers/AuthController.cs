@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using EquimentManagement.Contracts.Requests;
+using EquimentManagement.Contracts.Responses;
 using EquipmentManagement.Application;
 using EquipmentManagement.Application.Models;
 using EquipmentManagement.Auth;
@@ -33,10 +34,12 @@ public class AuthController : ControllerBase
             return BadRequest();
 
         var result = await _jwtAuthentificationService.SignInAsync(request.Login, request.Password, cancellationToken);
-        if(!result.Success)
-            return BadRequest();    
+            
         _logger.LogInformation(AppLogEvents.Login, "User {username} is logged in", request.Login);
-        return Ok(result.Token);
+        var response = _mapper.Map<AuthentificationResponse>(result);
+        return result.IsSuccess
+            ? Ok(response) 
+            : BadRequest();
     }
 
     [HttpPost("register")]
@@ -56,8 +59,7 @@ public class AuthController : ControllerBase
 
     [HttpGet("logout")]
     public async Task<IActionResult> LogoutAsync()
-    {
-        //await _signInManager.SignOutAsync();        
+    {          
         return Ok();
     }
 }

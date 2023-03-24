@@ -24,9 +24,10 @@
 </div>
 <Modal OnSubmitClick="DeleteSelectedEmployee"
        OnCancelClick="HideDeleteModal"
-       Title="Удаление сотрудника"
-       Text=@($"Вы уверены что хотите удалить сотрудника {selectedEmployee?.Lastname}")
-       @ref="deleteModal" />
+       Title="Удаление сотрудника"      
+       @ref="deleteModal">
+    <span>Вы уверены что хотите удалить сотрудника @selectedEmployee?.Lastname</span>
+   </Modal>
     @if (employees is not null)
 {
     <table class="table">

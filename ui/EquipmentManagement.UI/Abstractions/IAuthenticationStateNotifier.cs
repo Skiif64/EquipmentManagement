@@ -2,5 +2,5 @@
 
 public interface IAuthenticationStateNotifier
 {
-    void StateChanged();
+    void Notify();
 }

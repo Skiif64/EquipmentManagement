@@ -14,7 +14,7 @@ public class JwtAuthentificationStateProvider : AuthenticationStateProvider, IAu
         _tokenStorage = tokenStorage;
     }
 
-    public void StateChanged()
+    public void Notify()
         => NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {

@@ -35,14 +35,14 @@ public class AuthenticationService : IAuthentificationService
         if (!authResponse.IsSuccess)
             return new AuthentificationResult(authResponse.Errors!);
         await _storage.SetAccessTokenAsync(authResponse.Token, cancellationToken);
-        _notifier.StateChanged();
+        _notifier.Notify();
         return new AuthentificationResult();
     }
 
     public async Task SignOutAsync(CancellationToken cancellationToken)
     {
         await _storage.RemoveAccessTokenAsync(cancellationToken);
-        _notifier.StateChanged();
+        _notifier.Notify();
         var response = await _client.GetAsync("/api/auth/logout");
         if (!response.IsSuccessStatusCode)
             return;

@@ -4,6 +4,7 @@ using EquipmentManagement.Auth;
 using EquipmentManagement.DAL;
 using EquipmentManagement.WebApi;
 using EquipmentManagement.WebApi.OptionSetups;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,7 +23,8 @@ builder.Services.AddAuth(builder.Configuration);
 builder.Services.AddRazorPages();
 builder.Services.AddControllersWithViews();
 builder.Services.AddCors(opt => opt.AddPolicy("CorsPolicy", policy => policy.AllowAnyOrigin()));
-builder.Services.SetupOptions();
+
+builder.Services.ConfigureOptions<JwtTokenOptionsSetup>();
 
 var app = builder.Build();
 

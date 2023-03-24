@@ -15,21 +15,28 @@ public static class DependencyInjection
     public static IServiceCollection AddAuth(this IServiceCollection services, IConfiguration configuration)
     {
         var connectionString = configuration.GetConnectionString("Users");
-        
+        var jwtOptions = new JwtTokenOptions();
+        configuration.GetRequiredSection("Jwt").Bind(jwtOptions);
         services.AddDbContext<UsersDbContext>(opt => opt
         .UseNpgsql(connectionString, cfg => cfg
         .MigrationsAssembly(typeof(UsersDbContext).Assembly.FullName)));
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer();
+            .AddJwtBearer(opt => opt.TokenValidationParameters = new()
+            {
+                ValidateAudience = true,
+                ValidateIssuer = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = jwtOptions.Issuer,
+                ValidAudience = jwtOptions.Audience,
+                IssuerSigningKey = new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(jwtOptions.SecretKey))
+            });
 
         services.AddTransient<IJwtTokenProvider, JwtTokenProvider>();
         services.AddScoped<JwtAuthentificationService>();
         services.AddTransient<IMigrationableDatabase, UsersDbContext>();
-        //var provider = services.BuildServiceProvider();
-
-        //var roleManager = provider.GetRequiredService<RoleManager<IdentityRole>>();
-        //var userManager = provider.GetRequiredService<UserManager<IdentityUser>>();
-        //UserInitializer.Initialize(roleManager, userManager, configuration).Wait();
+       
         return services;
     }
 }

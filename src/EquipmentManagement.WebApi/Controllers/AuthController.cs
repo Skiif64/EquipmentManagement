@@ -5,7 +5,6 @@ using EquipmentManagement.Application;
 using EquipmentManagement.Application.Models;
 using EquipmentManagement.Auth;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EquipmentManagement.WebApi.Controllers;

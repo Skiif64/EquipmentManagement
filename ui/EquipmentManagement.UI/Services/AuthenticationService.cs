@@ -41,10 +41,10 @@ public class AuthenticationService : IAuthentificationService
 
     public async Task SignOutAsync(CancellationToken cancellationToken)
     {
+        await _storage.RemoveAccessTokenAsync(cancellationToken);
+        _notifier.StateChanged();
         var response = await _client.GetAsync("/api/auth/logout");
         if (!response.IsSuccessStatusCode)
             return;
-        await _storage.RemoveAccessTokenAsync(cancellationToken);
-        _notifier.StateChanged();
     }
 }

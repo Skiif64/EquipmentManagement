@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace EquipmentManagement.Auth.Migrations
 {
-    [DbContext(typeof(UserStoreDbContext))]
+    [DbContext(typeof(UsersDbContext))]
     [Migration("20230320174238_AddedDefaultAdmin")]
     partial class AddedDefaultAdmin
     {

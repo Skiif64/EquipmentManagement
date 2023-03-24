@@ -1,31 +1,39 @@
 ﻿@page "/employee/add/"
 @using EquimentManagement.Contracts.Requests;
-@inject HttpClient Client;
+@using EquipmentManagement.UI.Abstractions;
+@inject IEmployeeService EmployeeService;
 @inject NavigationManager Navigation;
-@attribute [Authorize]
+@attribute [Authorize(Roles = "Admin")]
 
 
 <div class="container">
     <div class="row">
         <div class="align-content-center justify-content-center">
             <h3>Add</h3>
-            <EditForm Model="@request" OnValidSubmit="@OnValidSubmitAsync">
+            <EditForm Model="@request"
+                      OnValidSubmit="@OnValidSubmitAsync">
                 <DataAnnotationsValidator />
                 <ValidationSummary />
                 <div class="mb-3">
                     <label class="form-label">Фамилия</label>
-                    <InputText class="form-control" @bind-Value="@request.Lastname"></InputText>
+                    <InputText class="form-control"
+                               @bind-Value="@request.Lastname"></InputText>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Имя</label>
-                    <InputText class="form-control" @bind-Value="@request.Firstname"></InputText>
+                    <InputText class="form-control"
+                               @bind-Value="@request.Firstname"></InputText>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Отчество</label>
-                    <InputText class="form-control" @bind-Value="@request.Patronymic"></InputText>
+                    <InputText class="form-control"
+                               @bind-Value="@request.Patronymic"></InputText>
                 </div>
                 <div class="mb-3">
-                    <button type="submit" class="btn btn-primary">Создать</button>
+                    <button type="submit"
+                            class="btn btn-primary">
+                        Создать
+                    </button>
                 </div>
             </EditForm>
         </div>
@@ -37,10 +45,8 @@
 
     private async Task OnValidSubmitAsync()
     {
-        var response = await Client.PostAsJsonAsync("/api/employees/add/", request);
-        if (response.IsSuccessStatusCode)
-        {
-            Navigation.NavigateTo("/employee/");
-        }
+        await EmployeeService.AddAsync(request);
+        Navigation.NavigateTo("/employee/");
     }
 }
+

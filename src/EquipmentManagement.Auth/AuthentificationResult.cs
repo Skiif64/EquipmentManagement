@@ -4,17 +4,26 @@ namespace EquipmentManagement.Auth;
 
 public class AuthentificationResult
 {
-    public bool Success { get; }    
+    public bool IsSuccess { get; }    
     public string? Token { get; }
+    public IDictionary<string, string>? Errors { get; }
 
-    public AuthentificationResult(string token)
+    protected AuthentificationResult(string token)
     {
-        Success = true;
+        IsSuccess = true;
         Token = token;
     }
 
-    public AuthentificationResult()
+    protected AuthentificationResult(IDictionary<string, string> errors)
     {
-        Success = false;
-    }
+        IsSuccess = false;
+        Errors = errors;
+    }    
+
+    public static AuthentificationResult CreateSuccess(string token)
+        => new AuthentificationResult(token);
+    public static AuthentificationResult CreateFailure(IDictionary<string, string> errors)
+        => new AuthentificationResult(errors);
+    public static AuthentificationResult CreateFailure(IEnumerable<KeyValuePair<string, string>> errors)
+        => new AuthentificationResult(new Dictionary<string, string>(errors));
 }

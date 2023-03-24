@@ -1,5 +1,7 @@
 ﻿using EquipmentManagement.Application.Abstractions;
+using EquipmentManagement.Application.Exceptions;
 using EquipmentManagement.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace EquipmentManagement.Application.Equipments.GetByEmployeeId;
 
@@ -13,15 +15,14 @@ public class GetEquipmentByEmployeeQueryHandler : IQueryHandler<GetEquipmentsByE
     }
     public Task<IEnumerable<Equipment>?> Handle(GetEquipmentsByEmployeeIdQuery request, CancellationToken cancellationToken)
     {
-        var recordsIds = _context
-            .Set<EquipmentRecord>()
-            .Where(r => r.EmployeeId == request.EmployeeId)
-            .Select(r => r.EquipmentId)
-            ;
         var equipments = _context
             .Set<Equipment>()
-            .Where(e => recordsIds.Contains(e.Id))
+            .Include(x => x.Records)
+            .Where(x => x.Records
+            .Select(i => i.Employee.Id)
+            .Contains(request.EmployeeId))
             ;
+               
         return Task.FromResult(equipments?.AsEnumerable());
     }
 }

@@ -1,17 +1,24 @@
-﻿using EquipmentManagement.Application.Models;
+﻿using EquipmentManagement.Application.Abstractions;
+using EquipmentManagement.Application.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace EquipmentManagement.Auth;
 
-public class UserStoreDbContext : DbContext
+public class UsersDbContext : DbContext, IMigrationableDatabase
 {
 	public DbSet<ApplicationUser> Users { get; set; } = null!;
-    public UserStoreDbContext(DbContextOptions options) : base(options)
+    public UsersDbContext(DbContextOptions options) : base(options)
 	{
-		Database.Migrate();
+		
 	}
+
+    public void Migrate()
+        => Database.Migrate();
+
+    public async Task MigrateAsync(CancellationToken cancellationToken)
+        => await Database.MigrateAsync(cancellationToken);
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

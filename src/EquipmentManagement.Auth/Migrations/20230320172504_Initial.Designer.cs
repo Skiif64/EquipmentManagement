@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace EquipmentManagement.Auth.Migrations
 {
-    [DbContext(typeof(UserStoreDbContext))]
+    [DbContext(typeof(UsersDbContext))]
     [Migration("20230320172504_Initial")]
     partial class Initial
     {

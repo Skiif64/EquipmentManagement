@@ -1,13 +1,26 @@
 ﻿@page "/employee/"
-@inject HttpClient Client;
-@inject NavigationManager Manager;
+@inject IEmployeeService EmployeeService;
+@inject NavigationManager Navigation;
 @attribute [Authorize]
 @using EquimentManagement.Contracts.Responses;
+@using EquipmentManagement.UI.Abstractions;
 @using EquipmentManagement.UI.Shared.Modal;
+@using System.Collections.ObjectModel;
+@using Microsoft.AspNetCore.Components.Authorization
 
-<h3>Employee</h3>
-<div class="navbar-dark">
-    <NavLink class="btn btn-primary" href="/employee/add">Добавить соотрудника</NavLink>
+<h3>Сотрудники</h3>
+<div class="container">
+    <div class="row justify-content-around align-content-start">
+        <div class="my-2 p-2">
+            <AuthorizeView Roles="Admin">
+                <Authorized>
+                    <NavLink class="btn btn-primary align-self-start"
+                             href="/employee/add">Добавить соотрудника</NavLink>
+                </Authorized>
+            </AuthorizeView>
+        </div>
+
+    </div>
 </div>
 <Modal OnSubmitClick="DeleteSelectedEmployee"
        OnCancelClick="HideDeleteModal"
@@ -36,9 +49,21 @@
                         <span>@employee.Lastname @employee.Firstname @employee.Patronymic</span>
                     </td>
                     <td>
-                        <button class="btn btn-danger" @onclick="() => ShowDeleteModal(employee)">Удалить</button>
-                        <button class="btn btn-secondary">Изменить</button>
-                        <button class="btn btn-secondary">Оборудование</button>
+                        <AuthorizeView Roles="Admin">
+                            <Authorized>
+                                <button class="btn btn-danger"
+                                @onclick="() => ShowDeleteModal(employee)">
+                                    Удалить
+                                </button>
+                                <button class="btn btn-secondary">
+                                    Изменить
+                                </button>
+                            </Authorized>
+                        </AuthorizeView>
+                        <button class="btn btn-secondary"
+                        @onclick="() => NavigateToEmployeeEquipment(employee.Id)">
+                            Оборудование
+                        </button>
                     </td>
                 </tr>
             }
@@ -54,7 +79,7 @@ else
     </div>
 }
 @code {
-    private IEnumerable<EmployeeResponse>? employees;
+    private ObservableCollection<EmployeeResponse>? employees;
     private EmployeeResponse? selectedEmployee;
     private Modal deleteModal = null!;
     protected override async Task OnInitializedAsync()
@@ -64,7 +89,13 @@ else
 
     private async Task LoadEmployeesAsync()
     {
-        employees = await Client.GetFromJsonAsync<IEnumerable<EmployeeResponse>>("/api/employees");
+        var response = await EmployeeService.GetAllAsync();
+        if (response is not null)
+        {
+            employees = new ObservableCollection<EmployeeResponse>(response);
+            employees.CollectionChanged += (sender, e) => StateHasChanged();
+
+        }
     }
 
     private void ShowDeleteModal(EmployeeResponse? employee)
@@ -81,6 +112,18 @@ else
 
     private async Task DeleteSelectedEmployee()
     {
+        if (selectedEmployee is null)
+            return;
+        employees?.Remove(selectedEmployee);
+        var employeeId = selectedEmployee.Id;
+        HideDeleteModal();
 
+        await EmployeeService.DeleteAsync(employeeId);
+
+    }
+
+    public void NavigateToEmployeeEquipment(Guid employeeId)
+    {
+        Navigation.NavigateTo($"/equipment/employee?id={employeeId}");
     }
 }

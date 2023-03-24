@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace EquipmentManagement.Auth.Migrations
 {
-    [DbContext(typeof(UserStoreDbContext))]
+    [DbContext(typeof(UsersDbContext))]
     partial class UserStoreDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -47,7 +47,7 @@ namespace EquipmentManagement.Auth.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("6578b55d-1621-4a6a-8e77-7ed8f325003a"),
+                            Id = new Guid("f9a5c4d1-37c9-44bb-b7ab-af19076ed2e9"),
                             Login = "Admin",
                             Password = "example",
                             Role = "Admin"

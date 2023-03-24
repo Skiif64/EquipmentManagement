@@ -1,4 +1,5 @@
-﻿using EquipmentManagement.Auth.Abstractions;
+﻿using EquipmentManagement.Application.Abstractions;
+using EquipmentManagement.Auth.Abstractions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +16,9 @@ public static class DependencyInjection
     {
         var connectionString = configuration.GetConnectionString("Users");
         
-        services.AddDbContext<UserStoreDbContext>(opt => opt.UseNpgsql(connectionString));
+        services.AddDbContext<UsersDbContext>(opt => opt
+        .UseNpgsql(connectionString, cfg => cfg
+        .MigrationsAssembly(typeof(UsersDbContext).Assembly.FullName)));
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(opt =>
             {
@@ -23,7 +26,7 @@ public static class DependencyInjection
                 {
                     ValidateAudience = false,
                     ValidateIssuer = false,
-                    ValidateLifetime = true,
+                    ValidateLifetime = false,
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("super-secret-key"))
                 };
@@ -31,6 +34,7 @@ public static class DependencyInjection
 
         services.AddTransient<IJwtTokenProvider, JwtTokenProvider>();
         services.AddScoped<JwtAuthentificationService>();
+        services.AddTransient<IMigrationableDatabase, UsersDbContext>();
         //var provider = services.BuildServiceProvider();
 
         //var roleManager = provider.GetRequiredService<RoleManager<IdentityRole>>();

@@ -1,0 +1,11 @@
+﻿@page "/auth/logout/"
+@using EquipmentManagement.UI.Abstractions;
+@inject NavigationManager Navigation;
+@inject IAuthentificationService AuthService;
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await AuthService.SignOutAsync(default);
+        Navigation.NavigateTo("/");
+    }
+}

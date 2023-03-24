@@ -1,11 +1,22 @@
 ﻿@page "/equipment/"
 @using EquimentManagement.Contracts.Responses;
+@using EquipmentManagement.UI.Abstractions;
+@using Microsoft.AspNetCore.Components.Authorization
 @inject HttpClient Client;
-
+@inject IEquipmentService EquipmentService;
+@inject IStatusService StatusService;
+@inject NavigationManager Navigation;
 @attribute [Authorize]
 <h3>Equipment</h3>
+
 <div class="navbar-dark">
-    <NavLink class="btn btn-primary" href="/equipment/add">Добавить оборудование</NavLink>
+    <AuthorizeView Roles="Admin">
+        <Authorized>
+            <NavLink class="btn btn-primary"
+                     href="/equipment/add">Добавить оборудование</NavLink>
+        </Authorized>
+    </AuthorizeView>
+
 </div>
    @if (equipments is not null)
 {
@@ -47,14 +58,27 @@
                         <span>@equipment.SerialNumber</span>
                     </td>
                     <td>
-                        <textarea readonly="readonly">@equipment.Description</textarea>
+                        <textarea draggable="false"
+                                  readonly="readonly">@equipment.Description</textarea>
                     </td>
                     <td>
+                        <strong>@equipment.StatusTitle</strong>
+                        @if (equipment.EmployeeFullname is not null)
+                        {
+                            <span> (@equipment.EmployeeFullname)</span>
+                        }
+                    </td>
+                    <td>
+                        <AuthorizeView Roles="Admin">
+                            <Authorized>
+                                <button class="btn btn-danger">Удалить</button>
+                                <button class="btn btn-primary"
+                                @onclick="EditEquipmentStatus">
+                                    Изменить статус
+                                </button>
+                            </Authorized>
+                        </AuthorizeView>
 
-                    </td>
-                    <td>
-                        <button class="btn btn-danger">Удалить</button>
-                        <button class="btn btn-primary">Изменить статус</button>
                     </td>
                 </tr>
             }
@@ -70,7 +94,7 @@ else
     </div>
 }
 @code {
-    private IEnumerable<EquipmentResponse>? equipments;
+    private IEnumerable<EquipmentWithStatusResponse>? equipments;
 
     protected override async Task OnInitializedAsync()
     {
@@ -79,6 +103,12 @@ else
 
     private async Task LoadEquipments()
     {
-        equipments = await Client.GetFromJsonAsync<IEnumerable<EquipmentResponse>>("/api/equipment/");
+        equipments = await EquipmentService.GetAllAsync();
+
+    }
+
+    private void EditEquipmentStatus()
+    {
+        Navigation.NavigateTo($"/record/edit");
     }
 }

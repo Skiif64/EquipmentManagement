@@ -20,17 +20,7 @@ public static class DependencyInjection
         .UseNpgsql(connectionString, cfg => cfg
         .MigrationsAssembly(typeof(UsersDbContext).Assembly.FullName)));
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(opt =>
-            {
-                opt.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateAudience = false,
-                    ValidateIssuer = false,
-                    ValidateLifetime = false,
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("super-secret-key"))
-                };
-            });
+            .AddJwtBearer();
 
         services.AddTransient<IJwtTokenProvider, JwtTokenProvider>();
         services.AddScoped<JwtAuthentificationService>();

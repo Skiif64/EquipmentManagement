@@ -73,7 +73,7 @@
                             <Authorized>
                                 <button class="btn btn-danger">Удалить</button>
                                 <button class="btn btn-primary"
-                                @onclick="EditEquipmentStatus">
+                                @onclick="() => EditEquipmentStatus(equipment.Id)">
                                     Изменить статус
                                 </button>
                             </Authorized>
@@ -107,8 +107,8 @@ else
 
     }
 
-    private void EditEquipmentStatus()
+    private void EditEquipmentStatus(Guid equipmentId)
     {
-        Navigation.NavigateTo($"/record/edit");
+        Navigation.NavigateTo($"/record/edit?id={equipmentId}");
     }
 }

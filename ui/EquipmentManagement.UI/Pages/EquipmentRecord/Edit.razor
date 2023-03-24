@@ -1,25 +1,53 @@
 ﻿@page "/record/edit/"
 @using EquimentManagement.Contracts.Requests;
+@using EquimentManagement.Contracts.Responses;
+@using EquipmentManagement.UI.Abstractions;
+@inject IEmployeeService EmployeeService;
+@inject IStatusService StatusService;
+@inject IEquipmentService EquipmentService;
+@inject IEquipmentRecordService RecordService;
+@inject NavigationManager Navigation;
 @attribute [Authorize(Roles = "Admin")]
 <div class="container">
     <div class="row">
         <div class="align-content-center justify-content-center">
             <h3>Изменение статуса оборудования</h3>
-            <EditForm Model="@request">
+            <p>@equipment?.Type</p>
+            <EditForm Model="@request" OnValidSubmit="@OnValidInputAsync">
                 <DataAnnotationsValidator />
                 <ValidationSummary />
                 <div class="mb-3">
+                    <label class="form-label">Назначно на</label>
+                    <InputSelect class="form-select" @bind-Value="request.EmployeeId">
+                        <option value="">Никто</option>
+                        @if (employees is not null)
+                        {
+                            foreach (var employee in employees)
+                            {
+                                <option value="@employee.Id">@employee.Lastname @employee.Firstname @employee.Patronymic</option>
+                            }
+                        }                       
+                    </InputSelect>
                 </div>
                 <div class="mb-3">
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Отчество</label>
-
+                    <label class="form-label">Статус</label>
+                    <InputSelect class="form-select" @bind-Value="request.StatusId">
+                        @if (statuses is not null)
+                        {
+                            foreach (var status in statuses)
+                            {
+                                <option value="@status.Id">@status.Title</option>
+                            }
+                        }
+                        <option value=""><button>Добавить новый статус</button></option>
+                    </InputSelect>
                 </div>
                 <div class="mb-3">
                     <button type="submit"
                             class="btn btn-primary">
-                        Создать
+                        Изменить
                     </button>
                 </div>
             </EditForm>
@@ -27,5 +55,33 @@
     </div>
 </div>
 @code {
-    private UpdateEquipmentRecordRequest request = new();
+    private AddEquipmentRecordRequest request = new();
+    private EquipmentResponse? equipment;
+
+    private IEnumerable<EmployeeResponse>? employees;
+    private IEnumerable<StatusResponse>? statuses;
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "id")]
+    public Guid EquipmentId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (EquipmentId == default)
+            Navigation.NavigateTo("/equipment/");
+        await LoadDataAsync();
+        request.EquipmentId = EquipmentId;
+    }
+
+    private async Task OnValidInputAsync()
+    {
+        await RecordService.AddAsync(request);
+    }
+
+    private async Task LoadDataAsync()
+    {
+        employees = await EmployeeService.GetAllAsync();
+        statuses = await StatusService.GetAll();
+        equipment = await EquipmentService.GetByIdAsync(EquipmentId);
+    }
 }

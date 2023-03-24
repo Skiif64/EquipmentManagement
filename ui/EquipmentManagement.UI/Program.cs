@@ -26,6 +26,7 @@ builder.Services.AddScoped<AuthenticationStateProvider>(sp =>
 builder.Services.AddScoped<IEquipmentService, EquipmentServiceWithCaching>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IStatusService, StatusService>();
+builder.Services.AddScoped<IEquipmentRecordService, EquipmentRecordService>();
 builder.Services.AddScoped<IAuthentificationService, AuthenticationService>();
 builder.Services.AddScoped<AuthenticationHttpMessageHandler>();
 builder.Services.AddAuthorizationCore();

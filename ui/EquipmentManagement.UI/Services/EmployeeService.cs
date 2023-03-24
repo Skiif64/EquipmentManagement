@@ -16,12 +16,14 @@ public class EmployeeService : IEmployeeService
 
     public async Task AddAsync(AddEmployeeRequest request, CancellationToken cancellationToken = default)
     {
-        await _client.PostAsJsonAsync("/api/employees/add/", request, cancellationToken);
+        var response = await _client.PostAsJsonAsync("/api/employees/add/", request, cancellationToken);
+        response.EnsureSuccessStatusCode();
     }
 
     public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        await _client.DeleteAsync($"/api/employees/delete/{id}", cancellationToken);
+        var response = await _client.DeleteAsync($"/api/employees/{id}", cancellationToken);
+        response.EnsureSuccessStatusCode();
     }
 
     public async Task<IEnumerable<EmployeeResponse>?> GetAllAsync(CancellationToken cancellationToken = default)

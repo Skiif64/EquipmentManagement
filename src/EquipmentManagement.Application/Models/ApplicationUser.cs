@@ -10,6 +10,7 @@ public class ApplicationUser : BaseModel
     public string PasswordHash { get; set; }
     public string PasswordSalt { get; set; }
     public string Role { get; set; } = string.Empty;
+    public Guid? RefreshToken { get; set; }
 
     public ApplicationUser() : base()
     {

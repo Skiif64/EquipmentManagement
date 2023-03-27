@@ -42,4 +42,23 @@ public class JwtAuthentificationService
         await _context.SaveChangesAsync(cancellationToken);
         return AuthentificationResult.CreateSuccess("");
     }
+
+    public async Task<AuthentificationResult> RefreshAccessTokenAsync(Guid refreshToken, CancellationToken cancellationToken)
+    {
+        var user = await _context
+            .Set<ApplicationUser>()
+            .SingleOrDefaultAsync(x => x.RefreshToken == refreshToken, cancellationToken);
+        if (user is null)
+            return AuthentificationResult.CreateFailure(new[]
+            { KeyValuePair.Create("NotFound", "Invalid refresh token.") });
+
+        var newAccessToken = _tokenProvider.Generate(user);
+        var newRefreshToken = Guid.NewGuid();
+        user.RefreshToken = newRefreshToken;
+        _context
+            .Set<ApplicationUser>()
+            .Update(user);
+        await _context.SaveChangesAsync(cancellationToken);
+        return AuthentificationResult.CreateSuccess(newAccessToken);
+    }
 }

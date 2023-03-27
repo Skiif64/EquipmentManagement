@@ -70,12 +70,13 @@
         if (EquipmentId == default)
             Navigation.NavigateTo("/equipment/");
         await LoadDataAsync();
-        request.EquipmentId = EquipmentId;
+        request.EquipmentId = EquipmentId;        
     }
 
     private async Task OnValidInputAsync()
     {
         await RecordService.AddAsync(request);
+        Navigation.NavigateTo("/equipment/");
     }
 
     private async Task LoadDataAsync()

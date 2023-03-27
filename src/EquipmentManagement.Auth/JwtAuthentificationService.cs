@@ -31,6 +31,13 @@ public class JwtAuthentificationService
 
         var token = _tokenProvider.Generate(user);
 
+        var newRefreshToken = Guid.NewGuid();
+        user.RefreshToken = newRefreshToken;
+        _context
+            .Set<ApplicationUser>()
+            .Update(user);
+        await _context.SaveChangesAsync(cancellationToken);
+
         return AuthentificationResult.CreateSuccess(token);
     }
 

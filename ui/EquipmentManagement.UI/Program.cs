@@ -12,6 +12,9 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
+builder.Services.AddHttpClient<IJwtTokenRefresher>(cfg =>
+cfg.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
+
 builder.Services.AddHttpClient("Api", client
     => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
     .AddHttpMessageHandler<AuthenticationHttpMessageHandler>();

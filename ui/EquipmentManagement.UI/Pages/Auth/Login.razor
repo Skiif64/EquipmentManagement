@@ -13,7 +13,7 @@
         <div class="col-lg-3 col-md-2"></div>
         <div class="col-lg-6 col-md-8">
             <div class="align-content-center">
-                <h3>Login</h3>                
+                <h3>Login</h3>
                 <EditForm Model="@request"
                           OnValidSubmit="@OnLoginSuccess">
                     <DataAnnotationsValidator />
@@ -51,16 +51,17 @@
 
 
 @code {
-    private readonly LoginRequest request = new();    
+    private readonly LoginRequest request = new();
 
     protected override void OnInitialized()
     {
-        
-    }    
+
+    }
 
     private async Task OnLoginSuccess()
     {
-        await AuthService.SignInAsync(request, default);
-        Navigation.NavigateTo("/");
+        var result = await AuthService.SignInAsync(request, default);
+        if (result.IsSuccess)
+            Navigation.NavigateTo("/");
     }
 }

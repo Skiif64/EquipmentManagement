@@ -23,7 +23,11 @@ public class JwtAuthentificationService
             .Set<ApplicationUser>()
             .SingleOrDefaultAsync(x => x.Login == login, cancellationToken);
         if (user is null)
-            return AuthentificationResult.CreateFailure(new[] { KeyValuePair.Create("NotFound", "Invalid login.") });
+            return AuthentificationResult.CreateFailure(new[] 
+            { KeyValuePair.Create("NotFound", "Invalid login.") });
+        if(!user.PasswordEquals(password))
+            return AuthentificationResult.CreateFailure(new[] 
+            { KeyValuePair.Create("InvalidPassword", "Invalid password.") });
 
         var token = _tokenProvider.Generate(user);
 

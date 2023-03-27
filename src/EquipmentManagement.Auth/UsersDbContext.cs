@@ -23,11 +23,6 @@ public class UsersDbContext : DbContext, IMigrationableDatabase
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<ApplicationUser>()
-            .HasData(new ApplicationUser
-            {
-                Login = "Admin",
-                Password = "example",
-                Role = "Admin"
-            });
+            .HasData(ApplicationUser.Create("Admin", "example", "Admin"));
     }
 }

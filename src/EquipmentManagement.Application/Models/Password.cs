@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 
 namespace EquipmentManagement.Application.Models;
-public readonly struct Password : IEquatable<string>, IEquatable<Password>
+public class Password : IEquatable<string>, IEquatable<Password>
 {
     private const int PasswordLength = 48;
     private readonly byte[] _password = Array.Empty<byte>();
@@ -17,6 +17,13 @@ public readonly struct Password : IEquatable<string>, IEquatable<Password>
         PasswordHash = Convert.ToBase64String(_password);
         PasswordSalt = Convert.ToBase64String(_salt);
     }
+
+#pragma warning disable CS8618
+    protected Password()
+    {
+        
+    }
+#pragma warning restore CS8618
 
     public bool Equals(string? other)
     {
@@ -33,8 +40,10 @@ public readonly struct Password : IEquatable<string>, IEquatable<Password>
         return new Password(passwordHash, salt);
     }
 
-    public bool Equals(Password other)
+    public bool Equals(Password? other)
     {
+        if (other is null)
+            return false;
         return PasswordHash.Equals(other.PasswordHash);
     }
 

@@ -56,8 +56,21 @@ public class AuthController : ControllerBase
         return Ok();
     }
 
+    [HttpGet("refresh/{refreshToken:guid}")]
+    public async Task<ActionResult<AuthentificationResponse>> RefreshAccessTokenAsync(Guid refreshToken, CancellationToken cancellationToken)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest();
+
+        var result = await _jwtAuthentificationService.RefreshAccessTokenAsync(refreshToken, cancellationToken);
+        var response = _mapper.Map<AuthentificationResponse>(result);
+        return result.IsSuccess
+            ? Ok(response)
+            : BadRequest();
+    }
+
     [HttpGet("logout")]
-    public async Task<IActionResult> LogoutAsync()
+    public async Task<IActionResult> LogoutAsync(CancellationToken cancellationToken)
     {          
         return Ok();
     }

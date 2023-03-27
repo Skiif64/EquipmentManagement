@@ -6,18 +6,20 @@ namespace EquipmentManagement.UI.Authentification;
 
 public class AuthenticationHttpMessageHandler : DelegatingHandler
 {
-    private readonly ITokenStorage _tokenStorage;    
+    private readonly ITokenStorage _tokenStorage;
+    private readonly IServiceProvider _serviceProvider;
 
-    public AuthenticationHttpMessageHandler(ITokenStorage tokenStorage)
+    public AuthenticationHttpMessageHandler(ITokenStorage tokenStorage, IServiceProvider serviceProvider)
     {
-        _tokenStorage = tokenStorage;        
+        _tokenStorage = tokenStorage;
+        _serviceProvider = serviceProvider;
     }
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
         var token = await _tokenStorage.GetAccessTokenAsync(cancellationToken);
-        if (TokenExpire(token))
-            await RefreshTokenAsync(cancellationToken);
+        //if (TokenExpire(token))
+            //await RefreshTokenAsync(cancellationToken);
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
         var response = await base.SendAsync(request, cancellationToken);
         
@@ -34,6 +36,7 @@ public class AuthenticationHttpMessageHandler : DelegatingHandler
 
     private async Task RefreshTokenAsync(CancellationToken cancellationToken)
     {
-        
+        var refresher = _serviceProvider.GetRequiredService<IJwtTokenRefresher>();        
+        await refresher.RefreshAccessToken(cancellationToken);
     }
 }

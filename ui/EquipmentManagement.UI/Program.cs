@@ -12,15 +12,16 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddHttpClient<IJwtTokenRefresher>(cfg =>
-cfg.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
-
 builder.Services.AddHttpClient("Api", client
     => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
     .AddHttpMessageHandler<AuthenticationHttpMessageHandler>();
 
 builder.Services.AddScoped(sp =>
     sp.GetRequiredService<IHttpClientFactory>().CreateClient("Api"));
+
+builder.Services.AddHttpClient("RefreshAccessToken", cfg =>
+cfg.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
+
 builder.Services.AddScoped<JwtAuthentificationStateProvider>();
 builder.Services.AddScoped<IAuthenticationStateNotifier>(sp =>
     sp.GetRequiredService<JwtAuthentificationStateProvider>());
@@ -32,6 +33,7 @@ builder.Services.AddScoped<IStatusService, StatusService>();
 builder.Services.AddScoped<IEquipmentRecordService, EquipmentRecordService>();
 builder.Services.AddScoped<IAuthentificationService, AuthenticationService>();
 builder.Services.AddScoped<AuthenticationHttpMessageHandler>();
+builder.Services.AddScoped<IJwtTokenRefresher, JwtTokenRefresher>();
 builder.Services.AddAuthorizationCore();
 builder.Services.AddMemoryCache();
 builder.Services.AddBlazoredLocalStorage();

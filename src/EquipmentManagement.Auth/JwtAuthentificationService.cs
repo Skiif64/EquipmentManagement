@@ -38,7 +38,7 @@ public class JwtAuthentificationService
             .Update(user);
         await _context.SaveChangesAsync(cancellationToken);
 
-        return AuthentificationResult.CreateSuccess(token);
+        return AuthentificationResult.CreateSuccess(token, newRefreshToken.ToString());
     }
 
     public async Task<AuthentificationResult> RegisterAsync(ApplicationUser user, CancellationToken cancellationToken)
@@ -66,6 +66,6 @@ public class JwtAuthentificationService
             .Set<ApplicationUser>()
             .Update(user);
         await _context.SaveChangesAsync(cancellationToken);
-        return AuthentificationResult.CreateSuccess(newAccessToken);
+        return AuthentificationResult.CreateSuccess(newAccessToken, newRefreshToken.ToString());
     }
 }

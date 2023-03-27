@@ -45,6 +45,7 @@ public class AuthenticationService : IAuthentificationService
         var response = await _client.GetAsync("/api/auth/logout");
         
         await _storage.RemoveAccessTokenAsync(cancellationToken);
+        await _storage.RemoveRefreshTokenAsync(cancellationToken);
         _notifier.Notify();
     }
 }

@@ -21,9 +21,8 @@ public class JwtAuthentificationStateProvider : AuthenticationStateProvider, IAu
         string? token = await _tokenStorage.GetAccessTokenAsync();
         var identity = new ClaimsIdentity();
         if (!string.IsNullOrWhiteSpace(token))
-        {
-            var handler = new JwtSecurityTokenHandler();
-            var parsedToken = handler.ReadJwtToken(token);
+        {            
+            var parsedToken = JwtTokenParser.Parse(token);
             identity = new ClaimsIdentity(parsedToken.Claims, "jwt",
                 JwtRegisteredClaimNames.Name,
                 ClaimTypes.Role);            

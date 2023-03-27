@@ -29,7 +29,7 @@ public class AuthenticationService : IAuthentificationService
     {
         var response = await _client.PostAsJsonAsync("/api/auth/login", request, cancellationToken);
 
-        var authResponse = await response.Content.ReadFromJsonAsync<AuthentificationResponse>();        
+        var authResponse = await response.Content.ReadFromJsonAsync<AuthentificationResponse>();
         if (authResponse is null)
             throw new Exception();//TODO: normal exception
         if (!authResponse.IsSuccess)
@@ -41,10 +41,10 @@ public class AuthenticationService : IAuthentificationService
 
     public async Task SignOutAsync(CancellationToken cancellationToken)
     {
-        await _storage.RemoveAccessTokenAsync(cancellationToken);
-        _notifier.Notify();
         var response = await _client.GetAsync("/api/auth/logout");
         if (!response.IsSuccessStatusCode)
             return;
+        await _storage.RemoveAccessTokenAsync(cancellationToken);
+        _notifier.Notify();
     }
 }

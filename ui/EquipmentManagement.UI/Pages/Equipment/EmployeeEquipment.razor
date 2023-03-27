@@ -71,6 +71,8 @@ else
     protected override async Task OnInitializedAsync()
     {
         await LoadDataAsync();
+        if (equipments is not null)
+            equipments.CollectionChanged += (s, e) => StateHasChanged();
     }
 
     private async Task LoadDataAsync()

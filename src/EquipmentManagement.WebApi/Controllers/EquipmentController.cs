@@ -17,7 +17,7 @@ namespace EquipmentManagement.WebApi.Controllers;
 [ApiController]
 [Authorize]
 public class EquipmentController : ControllerBase
-{        
+{
     private readonly ISender _sender;
     private readonly IMapper _mapper;
 
@@ -46,7 +46,7 @@ public class EquipmentController : ControllerBase
     [Authorize(Roles = Roles.Admin)]
     public async Task<ActionResult<Guid>> AddEquipmentAsync(AddEquipmentRequest request, CancellationToken cancellationToken)
     {
-        if(!ModelState.IsValid)
+        if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
         var command = _mapper.Map<AddEquipmentCommand>(request);
@@ -59,7 +59,9 @@ public class EquipmentController : ControllerBase
     {
         var query = new GetEquipmentsByEmployeeIdQuery(employeeId);
         var equipments = await _sender.Send(query, cancellationToken);
-        var response = _mapper.Map<IEnumerable<EquipmentResponse>>(equipments);
+        var response = Enumerable.Empty<EquipmentResponse>();
+        if (equipments is not null && equipments.Any())
+            response = _mapper.Map<IEnumerable<EquipmentResponse>>(equipments);
         return Ok(response);
     }
 }

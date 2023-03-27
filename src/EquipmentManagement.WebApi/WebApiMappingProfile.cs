@@ -15,7 +15,7 @@ namespace EquipmentManagement.WebApi;
 public class WebApiMappingProfile : Profile
 {
     public WebApiMappingProfile()
-    {            
+    {
         CreateMap<AddEmployeeRequest, AddEmployeeCommand>();
         CreateMap<AddEquipmentRequest, AddEquipmentCommand>();
         CreateMap<AddEquipmentRecordRequest, AddEquipmentRecordCommand>();
@@ -25,18 +25,18 @@ public class WebApiMappingProfile : Profile
         CreateMap<Employee, EmployeeResponse>();
         CreateMap<Equipment, EquipmentResponse>()
             .ForMember(dest => dest.LastRecordId,
-            opt => opt.MapFrom(src => src.LastRecord));
+            opt => opt.MapFrom(src => (src.LastRecord != null) ? src.LastRecord.Id : default));
         CreateMap<EquipmentWithStatus, EquipmentWithStatusResponse>()
             .ForMember(dest => dest.LastRecordId,
             opt => opt.MapFrom(src => (src.LastRecord != null) ? src.LastRecord.Id : default))
             .ForMember(dest => dest.EmployeeId,
-            opt => opt.MapFrom(src => (src.LastRecord != null)? src.LastRecord.EmployeeId : null))            
-            .IncludeBase<Equipment, EquipmentResponse>();            
+            opt => opt.MapFrom(src => (src.LastRecord != null) ? src.LastRecord.EmployeeId : null))
+            .IncludeBase<Equipment, EquipmentResponse>();
         CreateMap<Status, StatusResponse>();
         CreateMap<AuthentificationResult, AuthentificationResponse>();
 
         CreateMap<RegisterRequest, ApplicationUser>()
             .ConstructUsing(src => ApplicationUser.Create(src.Login, src.Password, src.Role));
-           
+
     }
 }

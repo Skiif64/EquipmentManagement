@@ -16,7 +16,7 @@ public class AuthenticationHttpMessageHandler : DelegatingHandler
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
         var token = await _tokenStorage.GetAccessTokenAsync(cancellationToken);
-        if (CheckTokenExpiry(token))
+        if (TokenExpire(token))
             await RefreshTokenAsync(cancellationToken);
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
         var response = await base.SendAsync(request, cancellationToken);
@@ -24,9 +24,12 @@ public class AuthenticationHttpMessageHandler : DelegatingHandler
         return response;
     }    
 
-    private bool CheckTokenExpiry(string? token)
+    private bool TokenExpire(string? token)
     {
-        return false;
+        if (token is null)
+            return true;
+        var parsedToken = JwtTokenParser.Parse(token);
+        return parsedToken.ValidTo > DateTime.UtcNow;        
     }
 
     private async Task RefreshTokenAsync(CancellationToken cancellationToken)

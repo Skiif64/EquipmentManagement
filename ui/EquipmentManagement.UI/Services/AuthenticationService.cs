@@ -2,6 +2,7 @@
 using EquimentManagement.Contracts.Responses;
 using EquipmentManagement.UI.Abstractions;
 using EquipmentManagement.UI.Models;
+using System.Net;
 using System.Net.Http.Json;
 
 namespace EquipmentManagement.UI.Services;
@@ -42,8 +43,7 @@ public class AuthenticationService : IAuthentificationService
     public async Task SignOutAsync(CancellationToken cancellationToken)
     {
         var response = await _client.GetAsync("/api/auth/logout");
-        if (!response.IsSuccessStatusCode)
-            return;
+        
         await _storage.RemoveAccessTokenAsync(cancellationToken);
         _notifier.Notify();
     }

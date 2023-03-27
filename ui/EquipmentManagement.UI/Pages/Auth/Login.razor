@@ -27,7 +27,7 @@
                         <label class="form-label">Password</label>
                         <InputText @bind-Value="@request.Password"
                                    type="password"
-                                   class="form-control"></InputText>
+                                   class="form-control"></InputText>                                  
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Remember Me?</label>
@@ -52,7 +52,7 @@
 
 @code {
     private readonly LoginRequest request = new();
-
+    
     protected override void OnInitialized()
     {
 

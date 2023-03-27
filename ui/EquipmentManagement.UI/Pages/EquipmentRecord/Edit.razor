@@ -2,17 +2,38 @@
 @using EquimentManagement.Contracts.Requests;
 @using EquimentManagement.Contracts.Responses;
 @using EquipmentManagement.UI.Abstractions;
+@using EquipmentManagement.UI.Shared.Modal
+@using System.Collections.ObjectModel;
 @inject IEmployeeService EmployeeService;
 @inject IStatusService StatusService;
 @inject IEquipmentService EquipmentService;
 @inject IEquipmentRecordService RecordService;
 @inject NavigationManager Navigation;
 @attribute [Authorize(Roles = "Admin")]
+<Modal @ref="statusModal"
+       Title="Добавление нового статуса"
+       OnCancelClick="@HideStatusModal"
+       OnSubmitClick="OnStatusModalSubmit">
+    <EditForm Model="@statusRequest">
+        <div class="mb-3">
+            <label class="form-label">Название</label>
+            <InputText class="form-control" @bind-Value="statusRequest.Title" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Описание</label>
+            <InputText class="form-control" @bind-Value="statusRequest.Description" />
+        </div>
+    </EditForm>
+</Modal>
 <div class="container">
     <div class="row">
         <div class="align-content-center justify-content-center">
             <h3>Изменение статуса оборудования</h3>
             <p>@equipment?.Type</p>
+            <button type="button" class="btn btn-primary"
+                    @onclick="() => statusModal?.Show()">
+                Добавить новый статус
+            </button>
             <EditForm Model="@request" OnValidSubmit="@OnValidInputAsync">
                 <DataAnnotationsValidator />
                 <ValidationSummary />
@@ -26,7 +47,7 @@
                             {
                                 <option value="@employee.Id">@employee.Lastname @employee.Firstname @employee.Patronymic</option>
                             }
-                        }                       
+                        }
                     </InputSelect>
                 </div>
                 <div class="mb-3">
@@ -41,7 +62,6 @@
                                 <option value="@status.Id">@status.Title</option>
                             }
                         }
-                        <option value=""><button>Добавить новый статус</button></option>
                     </InputSelect>
                 </div>
                 <div class="mb-3">
@@ -56,10 +76,12 @@
 </div>
 @code {
     private AddEquipmentRecordRequest request = new();
+    private AddStatusRequest statusRequest = new();
     private EquipmentResponse? equipment;
+    private Modal statusModal = null!;
 
     private IEnumerable<EmployeeResponse>? employees;
-    private IEnumerable<StatusResponse>? statuses;
+    private ObservableCollection<StatusResponse>? statuses;
 
     [Parameter]
     [SupplyParameterFromQuery(Name = "id")]
@@ -70,7 +92,14 @@
         if (EquipmentId == default)
             Navigation.NavigateTo("/equipment/");
         await LoadDataAsync();
-        request.EquipmentId = EquipmentId;        
+        request.EquipmentId = EquipmentId;
+        if (statuses is not null)
+            statuses.CollectionChanged += (s, e) => StateHasChanged();
+    }
+
+    private void HideStatusModal()
+    {
+        statusModal.Hide();
     }
 
     private async Task OnValidInputAsync()
@@ -79,10 +108,18 @@
         Navigation.NavigateTo("/equipment/");
     }
 
+    private async Task OnStatusModalSubmit()
+    {
+        await StatusService.AddAsync(statusRequest);
+        statusModal.Hide();
+    }
+
     private async Task LoadDataAsync()
     {
         employees = await EmployeeService.GetAllAsync();
-        statuses = await StatusService.GetAll();
+        var statusResponse = await StatusService.GetAll();
+        if (statusResponse is not null)
+            statuses = new ObservableCollection<StatusResponse>(statusResponse);
         equipment = await EquipmentService.GetByIdAsync(EquipmentId);
     }
 }

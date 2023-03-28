@@ -22,10 +22,15 @@ public class JwtTokenRefresher : IJwtTokenRefresher
         var refreshToken = await _storage.GetRefreshTokenAsync(cancellationToken);
         var client = _factory.CreateClient("RefreshAccessToken");
         var response = await client.GetFromJsonAsync<AuthentificationResponse>($"/api/auth/refresh/{refreshToken}", cancellationToken);
-        if(response is not null && response.IsSuccess)
+        if(response.IsSuccess)
         {
             await _storage.SetRefreshTokenAsync(response.RefreshToken, cancellationToken);
             await  _storage.SetAccessTokenAsync(response.Token, cancellationToken);
+        }
+        else
+        {
+            await _storage.RemoveAccessTokenAsync(cancellationToken);
+            await _storage.RemoveRefreshTokenAsync(cancellationToken);
         }
         _notifier.Notify();
     }

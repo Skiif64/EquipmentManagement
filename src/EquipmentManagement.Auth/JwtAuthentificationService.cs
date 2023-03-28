@@ -42,7 +42,13 @@ public class JwtAuthentificationService
     }
 
     public async Task<AuthentificationResult> RegisterAsync(ApplicationUser user, CancellationToken cancellationToken)
-    {        
+    {
+        var existingUser = _context
+            .Set<ApplicationUser>()
+            .SingleOrDefaultAsync(x => x.Login == user.Login, cancellationToken);
+        if (existingUser is not null)
+            return AuthentificationResult.CreateFailure(
+                new[] { KeyValuePair.Create<string, string>("LoginExists", "User with that login already exists.") });
         await _context
             .Set<ApplicationUser>()
             .AddAsync(user, cancellationToken);

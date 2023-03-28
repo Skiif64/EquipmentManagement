@@ -50,10 +50,14 @@ public class AuthController : ControllerBase
 
         var user = _mapper.Map<ApplicationUser>(request);
 
-        await _jwtAuthentificationService.RegisterAsync(user, cancellationToken);
-
-        _logger.LogInformation(AppLogEvents.Register, "User {username} is registered", request.Login);
-        return Ok();
+        var response = await _jwtAuthentificationService.RegisterAsync(user, cancellationToken);
+        if (response.IsSuccess)
+            _logger.LogInformation(AppLogEvents.Register, "User {username} is registered", request.Login);
+        else
+            _logger.LogInformation(AppLogEvents.Register, "User {username} is already exists", request.Login);
+        return response.IsSuccess
+            ? Ok(response)
+            : BadRequest(response);
     }
 
     [AllowAnonymous]

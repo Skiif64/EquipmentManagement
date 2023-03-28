@@ -74,10 +74,10 @@ public class AuthController : ControllerBase
             : BadRequest(response);
     }
 
-    [HttpGet("logout")]
-    public async Task<IActionResult> LogoutAsync(CancellationToken cancellationToken)
+    [HttpGet("logout/{userId:guid}")]
+    public async Task<IActionResult> LogoutAsync(Guid userId, CancellationToken cancellationToken)
     {
-        _jwtAuthentificationService.Sig
+        await _jwtAuthentificationService.LogoutAsync(userId, cancellationToken);
         return Ok();
     }
 }

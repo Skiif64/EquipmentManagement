@@ -36,6 +36,7 @@ public class AuthenticationService : IAuthentificationService
         if (!authResponse.IsSuccess)
             return new AuthentificationResult(authResponse.Errors!);
         await _storage.SetAccessTokenAsync(authResponse.Token, cancellationToken);
+        await _storage.SetRefreshTokenAsync(authResponse.RefreshToken, cancellationToken);
         _notifier.Notify();
         return new AuthentificationResult();
     }

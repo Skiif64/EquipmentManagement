@@ -21,8 +21,8 @@ public class JwtTokenRefresher : IJwtTokenRefresher
     {
         var refreshToken = await _storage.GetRefreshTokenAsync(cancellationToken);
         var client = _factory.CreateClient("RefreshAccessToken");
-        var response = await client.GetFromJsonAsync<AuthentificationResponse>($"/api/auth/refresh/{refreshToken}");
-        if(response.IsSuccess)
+        var response = await client.GetFromJsonAsync<AuthentificationResponse>($"/api/auth/refresh/{refreshToken}", cancellationToken);
+        if(response is not null && response.IsSuccess)
         {
             await _storage.SetRefreshTokenAsync(response.RefreshToken, cancellationToken);
             await  _storage.SetAccessTokenAsync(response.Token, cancellationToken);

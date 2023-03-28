@@ -56,6 +56,7 @@ public class AuthController : ControllerBase
         return Ok();
     }
 
+    [AllowAnonymous]
     [HttpGet("refresh/{refreshToken:guid}")]
     public async Task<ActionResult<AuthentificationResponse>> RefreshAccessTokenAsync(Guid refreshToken, CancellationToken cancellationToken)
     {

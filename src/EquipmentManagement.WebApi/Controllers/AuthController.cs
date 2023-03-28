@@ -67,7 +67,7 @@ public class AuthController : ControllerBase
         var response = _mapper.Map<AuthentificationResponse>(result);
         return result.IsSuccess
             ? Ok(response)
-            : BadRequest();
+            : BadRequest(response);
     }
 
     [HttpGet("logout")]

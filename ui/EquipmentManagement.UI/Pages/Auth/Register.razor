@@ -2,6 +2,7 @@
 @using EquimentManagement.Contracts.Requests;
 @using EquipmentManagement.UI.Abstractions;
 @inject IAuthentificationService AuthService;
+@inject NavigationManager Navigation;
 @attribute [Authorize(Roles = "Admin")]
 <div class="container p-2">
     <div class="row">
@@ -57,5 +58,6 @@
     private async Task OnRegisterSuccessAsync()
     {
         await AuthService.RegisterAsync(request, default);
+        Navigation.NavigateTo(PagePaths.Home);
     }
 }

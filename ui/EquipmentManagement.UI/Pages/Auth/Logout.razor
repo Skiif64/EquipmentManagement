@@ -1,4 +1,4 @@
-﻿@page "/auth/logout/"
+﻿@attribute [Route(PagePaths.Auth.Logout)]
 @using EquipmentManagement.UI.Abstractions;
 @inject NavigationManager Navigation;
 @inject IAuthentificationService AuthService;
@@ -6,6 +6,6 @@
     protected override async Task OnInitializedAsync()
     {
         await AuthService.SignOutAsync(default);
-        Navigation.NavigateTo("/");
+        Navigation.NavigateTo(PagePaths.Home);
     }
 }

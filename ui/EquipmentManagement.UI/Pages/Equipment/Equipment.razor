@@ -1,4 +1,4 @@
-﻿@page "/equipment/"
+﻿@attribute [Route(PagePaths.Equipment.List)]
 @using EquimentManagement.Contracts.Responses;
 @using EquipmentManagement.UI.Abstractions;
 @using Microsoft.AspNetCore.Components.Authorization
@@ -110,10 +110,10 @@ else
 
     private void EditEquipmentStatus(Guid equipmentId)
     {
-        Navigation.NavigateTo($"/record/edit?id={equipmentId}");
+        Navigation.NavigateTo($"{PagePaths.EquipmentRecord.Add}?id={equipmentId}");
     }
     private void ShowHistory(Guid equipmentId)
     {
-        Navigation.NavigateTo($"/equipment/history?id={equipmentId}");
+        Navigation.NavigateTo($"{PagePaths.EquipmentRecord.History}?id={equipmentId}");
     }
 }

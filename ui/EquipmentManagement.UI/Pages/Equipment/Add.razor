@@ -1,4 +1,4 @@
-﻿@page "/equipment/add/"
+﻿@attribute [Route(PagePaths.Equipment.Add)]
 @using EquimentManagement.Contracts.Requests;
 @inject HttpClient Client;
 @inject NavigationManager Navigation;
@@ -51,7 +51,7 @@
         var response = await Client.PostAsJsonAsync("/api/equipment/add/", request);
         if (response.IsSuccessStatusCode)
         {
-            Navigation.NavigateTo("/equipment/");
+            Navigation.NavigateTo(PagePaths.Equipment.List);
         }
     }
 }

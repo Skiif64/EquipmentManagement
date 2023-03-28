@@ -1,4 +1,4 @@
-﻿@page "/employee/add/"
+﻿@attribute [Route(PagePaths.Employee.Add)]
 @using EquimentManagement.Contracts.Requests;
 @using EquipmentManagement.UI.Abstractions;
 @inject IEmployeeService EmployeeService;
@@ -46,7 +46,7 @@
     private async Task OnValidSubmitAsync()
     {
         await EmployeeService.AddAsync(request);
-        Navigation.NavigateTo("/employee/");
+        Navigation.NavigateTo(PagePaths.Employee.List);
     }
 }
 

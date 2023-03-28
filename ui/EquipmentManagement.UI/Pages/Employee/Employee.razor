@@ -1,4 +1,4 @@
-﻿@page "/employee/"
+﻿@attribute [Route(PagePaths.Employee.List)]
 @inject IEmployeeService EmployeeService;
 @inject NavigationManager Navigation;
 @attribute [Authorize]
@@ -125,6 +125,6 @@ else
 
     public void NavigateToEmployeeEquipment(Guid employeeId)
     {
-        Navigation.NavigateTo($"/equipment/employee?id={employeeId}");
+        Navigation.NavigateTo($"{PagePaths.Equipment.EmployeeEquipment}?id={employeeId}");
     }
 }

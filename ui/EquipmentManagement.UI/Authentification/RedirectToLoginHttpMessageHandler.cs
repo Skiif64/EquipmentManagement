@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using EquipmentManagement.UI.Utils;
+using Microsoft.AspNetCore.Components;
 using System.Net;
 
 namespace EquipmentManagement.UI.Authentification;
@@ -16,7 +17,7 @@ public class RedirectToLoginHttpMessageHandler : DelegatingHandler
     {
         var response = await base.SendAsync(request, cancellationToken);
         if (response.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden)
-            _navigationManager.NavigateTo("/auth/login");
+            _navigationManager.NavigateTo(PagePaths.Auth.Login);
         return response;        
     }
 }

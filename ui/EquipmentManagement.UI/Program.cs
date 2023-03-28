@@ -1,4 +1,5 @@
 using Blazored.LocalStorage;
+using Blazored.Modal;
 using EquipmentManagement.UI;
 using EquipmentManagement.UI.Abstractions;
 using EquipmentManagement.UI.Authentification;
@@ -41,6 +42,7 @@ builder.Services.AddScoped<IJwtTokenRefresher, JwtTokenRefresher>();
 builder.Services.AddAuthorizationCore();
 builder.Services.AddMemoryCache();
 builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddBlazoredModal();
 builder.Services.AddScoped<ITokenStorage, TokenStorage>();
 var app = builder.Build();
 

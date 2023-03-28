@@ -4,6 +4,7 @@ using EquimentManagement.Contracts.Responses;
 using EquipmentManagement.Application.EquipmentRecords.Add;
 using EquipmentManagement.Application.EquipmentRecords.GetActualsByEmployeeID;
 using EquipmentManagement.Application.EquipmentRecords.GetAll;
+using EquipmentManagement.Application.EquipmentRecords.GetByEquipmentId;
 using EquipmentManagement.Application.EquipmentRecords.Update;
 using EquipmentManagement.Auth;
 using MediatR;
@@ -30,7 +31,7 @@ public class EquipmentRecordsController : ControllerBase
     [Authorize(Roles = Roles.Admin)]
     public async Task<IActionResult> AddEquipmentRecord(AddEquipmentRecordRequest request, CancellationToken cancellationToken)
     {
-        if(!ModelState.IsValid)
+        if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
         var command = _mapper.Map<AddEquipmentRecordCommand>(request);
@@ -54,6 +55,15 @@ public class EquipmentRecordsController : ControllerBase
     public async Task<ActionResult<IEnumerable<EquipmentRecordResponse>>> GetAllAsync(CancellationToken cancellationToken)
     {
         var query = new GetAllEquipmentRecordsQuery();
+        var records = await _sender.Send(query, cancellationToken);
+        var response = _mapper.Map<IEnumerable<EquipmentRecordResponse>>(records);
+        return Ok(response);
+    }
+
+    [HttpGet("equipment/{equipmentId:guid}")]
+    public async Task<ActionResult<IEnumerable<EquipmentRecordResponse>>> GetByEquipmentIdAsync(Guid equipmentId, CancellationToken cancellationToken)
+    {
+        var query = new GetEquipmentRecordByEquipmentIdQuery(equipmentId);
         var records = await _sender.Send(query, cancellationToken);
         var response = _mapper.Map<IEnumerable<EquipmentRecordResponse>>(records);
         return Ok(response);

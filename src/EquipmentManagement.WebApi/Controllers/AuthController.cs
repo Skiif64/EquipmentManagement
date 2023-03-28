@@ -72,7 +72,8 @@ public class AuthController : ControllerBase
 
     [HttpGet("logout")]
     public async Task<IActionResult> LogoutAsync(CancellationToken cancellationToken)
-    {          
+    {
+        _jwtAuthentificationService.Sig
         return Ok();
     }
 }

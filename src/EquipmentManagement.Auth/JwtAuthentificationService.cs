@@ -50,6 +50,20 @@ public class JwtAuthentificationService
         return AuthentificationResult.CreateSuccess("");
     }
 
+    public async Task LogoutAsync(Guid userId, CancellationToken cancellationToken)
+    {
+        var user = await _context
+            .Set<ApplicationUser>()
+            .FindAsync(new[] { userId }, cancellationToken);
+        if (user is null)
+            return;
+        user.RefreshToken = null;
+        _context
+            .Set<ApplicationUser>()
+            .Update(user);
+        await _context.SaveChangesAsync(cancellationToken);
+    }
+
     public async Task<AuthentificationResult> RefreshAccessTokenAsync(Guid refreshToken, CancellationToken cancellationToken)
     {
         var user = await _context

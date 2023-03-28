@@ -1,0 +1,79 @@
+﻿@page "/equipment/history/";
+@using EquimentManagement.Contracts.Responses;
+@using System.Collections.ObjectModel;
+@using EquipmentManagement.UI.Abstractions;
+@inject IEquipmentRecordService RecordService;
+@inject IEquipmentService EquipmentService;
+@attribute [Authorize]
+<div class="container">
+    <div class="row justify-content-around align-content-start">
+        <h3>История</h3>
+
+    </div>
+</div>
+    @if (records is not null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    <span class="text-center">Назначено на</span>
+                </th>
+                <th>
+                    <span class="text-center">Статус</span>
+                </th>
+                <th>
+                    <span class="text-center">Дата</span>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var record in records)
+            {
+                <tr>
+                    <td>
+                        <span>@record.EmployeeId</span>
+                    </td>
+                    <td>
+                        <span>@record.StatusId</span>
+                    </td>
+                    <td>
+                        <span>@record.Modified.ToLocalTime().ToString("d MMMM yyyy г. hh:mm")</span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="d-flex">
+        <div class="my-auto mx-auto">
+            <LoadingCircle />
+        </div>
+    </div>
+}
+
+@code {
+    private ObservableCollection<EquipmentRecordResponse>? records;
+    private EquipmentResponse? equipment;
+    [SupplyParameterFromQuery( Name = "id")]
+    [Parameter]
+    public Guid EquipmentId { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadRecordsAsync();
+    }
+
+    private async Task LoadRecordsAsync()
+    {
+        var response = await RecordService.GetByEquipmentIdAsync(EquipmentId);
+        if (response is not null)
+        {
+            records = new ObservableCollection<EquipmentRecordResponse>(response);
+            records.CollectionChanged += (sender, e) => StateHasChanged();
+        }
+        equipment = await EquipmentService.GetByIdAsync(EquipmentId);
+    }
+}

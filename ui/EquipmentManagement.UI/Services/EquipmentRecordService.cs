@@ -24,4 +24,10 @@ public class EquipmentRecordService : IEquipmentRecordService
         var records = await _client.GetFromJsonAsync<IEnumerable<EquipmentRecordResponse>>("/api/equipmentrecords/");
         return records;
     }
+
+    public async Task<IEnumerable<EquipmentRecordResponse>> GetByEquipmentIdAsync(Guid equipmentId, CancellationToken cancellationToken = default)
+    {
+        var records = await _client.GetFromJsonAsync<IEnumerable<EquipmentRecordResponse>>($"/api/equipmentrecords/equipment/{equipmentId}");
+        return records;
+    }
 }

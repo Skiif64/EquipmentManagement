@@ -7,4 +7,5 @@ public interface IEquipmentRecordService
 {
     Task<IEnumerable<EquipmentRecordResponse>> GetAllAsync(CancellationToken cancellationToken = default);
     Task AddAsync(AddEquipmentRecordRequest request, CancellationToken cancellationToken = default);
+    Task<IEnumerable<EquipmentRecordResponse>> GetByEquipmentIdAsync(Guid equipmentId, CancellationToken cancellationToken = default);
 }

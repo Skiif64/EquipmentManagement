@@ -78,7 +78,8 @@
                                 </button>
                             </Authorized>
                         </AuthorizeView>
-
+                        <button class="btn btn-primary"
+                        @onclick="() => ShowHistory(equipment.Id)">История</button>
                     </td>
                 </tr>
             }
@@ -110,5 +111,9 @@ else
     private void EditEquipmentStatus(Guid equipmentId)
     {
         Navigation.NavigateTo($"/record/edit?id={equipmentId}");
+    }
+    private void ShowHistory(Guid equipmentId)
+    {
+        Navigation.NavigateTo($"/equipment/history?id={equipmentId}");
     }
 }

@@ -3,12 +3,11 @@
 @inject HttpClient Client;
 @inject NavigationManager Navigation;
 @attribute [Authorize(Roles = "Admin")]
-<h3>Add</h3>
 
 <div class="container">
     <div class="row">
         <div class="align-content-center justify-content-center">
-            <h3>Add</h3>
+            <h3>Добавление оборудования</h3>
             <EditForm Model="@request"
                       OnValidSubmit="@OnValidSubmitAsync">
                 <DataAnnotationsValidator />

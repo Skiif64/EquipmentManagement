@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 
 <head>
     <meta charset="utf-8" />
@@ -12,11 +12,22 @@
 </head>
 
 <body>
-    <div id="app">Loading...</div>
+    <div id="app">
+        <div class="d-flex justify-content-center align-content-center vh-100">
+            <div class="flex-row">
+                <div class="spinner-border"
+                     role="status">
+                </div>
+                <div>
+                    <span class="text-center">Загрузка...</span>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div id="blazor-error-ui">
-        An unhandled error has occurred.
-        <a href="" class="reload">Reload</a>
+        Произошла неожиданная ошибка.
+        <a href="" class="reload">Перезагрузить</a>
         <a class="dismiss">🗙</a>
     </div>
     <script src="_framework/blazor.webassembly.js"></script>

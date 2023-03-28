@@ -13,31 +13,31 @@
         <div class="col-lg-3 col-md-2"></div>
         <div class="col-lg-6 col-md-8">
             <div class="align-content-center">
-                <h3>Login</h3>
+                <h3>Войти</h3>
                 <EditForm Model="@request"
                           OnValidSubmit="@OnLoginSuccess">
                     <DataAnnotationsValidator />
                     <ValidationSummary />
                     <div class="mb-3">
-                        <label class="form-label">Username</label>
+                        <label class="form-label">Логин</label>
                         <InputText @bind-Value="@request.Login"
                                    class="form-control"></InputText>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Password</label>
+                        <label class="form-label">Пароль</label>
                         <InputText @bind-Value="@request.Password"
                                    type="password"
                                    class="form-control"></InputText>                                  
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Remember Me?</label>
+                        <label class="form-label">Запомнить меня?</label>
                         <InputCheckbox @bind-Value="@request.RememberMe"
                                        class="form-check-inline mx-3"></InputCheckbox>
                     </div>
                     <div class="mb-3">
                         <button type="submit"
                                 class="btn btn-primary">
-                            Login
+                            Войти
                         </button>
                     </div>
                 </EditForm>
@@ -62,6 +62,6 @@
     {
         var result = await AuthService.SignInAsync(request, default);
         if (result.IsSuccess)
-            Navigation.NavigateTo("/");
+            Navigation.NavigateTo(PagePaths.Home);
     }
 }

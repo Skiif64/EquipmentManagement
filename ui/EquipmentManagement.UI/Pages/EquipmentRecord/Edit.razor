@@ -29,7 +29,9 @@
     <div class="row">
         <div class="align-content-center justify-content-center">
             <h3>Изменение статуса оборудования</h3>
-            <p>@equipment?.Type</p>
+            <p>Тип: @equipment?.Type</p>
+            <p>Артикул: @equipment?.Article</p>
+            <p>Серийный номер: @equipment?.SerialNumber</p>
             <button type="button" class="btn btn-primary"
                     @onclick="() => statusModal?.Show()">
                 Добавить новый статус

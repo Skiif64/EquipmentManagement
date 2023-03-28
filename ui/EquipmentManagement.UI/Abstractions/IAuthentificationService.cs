@@ -8,5 +8,5 @@ public interface IAuthentificationService
 {
     Task<AuthentificationResult> SignInAsync(LoginRequest request, CancellationToken cancellationToken);
     Task<AuthentificationResult> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken);
-    Task SignOutAsync(CancellationToken cancellationToken);
+    Task SignOutAsync(Guid userId, CancellationToken cancellationToken);
 }

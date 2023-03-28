@@ -41,9 +41,9 @@ public class AuthenticationService : IAuthentificationService
         return new AuthentificationResult();
     }
 
-    public async Task SignOutAsync(CancellationToken cancellationToken)
+    public async Task SignOutAsync(Guid userId, CancellationToken cancellationToken)
     {
-        var response = await _client.GetAsync("/api/auth/logout");
+        var response = await _client.GetAsync($"/api/auth/logout/{userId}");
         
         await _storage.RemoveAccessTokenAsync(cancellationToken);
         await _storage.RemoveRefreshTokenAsync(cancellationToken);

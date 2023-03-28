@@ -29,7 +29,7 @@ public class EquipmentRecordsController : ControllerBase
 
     [HttpPost("add")]
     [Authorize(Roles = Roles.Admin)]
-    public async Task<IActionResult> AddEquipmentRecord(AddEquipmentRecordRequest request, CancellationToken cancellationToken)
+    public async Task<ActionResult<Guid>> AddEquipmentRecord(AddEquipmentRecordRequest request, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
@@ -41,14 +41,15 @@ public class EquipmentRecordsController : ControllerBase
 
     [HttpPatch("update")]
     [Authorize(Roles = Roles.Admin)]
-    public async Task<IActionResult> UpdateEquipmentRecord(UpdateEquipmentRecordRequest request, CancellationToken cancellationToken)
+    public async Task<ActionResult<EquipmentRecordResponse>> UpdateEquipmentRecord(UpdateEquipmentRecordRequest request, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
         var command = _mapper.Map<UpdateEquipmentRecordCommand>(request);
         var record = await _sender.Send(command, cancellationToken);
-        return Ok(record);
+        var response = _mapper.Map<EquipmentRecordResponse>(record);
+        return Ok(response);
     }
 
     [HttpGet]
@@ -70,10 +71,11 @@ public class EquipmentRecordsController : ControllerBase
     }
 
     [HttpGet("{employeeId:guid}")]
-    public async Task<IActionResult> GetActualEquipmentRecords(Guid employeeId, CancellationToken cancellationToken)
+    public async Task<ActionResult<IEnumerable<EquipmentRecordResponse>>> GetActualEquipmentRecords(Guid employeeId, CancellationToken cancellationToken)
     {
         var command = new GetActualsByEmployeeIdQuery(employeeId);
         var records = await _sender.Send(command, cancellationToken);
-        return Ok(records);
+        var response = _mapper.Map<IEnumerable<EquipmentRecordResponse>>(records);
+        return Ok(response);
     }
 }

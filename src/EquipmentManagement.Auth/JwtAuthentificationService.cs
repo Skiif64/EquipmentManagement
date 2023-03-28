@@ -60,7 +60,7 @@ public class JwtAuthentificationService
     {
         var user = await _context
             .Set<ApplicationUser>()
-            .FindAsync(new[] { userId }, cancellationToken);
+            .FindAsync(new object[] { userId }, cancellationToken);
         if (user is null)
             return;
         user.RefreshToken = null;

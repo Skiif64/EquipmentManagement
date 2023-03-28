@@ -1,6 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 
-namespace EquipmentManagement.UI.Authentification;
+namespace EquipmentManagement.UI.Utils;
 
 public class JwtTokenParser
 {

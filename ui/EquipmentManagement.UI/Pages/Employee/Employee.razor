@@ -4,7 +4,6 @@
 @attribute [Authorize]
 @using EquimentManagement.Contracts.Responses;
 @using EquipmentManagement.UI.Abstractions;
-@using EquipmentManagement.UI.Shared.Modal;
 @using System.Collections.ObjectModel;
 @using Microsoft.AspNetCore.Components.Authorization
 
@@ -22,12 +21,6 @@
 
     </div>
 </div>
-<Modal OnSubmitClick="DeleteSelectedEmployee"
-       OnCancelClick="HideDeleteModal"
-       Title="Удаление сотрудника"      
-       @ref="deleteModal">
-    <span>Вы уверены что хотите удалить сотрудника @selectedEmployee?.Lastname</span>
-   </Modal>
     @if (employees is not null)
 {
     <table class="table">
@@ -82,7 +75,8 @@ else
 @code {
     private ObservableCollection<EmployeeResponse>? employees;
     private EmployeeResponse? selectedEmployee;
-    private Modal deleteModal = null!;
+    [CascadingParameter]
+    public IModalService Modal { get; set; } = null!;
     protected override async Task OnInitializedAsync()
     {
         await LoadEmployeesAsync();
@@ -99,17 +93,16 @@ else
         }
     }
 
-    private void ShowDeleteModal(EmployeeResponse? employee)
+    private async Task ShowDeleteModal(EmployeeResponse? employee)
     {
         selectedEmployee = employee;
-        deleteModal.Show();
+        
+        var modal = Modal.Show<DeleteModal>("Удаление сотрудника");
+        var result = await modal.Result;
+        if (result.Cancelled)
+            await DeleteSelectedEmployee();
     }
 
-    private void HideDeleteModal()
-    {
-        deleteModal.Hide();
-        selectedEmployee = null;
-    }
 
     private async Task DeleteSelectedEmployee()
     {
@@ -117,7 +110,6 @@ else
             return;
         employees?.Remove(selectedEmployee);
         var employeeId = selectedEmployee.Id;
-        HideDeleteModal();
 
         await EmployeeService.DeleteAsync(employeeId);
 

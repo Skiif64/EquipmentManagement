@@ -4,7 +4,6 @@ using EquipmentManagement.UI;
 using EquipmentManagement.UI.Abstractions;
 using EquipmentManagement.UI.Authentification;
 using EquipmentManagement.UI.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;

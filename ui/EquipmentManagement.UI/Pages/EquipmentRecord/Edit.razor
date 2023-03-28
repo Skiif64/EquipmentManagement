@@ -2,7 +2,6 @@
 @using EquimentManagement.Contracts.Requests;
 @using EquimentManagement.Contracts.Responses;
 @using EquipmentManagement.UI.Abstractions;
-@using EquipmentManagement.UI.Shared.Modal
 @using System.Collections.ObjectModel;
 @inject IEmployeeService EmployeeService;
 @inject IStatusService StatusService;
@@ -10,21 +9,7 @@
 @inject IEquipmentRecordService RecordService;
 @inject NavigationManager Navigation;
 @attribute [Authorize(Roles = "Admin")]
-<Modal @ref="statusModal"
-       Title="Добавление нового статуса"
-       OnCancelClick="@HideStatusModal"
-       OnSubmitClick="OnStatusModalSubmit">
-    <EditForm Model="@statusRequest">
-        <div class="mb-3">
-            <label class="form-label">Название</label>
-            <InputText class="form-control" @bind-Value="statusRequest.Title" />
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Описание</label>
-            <InputText class="form-control" @bind-Value="statusRequest.Description" />
-        </div>
-    </EditForm>
-</Modal>
+
 <div class="container">
     <div class="row">
         <div class="align-content-center justify-content-center">
@@ -33,7 +18,7 @@
             <p>Артикул: @equipment?.Article</p>
             <p>Серийный номер: @equipment?.SerialNumber</p>
             <button type="button" class="btn btn-primary"
-                    @onclick="() => statusModal?.Show()">
+                    >
                 Добавить новый статус
             </button>
             <EditForm Model="@request" OnValidSubmit="@OnValidInputAsync">
@@ -79,8 +64,7 @@
 @code {
     private AddEquipmentRecordRequest request = new();
     private AddStatusRequest statusRequest = new();
-    private EquipmentResponse? equipment;
-    private Modal statusModal = null!;
+    private EquipmentResponse? equipment;    
 
     private IEnumerable<EmployeeResponse>? employees;
     private ObservableCollection<StatusResponse>? statuses;
@@ -99,10 +83,7 @@
             statuses.CollectionChanged += (s, e) => StateHasChanged();
     }
 
-    private void HideStatusModal()
-    {
-        statusModal.Hide();
-    }
+    
 
     private async Task OnValidInputAsync()
     {
@@ -113,7 +94,7 @@
     private async Task OnStatusModalSubmit()
     {
         await StatusService.AddAsync(statusRequest);
-        statusModal.Hide();
+        
     }
 
     private async Task LoadDataAsync()

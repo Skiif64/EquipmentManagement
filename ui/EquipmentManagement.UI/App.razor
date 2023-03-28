@@ -11,9 +11,19 @@
             <FocusOnNavigate RouteData="@routeData" Selector="h1" />
         </Found>
         <NotFound>
-            <PageTitle>Not found</PageTitle>
+            <PageTitle>Не найдено</PageTitle>
             <LayoutView Layout="@typeof(MainLayout)">
-                <p role="alert">Sorry, there's nothing at this address.</p>
+                <div class="d-flex flex-column">
+                    <div class="flex-row">
+                        <div class="align-content-center justify-content-center">
+                            <h1 class="text-center"><strong>404</strong></h1>
+                            <p class="text-center">Здесь ничего нет.</p>
+                            <p class="text-center">
+                                <NavLink href="/" class="link-primary">Перейти на главную</NavLink>
+                                </p>
+                        </div>
+                    </div>
+                </div>
             </LayoutView>
         </NotFound>
     </Router>

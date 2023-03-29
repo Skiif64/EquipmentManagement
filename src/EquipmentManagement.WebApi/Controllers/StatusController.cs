@@ -39,10 +39,11 @@ public class StatusController : ControllerBase
     }
     [HttpPost("add")]
     [Authorize(Roles = Roles.Admin)]
-    public async Task<ActionResult<Guid>> AddAsync(AddStatusRequest request, CancellationToken cancellationToken)
+    public async Task<ActionResult<StatusResponse>> AddAsync(AddStatusRequest request, CancellationToken cancellationToken)
     {
         var command = _mapper.Map<AddStatusCommand>(request);
-        var id = await _sender.Send(command, cancellationToken);
-        return Ok(id);
+        var status = await _sender.Send(command, cancellationToken);
+        var response = _mapper.Map<StatusResponse>(status);
+        return Ok(response);
     }
 }

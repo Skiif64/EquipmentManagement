@@ -1,5 +1,6 @@
 ﻿@attribute [Route(PagePaths.Equipment.Add)]
 @using EquimentManagement.Contracts.Requests;
+@using System.Collections.ObjectModel;
 @inject HttpClient Client;
 @inject NavigationManager Navigation;
 @attribute [Authorize(Roles = "Admin")]
@@ -33,6 +34,16 @@
                                    @bind-Value="@request.Description"></InputTextArea>
                 </div>
                 <div class="mb-3">
+                    <label class="form-label">Фото</label>
+                    <div class="p-2 d-flex justify-content-start w-100 bg-light">
+                        @foreach(var source in sources)
+                        {                            
+                            <img src="@source"/>
+                        }
+                    </div>
+                    <InputFile class="btn btn-primary" multiple OnChange="LoadFileAsync"></InputFile>
+                </div>
+                <div class="mb-3">
                     <button type="submit"
                             class="btn btn-primary">
                         Создать
@@ -44,6 +55,13 @@
 </div>
 @code {
     private AddEquipmentRequest request = new();
+    private ObservableCollection<IBrowserFile> connectedFiles = new();
+    private List<string> sources = new();
+
+    protected override void OnInitialized()
+    {
+        connectedFiles.CollectionChanged += (s, e) => StateHasChanged();
+    }
 
     private async Task OnValidSubmitAsync()
     {
@@ -51,6 +69,19 @@
         if (response.IsSuccessStatusCode)
         {
             Navigation.NavigateTo(PagePaths.Equipment.List);
+        }
+    }
+
+    private async Task LoadFileAsync(InputFileChangeEventArgs e)
+    {
+        var files = e.GetMultipleFiles();
+        foreach(var file in files)
+        {            
+            connectedFiles.Add(file);            
+            using var ms = new MemoryStream();
+            await file.OpenReadStream().CopyToAsync(ms);
+            var source = $"data:{file.ContentType};base64,{Convert.ToBase64String(ms.ToArray())}";
+            sources.Add(source);
         }
     }
 }

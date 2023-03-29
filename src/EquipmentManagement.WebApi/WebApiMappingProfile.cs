@@ -32,7 +32,11 @@ public class WebApiMappingProfile : Profile
             .ForMember(dest => dest.EmployeeId,
             opt => opt.MapFrom(src => (src.LastRecord != null) ? src.LastRecord.EmployeeId : null))
             .IncludeBase<Equipment, EquipmentResponse>();
-        CreateMap<EquipmentRecord, EquipmentRecordResponse>();
+        CreateMap<EquipmentRecord, EquipmentRecordResponse>()
+            .ForMember(dest => dest.EmployeeFullname,
+            opt => opt.MapFrom(src => (src.Employee != null) ? src.Employee.Fullname : default))
+            .ForMember(dest => dest.StatusTitle,
+            opt => opt.MapFrom(src => src.Status.Title));
         CreateMap<Status, StatusResponse>();
         CreateMap<AuthentificationResult, AuthentificationResponse>();
 

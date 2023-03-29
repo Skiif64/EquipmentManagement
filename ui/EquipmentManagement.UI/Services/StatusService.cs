@@ -14,9 +14,12 @@ public class StatusService : IStatusService
         _client = client;
     }
 
-    public async Task AddAsync(AddStatusRequest request, CancellationToken cancellationToken = default)
+    public async Task<StatusResponse> AddAsync(AddStatusRequest request, CancellationToken cancellationToken = default)
     {
-        await _client.PostAsJsonAsync("/api/status/add/", request, cancellationToken);
+        var response = await _client.PostAsJsonAsync("/api/status/add/", request, cancellationToken);
+        var status = await response.Content
+            .ReadFromJsonAsync<StatusResponse>(cancellationToken: cancellationToken);
+        return status!;
     }
 
     public async Task<IEnumerable<StatusResponse>?> GetAll(CancellationToken cancellationToken = default)

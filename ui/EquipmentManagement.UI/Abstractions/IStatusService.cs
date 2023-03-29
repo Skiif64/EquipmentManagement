@@ -5,7 +5,7 @@ namespace EquipmentManagement.UI.Abstractions;
 
 public interface IStatusService
 {
-    Task AddAsync(AddStatusRequest request, CancellationToken cancellationToken = default);
+    Task<StatusResponse> AddAsync(AddStatusRequest request, CancellationToken cancellationToken = default);
     Task<IEnumerable<StatusResponse>?> GetAll(CancellationToken cancellationToken = default);
     Task<StatusResponse?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
 }

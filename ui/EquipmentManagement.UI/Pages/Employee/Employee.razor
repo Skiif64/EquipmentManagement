@@ -5,6 +5,7 @@
 @using EquimentManagement.Contracts.Responses;
 @using EquipmentManagement.UI.Abstractions;
 @using System.Collections.ObjectModel;
+@using EquipmentManagement.UI.Shared.Modal;
 @using Microsoft.AspNetCore.Components.Authorization
 
 <div class="container">
@@ -96,10 +97,14 @@ else
     private async Task ShowDeleteModal(EmployeeResponse? employee)
     {
         selectedEmployee = employee;
-        
-        var modal = Modal.Show<DeleteModal>("Удаление сотрудника");
+        var options = new ModalOptions { HideCloseButton = true };
+        var fullname = $"{employee?.Lastname} {employee?.Firstname} {employee?.Patronymic}";
+        var parameters = new ModalParameters()
+        .Add(nameof(DeleteModal.EntityName), fullname);
+
+        var modal = Modal.Show<DeleteModal>("Удаление сотрудника", parameters, options);
         var result = await modal.Result;
-        if (result.Cancelled)
+        if (result.Confirmed)
             await DeleteSelectedEmployee();
     }
 

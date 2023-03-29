@@ -3,6 +3,7 @@
 @using EquimentManagement.Contracts.Responses;
 @using EquipmentManagement.UI.Abstractions;
 @using System.Collections.ObjectModel;
+@using EquipmentManagement.UI.Shared.Modal;
 @inject IEmployeeService EmployeeService;
 @inject IStatusService StatusService;
 @inject IEquipmentService EquipmentService;
@@ -18,7 +19,7 @@
             <p>Артикул: @equipment?.Article</p>
             <p>Серийный номер: @equipment?.SerialNumber</p>
             <button type="button" class="btn btn-primary"
-                    >
+                    @onclick="ShowAddStatusModal">
                 Добавить новый статус
             </button>
             <EditForm Model="@request" OnValidSubmit="@OnValidInputAsync">
@@ -27,6 +28,7 @@
                 <div class="mb-3">
                     <label class="form-label">Назначно на</label>
                     <InputSelect class="form-select" @bind-Value="request.EmployeeId">
+                        <option selected hidden value="">Выбрать сотрудника</option>
                         <option value="">Никто</option>
                         @if (employees is not null)
                         {
@@ -42,6 +44,7 @@
                 <div class="mb-3">
                     <label class="form-label">Статус</label>
                     <InputSelect class="form-select" @bind-Value="request.StatusId">
+                        <option selected hidden value="">Выбрать статус</option>
                         @if (statuses is not null)
                         {
                             foreach (var status in statuses)
@@ -69,6 +72,9 @@
     private IEnumerable<EmployeeResponse>? employees;
     private ObservableCollection<StatusResponse>? statuses;
 
+    [CascadingParameter]
+    private IModalService Modal { get; set; } = null!;
+
     [Parameter]
     [SupplyParameterFromQuery(Name = "id")]
     public Guid EquipmentId { get; set; }
@@ -83,12 +89,21 @@
             statuses.CollectionChanged += (s, e) => StateHasChanged();
     }
 
-    
+
 
     private async Task OnValidInputAsync()
     {
         await RecordService.AddAsync(request);
         Navigation.NavigateTo(PagePaths.Equipment.List);
+    }
+
+    private async Task ShowAddStatusModal()
+    {
+        var modal = Modal.Show<AddStatusModal>("Добавление статуса");
+        var result = await modal.Result;
+
+        if (result.Confirmed)
+            await StatusService.AddAsync((AddStatusRequest)result.Data!);
     }
 
     private async Task OnStatusModalSubmit()

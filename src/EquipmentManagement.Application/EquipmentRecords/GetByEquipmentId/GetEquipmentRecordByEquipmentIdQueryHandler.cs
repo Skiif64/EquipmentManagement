@@ -1,5 +1,6 @@
 ﻿using EquipmentManagement.Application.Abstractions;
 using EquipmentManagement.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace EquipmentManagement.Application.EquipmentRecords.GetByEquipmentId;
 public class GetEquipmentRecordByEquipmentIdQueryHandler
@@ -16,6 +17,8 @@ public class GetEquipmentRecordByEquipmentIdQueryHandler
     {
         var records = _context
             .Set<EquipmentRecord>()
+            .Include(x => x.Employee)
+            .Include(x => x.Status)
             .Where(x => x.EquipmentId == request.EquipmentId);
 
         return Task.FromResult(records?.AsEnumerable());

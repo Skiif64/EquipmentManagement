@@ -67,7 +67,7 @@
 @code {
     private AddEquipmentRecordRequest request = new();
     private AddStatusRequest statusRequest = new();
-    private EquipmentResponse? equipment;    
+    private EquipmentResponse? equipment;
 
     private IEnumerable<EmployeeResponse>? employees;
     private ObservableCollection<StatusResponse>? statuses;
@@ -103,14 +103,12 @@
         var result = await modal.Result;
 
         if (result.Confirmed)
-            await StatusService.AddAsync((AddStatusRequest)result.Data!);
+        {
+            var newStatus = await StatusService.AddAsync((AddStatusRequest)result.Data!);
+            statuses?.Add(newStatus);
+        }
     }
 
-    private async Task OnStatusModalSubmit()
-    {
-        await StatusService.AddAsync(statusRequest);
-        
-    }
 
     private async Task LoadDataAsync()
     {

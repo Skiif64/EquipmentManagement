@@ -36,12 +36,14 @@
                 <div class="mb-3">
                     <label class="form-label">Фото</label>
                     <div class="p-2 d-flex justify-content-start w-100 bg-light">
-                        @foreach(var source in sources)
-                        {                            
-                            <img src="@source"/>
+                        @foreach (var source in sources)
+                        {
+                            <div class="p-2">
+                                <img class="img-fluid w-100" src="@source" />
+                            </div>
                         }
                     </div>
-                    <InputFile class="btn btn-primary" multiple OnChange="LoadFileAsync"></InputFile>
+                    <InputFile multiple OnChange="LoadFileAsync"></InputFile>
                 </div>
                 <div class="mb-3">
                     <button type="submit"
@@ -75,9 +77,9 @@
     private async Task LoadFileAsync(InputFileChangeEventArgs e)
     {
         var files = e.GetMultipleFiles();
-        foreach(var file in files)
-        {            
-            connectedFiles.Add(file);            
+        foreach (var file in files)
+        {
+            connectedFiles.Add(file);
             using var ms = new MemoryStream();
             await file.OpenReadStream().CopyToAsync(ms);
             var source = $"data:{file.ContentType};base64,{Convert.ToBase64String(ms.ToArray())}";

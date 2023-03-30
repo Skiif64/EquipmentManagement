@@ -4,8 +4,6 @@ using EquipmentManagement.Auth;
 using EquipmentManagement.DAL;
 using EquipmentManagement.WebApi;
 using EquipmentManagement.WebApi.OptionSetups;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 

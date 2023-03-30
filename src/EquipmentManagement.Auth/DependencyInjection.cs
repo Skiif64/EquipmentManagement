@@ -15,7 +15,7 @@ public static class DependencyInjection
         var connectionString = configuration.GetConnectionString("Users");
         var jwtOptions = new JwtTokenOptions();
         configuration.GetRequiredSection("Jwt").Bind(jwtOptions);
-        services.AddDbContext<UsersDbContext>(opt => opt
+        services.AddDbContext<IUserDbContext, UsersDbContext>(opt => opt
         .UseNpgsql(connectionString, cfg => cfg
         .MigrationsAssembly(typeof(UsersDbContext).Assembly.FullName)));
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

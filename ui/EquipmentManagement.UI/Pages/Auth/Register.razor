@@ -1,6 +1,7 @@
 ﻿@attribute [Route(PagePaths.Auth.Register)]
 @using EquimentManagement.Contracts.Requests;
 @using EquipmentManagement.UI.Abstractions;
+@using EquipmentManagement.UI.Shared.Alert;
 @inject IAuthentificationService AuthService;
 @inject NavigationManager Navigation;
 @attribute [Authorize(Roles = "Admin")]
@@ -10,6 +11,9 @@
         <div class="col-lg-6 col-md-8 col-sm-12">
             <div class="d-flex justify-content-center">
                 <div class="p-1">
+                    <Alert @ref="Alert" Class="alert-danger">
+                        <span class="text-center">@errorMessage</span>
+                    </Alert>
                     <h3 class="text-center">Регистрация пользователя</h3>
                     <div class="p-2 border-2 border-dark rounded-1 shadow">
                         <EditForm Model="@request"
@@ -57,10 +61,20 @@
 </div>
 @code {
     private RegisterRequest request = new();
-
+    private Alert? Alert { get; set; }
+    private string? errorMessage;
     private async Task OnRegisterSuccessAsync()
     {
-        await AuthService.RegisterAsync(request, default);
-        Navigation.NavigateTo(PagePaths.Home);
+        Alert?.Hide();
+        var result = await AuthService.RegisterAsync(request, default);
+        if (result.IsSuccess)
+        {
+            Navigation.NavigateTo(PagePaths.Home);
+        }
+        else
+        {
+            errorMessage = result.Errors!.First().Value;
+            Alert?.Show();
+        }
     }
 }

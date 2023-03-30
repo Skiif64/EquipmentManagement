@@ -16,7 +16,7 @@
             <div class="d-flex justify-content-center">
                 <div class="p-1">
                     <Alert @ref="Alert" Class="alert-danger">
-                        <span class="text-center">Неправильный логин и/или пароль</span>
+                        <span class="text-center">@errorMessage</span>
                     </Alert>
                     <h3 class="text-center">Войти</h3>
                     <div class="p-2 border-2 border-dark rounded-1 shadow">
@@ -60,7 +60,7 @@
 @code {
     private readonly LoginRequest request = new();
     private Alert? Alert { get; set; }
-
+    private string? errorMessage;
     protected override void OnInitialized()
     {
 
@@ -71,8 +71,13 @@
         Alert?.Hide();
         var result = await AuthService.SignInAsync(request, default);
         if (result.IsSuccess)
+        {
             Navigation.NavigateTo(PagePaths.Home);
+        }
         else
+        {
+            errorMessage = result.Errors!.First().Value;
             Alert?.Show();
+        }
     }
 }

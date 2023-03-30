@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using EquipmentManagement.Application.ApplicationUsers.Register;
 using EquipmentManagement.Application.Employees.Add;
 using EquipmentManagement.Application.EquipmentRecords.Add;
 using EquipmentManagement.Application.Equipments.Add;
@@ -27,5 +28,8 @@ public class ApplicationMappingProfile : Profile
             .ForMember(dest => dest.StatusTitle, opt =>
             opt.MapFrom(src => (src.LastRecord != null && src.LastRecord.Status != null) 
             ? src.LastRecord.Status.Title : null));
+
+        CreateMap<RegisterCommand, ApplicationUser>()
+            .ConstructUsing(src => ApplicationUser.Create(src.Login, src.Password, src.Role));
     }
 }

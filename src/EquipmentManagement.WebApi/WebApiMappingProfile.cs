@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using EquimentManagement.Contracts.Requests;
 using EquimentManagement.Contracts.Responses;
+using EquipmentManagement.Application.ApplicationUsers.Register;
+using EquipmentManagement.Application.ApplicationUsers.SignIn;
 using EquipmentManagement.Application.Employees.Add;
 using EquipmentManagement.Application.EquipmentRecords.Add;
 using EquipmentManagement.Application.EquipmentRecords.Update;
@@ -39,8 +41,9 @@ public class WebApiMappingProfile : Profile
         CreateMap<Status, StatusResponse>();
         CreateMap<AuthenticationResult, AuthentificationResponse>();
 
-        CreateMap<RegisterRequest, ApplicationUser>()
-            .ConstructUsing(src => ApplicationUser.Create(src.Login, src.Password, src.Role));
+        CreateMap<RegisterRequest, RegisterCommand>();
+        CreateMap<LoginRequest, SignInCommand>();
+            
 
     }
 }

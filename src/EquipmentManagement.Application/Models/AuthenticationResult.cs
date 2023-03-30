@@ -1,10 +1,10 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace EquipmentManagement.Auth;
+namespace EquipmentManagement.Application.Models;
 
 public class AuthenticationResult
 {
-    public bool IsSuccess { get; }    
+    public bool IsSuccess { get; }
     public string? Token { get; }
     public string? RefreshToken { get; }
     public IDictionary<string, string>? Errors { get; }
@@ -25,7 +25,7 @@ public class AuthenticationResult
     {
         IsSuccess = false;
         Errors = errors;
-    }    
+    }
 
     public static AuthenticationResult CreateSuccess(string token)
         => new AuthenticationResult(token);

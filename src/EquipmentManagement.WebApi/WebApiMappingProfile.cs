@@ -7,7 +7,6 @@ using EquipmentManagement.Application.EquipmentRecords.Update;
 using EquipmentManagement.Application.Equipments.Add;
 using EquipmentManagement.Application.Models;
 using EquipmentManagement.Application.Statuses.Add;
-using EquipmentManagement.Auth;
 using EquipmentManagement.Domain.Models;
 
 namespace EquipmentManagement.WebApi;

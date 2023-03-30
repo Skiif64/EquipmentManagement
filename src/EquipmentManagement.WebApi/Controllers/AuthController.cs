@@ -2,8 +2,13 @@
 using EquimentManagement.Contracts.Requests;
 using EquimentManagement.Contracts.Responses;
 using EquipmentManagement.Application;
+using EquipmentManagement.Application.ApplicationUsers.Logout;
+using EquipmentManagement.Application.ApplicationUsers.RefreshAccessToken;
+using EquipmentManagement.Application.ApplicationUsers.Register;
+using EquipmentManagement.Application.ApplicationUsers.SignIn;
 using EquipmentManagement.Application.Models;
 using EquipmentManagement.Auth;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,43 +19,43 @@ namespace EquipmentManagement.WebApi.Controllers;
 [Authorize]
 public class AuthController : ControllerBase
 {
-    private readonly JwtAuthentificationService _jwtAuthentificationService;
+    private readonly ISender _sender;
     private readonly IMapper _mapper;
     private readonly ILogger<AuthController> _logger;
 
-    public AuthController(JwtAuthentificationService jwtAuthentificationService, ILogger<AuthController> logger, IMapper mapper)
+    public AuthController(ISender sender, ILogger<AuthController> logger, IMapper mapper)
     {
-        _jwtAuthentificationService = jwtAuthentificationService;
+        _sender = sender;
         _logger = logger;
         _mapper = mapper;
     }
 
     [HttpPost("login")]
     [AllowAnonymous]
-    public async Task<IActionResult> LoginAsync(LoginRequest request, CancellationToken cancellationToken)
+    public async Task<ActionResult<AuthentificationResponse>> LoginAsync(LoginRequest request, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
             return BadRequest();
 
-        var result = await _jwtAuthentificationService.SignInAsync(request.Login, request.Password, cancellationToken);
+        var command = _mapper.Map<SignInCommand>(request);
+        var result = await _sender.Send(command, cancellationToken);
             
         _logger.LogInformation(AppLogEvents.Login, "User {username} is logged in", request.Login);
         var response = _mapper.Map<AuthentificationResponse>(result);
-        return result.IsSuccess
+        return response.IsSuccess
             ? Ok(response) 
-            : BadRequest();
+            : BadRequest(response);
     }
 
     [HttpPost("register")]
     [Authorize(Roles = Roles.Admin)]    
-    public async Task<IActionResult> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken)
+    public async Task<ActionResult<AuthentificationResponse>> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
             return BadRequest();
-
-        var user = _mapper.Map<ApplicationUser>(request);
-
-        var response = await _jwtAuthentificationService.RegisterAsync(user, cancellationToken);
+        
+        var command = _mapper.Map<RegisterCommand>(request);
+        var response = await _sender.Send(command, cancellationToken);
         if (response.IsSuccess)
             _logger.LogInformation(AppLogEvents.Register, "User {username} is registered", request.Login);
         else
@@ -67,7 +72,8 @@ public class AuthController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest();
 
-        var result = await _jwtAuthentificationService.RefreshAccessTokenAsync(refreshToken, cancellationToken);
+        var command = new RefreshAccessTokenCommand(refreshToken);
+        var result = await _sender.Send(command, cancellationToken);
         var response = _mapper.Map<AuthentificationResponse>(result);
         return result.IsSuccess
             ? Ok(response)
@@ -77,7 +83,8 @@ public class AuthController : ControllerBase
     [HttpGet("logout/{userId:guid}")]
     public async Task<IActionResult> LogoutAsync(Guid userId, CancellationToken cancellationToken)
     {
-        await _jwtAuthentificationService.LogoutAsync(userId, cancellationToken);
+        var command = new LogoutCommand(userId);
+        await _sender.Send(command, cancellationToken);
         return Ok();
     }
 }

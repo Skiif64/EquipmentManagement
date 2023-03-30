@@ -1,7 +1,9 @@
 ﻿@using System.Collections.ObjectModel;
+@using EquimentManagement.Contracts.Responses;
+@using EquipmentManagement.UI.Abstractions;
 @attribute [Route(PagePaths.User.List)]
 @attribute [Authorize(Roles = "Admin")]
-
+@inject IAuthentificationService AuthService;
  @if (users is not null)
 {
     <table class="table table-hover">
@@ -25,22 +27,43 @@
             </tr>
         </thead>
         <tbody>
-
-            @foreach (var appUser in users)
+            @foreach (var user in users)
             {
                 <tr>
                     <td>
-                        <span></span>
+                        <span>@user.Login</span>
                     </td>
                     <td>
-                       
+                        <span>@user.Role</span>
+                    </td>
+                    <td>
+
                     </td>
                 </tr>
             }
         </tbody>
     </table>
 }
+else
+{
+    <LoadingCircle/>
+}
 
 @code {
-    private ObservableCollection<User>? users;
+    private ObservableCollection<ApplicationUserResponse>? users;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDataAsync();
+    }
+
+    private async Task LoadDataAsync()
+    {
+        var response = await AuthService.GetAllAsync(default);
+        if(response is not null)
+        {
+            users = new ObservableCollection<ApplicationUserResponse>(response);
+            users.CollectionChanged += (s, e) => StateHasChanged();
+        }
+    }
 }

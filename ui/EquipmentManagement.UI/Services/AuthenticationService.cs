@@ -19,6 +19,13 @@ public class AuthenticationService : IAuthentificationService
         _storage = storage;
         _notifier = notifier;
     }
+
+    public async Task<IEnumerable<ApplicationUserResponse>> GetAllAsync(CancellationToken cancellationToken)
+    {
+        var users = await _client.GetFromJsonAsync<IEnumerable<ApplicationUserResponse>>("/api/auth/", cancellationToken);
+        return users;
+    }
+
     public async Task<AuthentificationResult> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken)
     {
         var response = await _client.PostAsJsonAsync("/api/auth/register/", request, cancellationToken);

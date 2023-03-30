@@ -25,4 +25,8 @@ public static class PagePaths
         public const string History = "/record/history";
         public const string Add = "/record/add";       
     }
+    public static class User
+    {
+        public const string List = "/user/";        
+    }
 }

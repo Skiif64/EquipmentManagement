@@ -1,0 +1,46 @@
+﻿@using System.Collections.ObjectModel;
+@attribute [Route(PagePaths.User.List)]
+@attribute [Authorize(Roles = "Admin")]
+
+ @if (users is not null)
+{
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>
+                    <div class="d-flex w-100 justify-content-center">
+                        <span class="text-center">Логин</span>
+                    </div>
+                </th>
+                <th>
+                    <div class="d-flex w-100 justify-content-center">
+                        <span class="text-center">Роль</span>
+                    </div>
+                </th>
+                <th>
+                    <div class="d-flex w-100 justify-content-center">
+                        <span class="text-center">Действия</span>
+                    </div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var appUser in users)
+            {
+                <tr>
+                    <td>
+                        <span></span>
+                    </td>
+                    <td>
+                       
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private ObservableCollection<User>? users;
+}

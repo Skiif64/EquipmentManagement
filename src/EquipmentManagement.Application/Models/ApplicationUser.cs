@@ -11,6 +11,7 @@ public class ApplicationUser : BaseModel
     public string PasswordSalt { get; set; }
     public string Role { get; set; } = string.Empty;
     public Guid? RefreshToken { get; set; }
+    public bool IsBlocked { get; set; }
 
     public ApplicationUser() : base()
     {

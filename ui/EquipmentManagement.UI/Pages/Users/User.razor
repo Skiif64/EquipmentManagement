@@ -23,9 +23,14 @@
                 </th>
                 <th>
                     <div class="d-flex w-100 justify-content-center">
-                        <span class="text-center">Действия</span>
+                        <span class="text-center">Состояние</span>
                     </div>
                 </th>
+                <th>
+                    <div class="d-flex w-100 justify-content-center">
+                        <span class="text-center">Действия</span>
+                    </div>
+                </th>                
             </tr>
         </thead>
         <tbody>
@@ -37,6 +42,9 @@
                     </td>
                     <td>
                         <span>@user.Role</span>
+                    </td>
+                    <td>
+                        <span>@(user.IsBlocked? "Заблокирован" : "Активен")</span>
                     </td>
                     <td>
 

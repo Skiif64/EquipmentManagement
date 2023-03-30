@@ -43,7 +43,7 @@
                                     @record.Username
                                 </td>
                                 <td>
-                                    @record.DateCreated?.ToLocalTime().ToString("dd MMMM yyyy г. hh:mm")
+                                    @record.DateCreated?.ToLocalTime().ToString("dd MMMM yyyy г. HH :mm")
                                 </td>
                             </tr>
                         }
@@ -69,7 +69,7 @@
         {
             journal = new ObservableCollection<JournalRecordResponse>(response);
             journal.CollectionChanged += (sender, e) => StateHasChanged();
-
+            journal.OrderByDescending(x => x.DateCreated);
         }
     }
 }

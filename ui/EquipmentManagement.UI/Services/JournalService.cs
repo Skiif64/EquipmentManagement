@@ -21,7 +21,7 @@ public class JournalService : IJournalService
 
     public async Task<IEnumerable<JournalRecordResponse>> GetAsync(int count = 20, int offset = 0, CancellationToken cancellationToken = default)
     {
-        var response = await _client.GetFromJsonAsync<IEnumerable<JournalRecordResponse>>($"/api/journal/{count}/{offset}", cancellationToken);
+        var response = await _client.GetFromJsonAsync<IEnumerable<JournalRecordResponse>>($"/api/journal?count={count}&offset={offset}", cancellationToken);
         return response;
     }
 }

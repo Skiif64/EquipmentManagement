@@ -3,12 +3,14 @@ using EquimentManagement.Contracts.Responses;
 using EquipmentManagement.Application.Journaling.GetAll;
 using EquipmentManagement.Application.Journaling.GetWithPaging;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EquipmentManagement.WebApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class JournalController : ControllerBase
 {
     private readonly ISender _sender;
@@ -20,7 +22,7 @@ public class JournalController : ControllerBase
         _mapper = mapper;
     }
 
-    [HttpGet("/all")]
+    [HttpGet("all")]
     public async Task<ActionResult<IEnumerable<JournalRecordResponse>>> GetAllAsync(CancellationToken cancellationToken)
     {
         var query = new GetAllJournalQuery();
@@ -30,7 +32,7 @@ public class JournalController : ControllerBase
         return Ok(response);
     }
 
-    [HttpGet("/{count:int}/{offset:int}")]
+    [HttpGet]
     public async Task<ActionResult<IEnumerable<JournalRecordResponse>>> GetAsync(int count, int offset, CancellationToken cancellationToken)
     {
         var query = new GetLastWithPagingJournalQuery(count, offset);

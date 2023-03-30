@@ -1,4 +1,5 @@
 ﻿using EquipmentManagement.Application.Abstractions;
+using EquipmentManagement.Application.Models;
 using EquipmentManagement.DAL.EntityConfiguration;
 using EquipmentManagement.Domain.Models;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ internal class ApplicationDbContext : DbContext, IApplicationDbContext, IMigrati
     public DbSet<EquipmentRecord> EquipmentRecords { get; set; } = null!;
     public DbSet<Status> Statuses { get; set; } = null!;
     public DbSet<Image> Images { get; set; } = null!;
+    public DbSet<JournalRecord> Journal { get; set; } = null!;
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {

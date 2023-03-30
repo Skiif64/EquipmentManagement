@@ -1,12 +1,10 @@
 ﻿using EquipmentManagement.Application.Abstractions;
 using EquipmentManagement.Application.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace EquipmentManagement.Auth;
 
-public class UsersDbContext : DbContext, IMigrationableDatabase
+public class UsersDbContext : DbContext, IUserDbContext, IMigrationableDatabase
 {
 	public DbSet<ApplicationUser> Users { get; set; } = null!;
     public UsersDbContext(DbContextOptions options) : base(options)
@@ -19,6 +17,9 @@ public class UsersDbContext : DbContext, IMigrationableDatabase
 
     public async Task MigrateAsync(CancellationToken cancellationToken)
         => await Database.MigrateAsync(cancellationToken);
+
+    DbSet<TEntity> IApplicationDbContext.Set<TEntity>()
+       => Set<TEntity>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

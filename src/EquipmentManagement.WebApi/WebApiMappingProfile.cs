@@ -1,13 +1,14 @@
 ﻿using AutoMapper;
 using EquimentManagement.Contracts.Requests;
 using EquimentManagement.Contracts.Responses;
+using EquipmentManagement.Application.ApplicationUsers.Register;
+using EquipmentManagement.Application.ApplicationUsers.SignIn;
 using EquipmentManagement.Application.Employees.Add;
 using EquipmentManagement.Application.EquipmentRecords.Add;
 using EquipmentManagement.Application.EquipmentRecords.Update;
 using EquipmentManagement.Application.Equipments.Add;
 using EquipmentManagement.Application.Models;
 using EquipmentManagement.Application.Statuses.Add;
-using EquipmentManagement.Auth;
 using EquipmentManagement.Domain.Models;
 
 namespace EquipmentManagement.WebApi;
@@ -38,10 +39,11 @@ public class WebApiMappingProfile : Profile
             .ForMember(dest => dest.StatusTitle,
             opt => opt.MapFrom(src => src.Status.Title));
         CreateMap<Status, StatusResponse>();
-        CreateMap<AuthentificationResult, AuthentificationResponse>();
+        CreateMap<AuthenticationResult, AuthentificationResponse>();
 
-        CreateMap<RegisterRequest, ApplicationUser>()
-            .ConstructUsing(src => ApplicationUser.Create(src.Login, src.Password, src.Role));
+        CreateMap<RegisterRequest, RegisterCommand>();
+        CreateMap<LoginRequest, SignInCommand>();
+            
 
     }
 }

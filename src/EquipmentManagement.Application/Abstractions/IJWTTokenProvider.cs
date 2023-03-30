@@ -1,6 +1,6 @@
 ﻿using EquipmentManagement.Application.Models;
 
-namespace EquipmentManagement.Auth.Abstractions;
+namespace EquipmentManagement.Application.Abstractions;
 
 public interface IJwtTokenProvider
 {

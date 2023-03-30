@@ -1,7 +1,5 @@
 ﻿using EquipmentManagement.Application.Abstractions;
-using EquipmentManagement.Auth.Abstractions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,7 +15,7 @@ public static class DependencyInjection
         var connectionString = configuration.GetConnectionString("Users");
         var jwtOptions = new JwtTokenOptions();
         configuration.GetRequiredSection("Jwt").Bind(jwtOptions);
-        services.AddDbContext<UsersDbContext>(opt => opt
+        services.AddDbContext<IUserDbContext, UsersDbContext>(opt => opt
         .UseNpgsql(connectionString, cfg => cfg
         .MigrationsAssembly(typeof(UsersDbContext).Assembly.FullName)));
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -33,8 +31,7 @@ public static class DependencyInjection
                     Encoding.UTF8.GetBytes(jwtOptions.SecretKey))
             });
 
-        services.AddTransient<IJwtTokenProvider, JwtTokenProvider>();
-        services.AddScoped<JwtAuthentificationService>();
+        services.AddTransient<IJwtTokenProvider, JwtTokenProvider>();        
         services.AddTransient<IMigrationableDatabase, UsersDbContext>();
        
         return services;

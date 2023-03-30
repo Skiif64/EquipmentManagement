@@ -3,6 +3,7 @@
 @using EquimentManagement.Contracts.Responses;
 @using EquipmentManagement.UI.Abstractions;
 @using EquipmentManagement.UI.Authentification;
+@using EquipmentManagement.UI.Shared.Alert;
 @using Microsoft.AspNetCore.Components.Authorization;
 @using System.Security.Claims;
 @inject IAuthentificationService AuthService;
@@ -14,6 +15,9 @@
         <div class="col-lg-6 col-md-8 col-sm-12">
             <div class="d-flex justify-content-center">
                 <div class="p-1">
+                    <Alert @ref="Alert" Class="alert-danger">
+                        <span class="text-center">Неправильный логин и/или пароль</span>
+                    </Alert>
                     <h3 class="text-center">Войти</h3>
                     <div class="p-2 border-2 border-dark rounded-1 shadow">
                         <EditForm Model="@request"
@@ -55,7 +59,8 @@
 
 @code {
     private readonly LoginRequest request = new();
-    
+    private Alert? Alert { get; set; }
+
     protected override void OnInitialized()
     {
 
@@ -63,8 +68,11 @@
 
     private async Task OnLoginSuccess()
     {
+        Alert?.Hide();
         var result = await AuthService.SignInAsync(request, default);
         if (result.IsSuccess)
-            Navigation.NavigateTo(PagePaths.Home);        
+            Navigation.NavigateTo(PagePaths.Home);
+        else
+            Alert?.Show();
     }
 }

@@ -1,9 +1,7 @@
 ﻿@using EquipmentManagement.UI.Pages.Auth
-@using EquipmentManagement.UI.Shared.Alert
 @using Microsoft.AspNetCore.Components.Authorization
 <CascadingAuthenticationState>
-    <CascadingBlazoredModal>
-        <CascadingAlert>
+    <CascadingBlazoredModal>        
             <Router AppAssembly="@typeof(App).Assembly">
                 <Found Context="routeData">
                     <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
@@ -29,7 +27,6 @@
                         </div>
                     </LayoutView>
                 </NotFound>
-            </Router>
-        </CascadingAlert>
+            </Router>        
     </CascadingBlazoredModal>
 </CascadingAuthenticationState>

@@ -43,7 +43,6 @@ builder.Services.AddMemoryCache();
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddBlazoredModal();
 builder.Services.AddScoped<ITokenStorage, TokenStorage>();
-builder.Services.AddSingleton<IAlertService, AlertService>();
 var app = builder.Build();
 
 await app.RunAsync();

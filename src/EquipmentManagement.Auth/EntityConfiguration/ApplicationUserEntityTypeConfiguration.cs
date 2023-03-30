@@ -7,6 +7,7 @@ internal class ApplicationUserEntityTypeConfiguration : IEntityTypeConfiguration
 {
     public void Configure(EntityTypeBuilder<ApplicationUser> builder)
     {
-                    
+        builder.HasIndex(e => e.Login).IsUnique();
+            
     }
 }

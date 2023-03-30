@@ -1,5 +1,6 @@
 ﻿using EquipmentManagement.Application.Abstractions;
 using EquipmentManagement.Application.Models;
+using EquipmentManagement.Auth.EntityConfiguration;
 using Microsoft.EntityFrameworkCore;
 
 namespace EquipmentManagement.Auth;
@@ -25,5 +26,6 @@ public class UsersDbContext : DbContext, IUserDbContext, IMigrationableDatabase
     {
         modelBuilder.Entity<ApplicationUser>()
             .HasData(ApplicationUser.Create("Admin", "example", "Admin"));
+        modelBuilder.ApplyConfiguration(new ApplicationUserEntityTypeConfiguration());
     }
 }

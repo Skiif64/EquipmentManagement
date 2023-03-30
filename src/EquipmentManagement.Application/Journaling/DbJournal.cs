@@ -12,12 +12,17 @@ public class DbJournal : IJournal
         _context = context;
     }    
 
-    public async Task WriteAsync(EventId eventId, string message, Guid? user = null, CancellationToken cancellationToken = default)
+    public async Task WriteAsync(EventId eventId,
+        string message,
+        Guid? user = null,
+        DateTimeOffset? created = null,
+        CancellationToken cancellationToken = default)
     {
         var record = new JournalRecord
         {
             ApplicationUserId = user,
             EventName = eventId.Name ?? string.Empty,
+            DateCreated = created,
             Message = message
         };
         await _context

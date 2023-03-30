@@ -2,6 +2,7 @@
 using EquimentManagement.Contracts.Requests;
 using EquimentManagement.Contracts.Responses;
 using EquipmentManagement.Application;
+using EquipmentManagement.Application.ApplicationUsers.GetAll;
 using EquipmentManagement.Application.ApplicationUsers.Logout;
 using EquipmentManagement.Application.ApplicationUsers.RefreshAccessToken;
 using EquipmentManagement.Application.ApplicationUsers.Register;
@@ -86,5 +87,15 @@ public class AuthController : ControllerBase
         var command = new LogoutCommand(userId);
         await _sender.Send(command, cancellationToken);
         return Ok();
+    }
+
+    [HttpGet]
+    [Authorize(Roles = Roles.Admin)]
+    public async Task<ActionResult<IEnumerable<ApplicationUserResponse>>> GetAllAsync(CancellationToken cancellationToken)
+    {
+        var query = new GetAllUsersQuery();
+        var users = await _sender.Send(query, cancellationToken);
+        var response = _mapper.Map<IEnumerable<ApplicationUserResponse>>(users);
+        return Ok(response);
     }
 }

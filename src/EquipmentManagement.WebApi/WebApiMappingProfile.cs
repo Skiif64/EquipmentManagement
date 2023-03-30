@@ -43,6 +43,7 @@ public class WebApiMappingProfile : Profile
 
         CreateMap<RegisterRequest, RegisterCommand>();
         CreateMap<LoginRequest, SignInCommand>();
+        CreateMap<ApplicationUser, ApplicationUserResponse>();
             
 
     }

@@ -63,11 +63,10 @@ public class AuthController : ControllerBase
         var response = await _sender.Send(command, cancellationToken);
         if (response.IsSuccess)
         {
-            _logger.LogInformation(AppLogEvents.Register, "User {username} is registered", request.Login);
-            Guid.TryParse(User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value, out var userId);
+            _logger.LogInformation(AppLogEvents.Register, "User {username} is registered", request.Login);            
             await _journal.WriteAsync(AppLogEvents.Register,
                 $"Пользователь {request.Login} зарегистрирован",
-                userId,
+               null,
                 cancellationToken);
         }
         else

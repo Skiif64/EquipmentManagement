@@ -7,7 +7,7 @@ public class JournalRecord : BaseModel
     public ApplicationUser? ApplicationUser { get; set; }
     public string Message { get; set; } = string.Empty;
     public string EventName { get; set; } = string.Empty;
-    protected JournalRecord() : base()
+    public JournalRecord() : base()
     {
         
     }

@@ -4,6 +4,8 @@
 @attribute [Route(PagePaths.User.List)]
 @attribute [Authorize(Roles = "Admin")]
 @inject IAuthentificationService AuthService;
+
+<NavLink class="btn btn-primary" href="/auth/register/">Зарегистрировать пользователя</NavLink>
  @if (users is not null)
 {
     <table class="table table-hover">

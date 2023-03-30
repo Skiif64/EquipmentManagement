@@ -2,6 +2,7 @@
 using EquimentManagement.Contracts.Requests;
 using EquimentManagement.Contracts.Responses;
 using EquipmentManagement.Application;
+using EquipmentManagement.Application.Abstractions;
 using EquipmentManagement.Application.ApplicationUsers.GetAll;
 using EquipmentManagement.Application.ApplicationUsers.Logout;
 using EquipmentManagement.Application.ApplicationUsers.RefreshAccessToken;
@@ -12,6 +13,7 @@ using EquipmentManagement.Auth;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace EquipmentManagement.WebApi.Controllers;
 
@@ -23,12 +25,14 @@ public class AuthController : ControllerBase
     private readonly ISender _sender;
     private readonly IMapper _mapper;
     private readonly ILogger<AuthController> _logger;
+    private readonly IJournal _journal;
 
-    public AuthController(ISender sender, ILogger<AuthController> logger, IMapper mapper)
+    public AuthController(ISender sender, ILogger<AuthController> logger, IMapper mapper, IJournal journal)
     {
         _sender = sender;
         _logger = logger;
         _mapper = mapper;
+        _journal = journal;
     }
 
     [HttpPost("login")]
@@ -40,25 +44,32 @@ public class AuthController : ControllerBase
 
         var command = _mapper.Map<SignInCommand>(request);
         var result = await _sender.Send(command, cancellationToken);
-            
+
         _logger.LogInformation(AppLogEvents.Login, "User {username} is logged in", request.Login);
         var response = _mapper.Map<AuthentificationResponse>(result);
         return response.IsSuccess
-            ? Ok(response) 
+            ? Ok(response)
             : BadRequest(response);
     }
 
     [HttpPost("register")]
-    [Authorize(Roles = Roles.Admin)]    
+    [Authorize(Roles = Roles.Admin)]
     public async Task<ActionResult<AuthentificationResponse>> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
             return BadRequest();
-        
+
         var command = _mapper.Map<RegisterCommand>(request);
         var response = await _sender.Send(command, cancellationToken);
         if (response.IsSuccess)
+        {
             _logger.LogInformation(AppLogEvents.Register, "User {username} is registered", request.Login);
+            Guid.TryParse(User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value, out var userId);
+            await _journal.WriteAsync(AppLogEvents.Register,
+                $"Пользователь {request.Login} зарегистрирован",
+                userId,
+                cancellationToken);
+        }
         else
             _logger.LogInformation(AppLogEvents.Register, "User {username} is already exists", request.Login);
         return response.IsSuccess

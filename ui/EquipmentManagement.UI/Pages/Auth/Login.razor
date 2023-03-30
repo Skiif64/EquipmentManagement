@@ -55,6 +55,8 @@
 
 @code {
     private readonly LoginRequest request = new();
+    [CascadingParameter]
+    private IAlertService AlertService { get; set; }
 
     protected override void OnInitialized()
     {
@@ -66,5 +68,7 @@
         var result = await AuthService.SignInAsync(request, default);
         if (result.IsSuccess)
             Navigation.NavigateTo(PagePaths.Home);
+        else
+            AlertService.Show(AlertType.Danger, "Неправильный логин и/или пароль");
     }
 }

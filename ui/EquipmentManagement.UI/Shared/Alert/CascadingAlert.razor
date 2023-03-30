@@ -2,7 +2,7 @@
 @inject IAlertService AlertService;
 
 <CascadingValue Value="@AlertService" IsFixed="true">
-    <div class="position-fixed @VisibleClass">
+    <div tabindex="999" class="position-fixed w-100 @VisibleClass">
         <div class="alert @AlertClass">
             @message
         </div>

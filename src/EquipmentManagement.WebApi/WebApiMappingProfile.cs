@@ -38,7 +38,7 @@ public class WebApiMappingProfile : Profile
             .ForMember(dest => dest.StatusTitle,
             opt => opt.MapFrom(src => src.Status.Title));
         CreateMap<Status, StatusResponse>();
-        CreateMap<AuthentificationResult, AuthentificationResponse>();
+        CreateMap<AuthenticationResult, AuthentificationResponse>();
 
         CreateMap<RegisterRequest, ApplicationUser>()
             .ConstructUsing(src => ApplicationUser.Create(src.Login, src.Password, src.Role));

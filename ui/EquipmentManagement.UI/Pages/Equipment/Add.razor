@@ -33,14 +33,12 @@
                     <InputTextArea class="form-control"
                                    @bind-Value="@request.Description"></InputTextArea>
                 </div>
-                <div class="mb-3">
+                <div class="mb-3 h-25">
                     <label class="form-label">Фото</label>
                     <div class="p-2 d-flex justify-content-start w-100 bg-light">
                         @foreach (var source in sources)
                         {
-                            <div class="p-2">
-                                <img class="img-fluid w-100" src="@source" />
-                            </div>
+                            <Image Source="@source"/>
                         }
                     </div>
                     <InputFile multiple OnChange="LoadFileAsync"></InputFile>

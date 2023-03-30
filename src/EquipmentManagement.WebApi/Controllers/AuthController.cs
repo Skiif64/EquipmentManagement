@@ -67,6 +67,7 @@ public class AuthController : ControllerBase
             await _journal.WriteAsync(AppLogEvents.Register,
                 $"Пользователь {request.Login} зарегистрирован",
                null,
+               DateTimeOffset.UtcNow,
                 cancellationToken);
         }
         else

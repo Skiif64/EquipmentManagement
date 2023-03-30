@@ -1,0 +1,26 @@
+﻿<div class="p-2">
+    <img class="img-thumbnail" src="@Source" alt="@Alt"
+         @onclick="ExpandAsync" />
+</div>
+
+@code {
+    [CascadingParameter]
+    private IModalService Modal { get; set; } = null!;
+    [Parameter]
+    public string Source { get; set; } = string.Empty;
+    [Parameter]
+    public string Alt { get; set; } = string.Empty;
+
+    private async Task ExpandAsync()
+    {
+        var parameteres = new ModalParameters()
+        .Add(nameof(Image.Source), Source)
+        .Add(nameof(Image.Alt), Alt);
+        var options = new ModalOptions
+            {
+                Size = ModalSize.ExtraLarge
+            };
+        var modal = Modal.Show<Image>(string.Empty, parameteres, options);
+        var result = await modal.Result;
+    }
+}

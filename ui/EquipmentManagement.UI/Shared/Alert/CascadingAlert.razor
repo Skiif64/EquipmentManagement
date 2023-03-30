@@ -1,0 +1,51 @@
+﻿@using EquipmentManagement.UI.Abstractions;
+@inject IAlertService AlertService;
+
+<CascadingValue Value="@AlertService" IsFixed="true">
+    <div class="position-fixed @VisibleClass">
+        <div class="alert @AlertClass">
+            @message
+        </div>
+    </div>
+    @ChildContent
+</CascadingValue>
+@code {
+    private bool isVisible = false;
+    private string VisibleClass => isVisible ? "show" : "hide";
+    private string AlertClass => GetAlertClass();
+    private string? message;
+    private AlertType alertType;
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    protected override void OnInitialized()
+    {
+        AlertService.AlertRequested += OnAlertRequested;
+    }
+
+    private void OnAlertRequested(object? sender, AlertParameters parameters)
+    {
+        message = parameters.Message;
+        alertType = parameters.Type;
+        Show();
+    }
+
+    public void Show()
+    {
+        isVisible = true;
+        StateHasChanged();
+    }
+
+    public void Hide()
+    {
+        isVisible = false;
+        StateHasChanged();
+    }
+
+    private string GetAlertClass()
+    {
+        var prefix = "alert-";
+        var postfix = alertType.ToString().ToLowerInvariant();
+        return prefix + postfix;
+    }
+}

@@ -29,7 +29,11 @@ public class AuthenticationService : IAuthentificationService
     public async Task<AuthentificationResult> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken)
     {
         var response = await _client.PostAsJsonAsync("/api/auth/register/", request, cancellationToken);
-        //TODO: validate
+        
+        var result = await response.Content.ReadFromJsonAsync<AuthentificationResult>();
+        if (!result.IsSuccess)
+            return new AuthentificationResult(result.Errors!);
+
         return new AuthentificationResult();
     }
 

@@ -1,7 +1,5 @@
 ﻿using EquipmentManagement.Application.Abstractions;
-using EquipmentManagement.Auth.Abstractions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

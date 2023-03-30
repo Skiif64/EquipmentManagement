@@ -1,5 +1,5 @@
-﻿using EquipmentManagement.Application.Models;
-using EquipmentManagement.Auth.Abstractions;
+﻿using EquipmentManagement.Application.Abstractions;
+using EquipmentManagement.Application.Models;
 using Microsoft.EntityFrameworkCore;
 
 

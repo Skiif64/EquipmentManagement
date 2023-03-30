@@ -31,8 +31,7 @@ public static class DependencyInjection
                     Encoding.UTF8.GetBytes(jwtOptions.SecretKey))
             });
 
-        services.AddTransient<IJwtTokenProvider, JwtTokenProvider>();
-        services.AddScoped<JwtAuthentificationService>();
+        services.AddTransient<IJwtTokenProvider, JwtTokenProvider>();        
         services.AddTransient<IMigrationableDatabase, UsersDbContext>();
        
         return services;

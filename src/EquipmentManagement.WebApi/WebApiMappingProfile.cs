@@ -44,12 +44,6 @@ public class WebApiMappingProfile : Profile
         CreateMap<RegisterRequest, RegisterCommand>();
         CreateMap<LoginRequest, SignInCommand>();
         CreateMap<ApplicationUser, ApplicationUserResponse>();
-        CreateMap<JournalRecord, JournalRecordResponse>()
-            .ForMember(dest => dest.UserId,
-            opt => opt.MapFrom(src => src.Username))
-            .ForMember(dest => dest.Username,
-            opt => opt.MapFrom(src => src.Username));
-            
-
+        CreateMap<JournalRecord, JournalRecordResponse>();
     }
 }

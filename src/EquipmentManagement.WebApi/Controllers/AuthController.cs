@@ -63,10 +63,11 @@ public class AuthController : ControllerBase
         var response = await _sender.Send(command, cancellationToken);
         if (response.IsSuccess)
         {
-            _logger.LogInformation(AppLogEvents.Register, "User {username} is registered", request.Login);            
+            _logger.LogInformation(AppLogEvents.Register, "User {username} is registered", request.Login);
+            var username = User.Identity?.Name;
             await _journal.WriteAsync(AppLogEvents.Register,
                 $"Пользователь {request.Login} зарегистрирован",
-               null,
+               username,
                DateTimeOffset.UtcNow,
                 cancellationToken);
         }

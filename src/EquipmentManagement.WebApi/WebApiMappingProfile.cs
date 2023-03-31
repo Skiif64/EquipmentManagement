@@ -46,9 +46,9 @@ public class WebApiMappingProfile : Profile
         CreateMap<ApplicationUser, ApplicationUserResponse>();
         CreateMap<JournalRecord, JournalRecordResponse>()
             .ForMember(dest => dest.UserId,
-            opt => opt.MapFrom(src => src.ApplicationUserId))
+            opt => opt.MapFrom(src => src.Username))
             .ForMember(dest => dest.Username,
-            opt => opt.MapFrom(dest => (dest.ApplicationUser != null) ? dest.ApplicationUser.Login : null));
+            opt => opt.MapFrom(src => src.Username));
             
 
     }

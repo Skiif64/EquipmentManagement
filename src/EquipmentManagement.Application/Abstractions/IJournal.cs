@@ -6,7 +6,7 @@ public interface IJournal
 {
     Task WriteAsync(EventId eventId,
         string message,
-        Guid? user = null,
+        string? user = null,
         DateTimeOffset? created = null,
         CancellationToken cancellationToken = default);
 }

@@ -14,13 +14,13 @@ public class DbJournal : IJournal
 
     public async Task WriteAsync(EventId eventId,
         string message,
-        Guid? user = null,
+        string? user = null,
         DateTimeOffset? created = null,
         CancellationToken cancellationToken = default)
     {
         var record = new JournalRecord
         {
-            ApplicationUserId = user,
+            Username = user,
             EventName = eventId.Name ?? string.Empty,
             DateCreated = created,
             Message = message

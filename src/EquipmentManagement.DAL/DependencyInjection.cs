@@ -1,4 +1,5 @@
 ﻿using EquipmentManagement.Application.Abstractions;
+using EquipmentManagement.DAL.ImagesStorage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,6 +16,7 @@ public static class DependencyInjection
         .UseNpgsql(connectionString, cfg => cfg
         .MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
         services.AddTransient<IMigrationableDatabase, ApplicationDbContext>();
+        services.AddTransient<IImageStorage, ImageStorage>();
         return services;
     }
 }

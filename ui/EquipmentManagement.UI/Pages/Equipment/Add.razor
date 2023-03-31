@@ -1,8 +1,11 @@
 ﻿@attribute [Route(PagePaths.Equipment.Add)]
 @using EquimentManagement.Contracts.Requests;
 @using System.Collections.ObjectModel;
+@using System.Net.Http.Headers;
+@using EquipmentManagement.UI.Services;
 @inject HttpClient Client;
 @inject NavigationManager Navigation;
+@inject ImageService ImageService;
 @attribute [Authorize(Roles = "Admin")]
 
 <div class="container">
@@ -54,8 +57,11 @@
     </div>
 </div>
 @code {
+
+
     private AddEquipmentRequest request = new();
     private ObservableCollection<IBrowserFile> connectedFiles = new();
+    private List<IBrowserFile> filesCollection = new();
     private List<string> sources = new();
 
     protected override void OnInitialized()
@@ -66,6 +72,8 @@
     private async Task OnValidSubmitAsync()
     {
         var response = await Client.PostAsJsonAsync("/api/equipment/add/", request);
+        await ImageService.AddImagesAsync(filesCollection);
+
         if (response.IsSuccessStatusCode)
         {
             Navigation.NavigateTo(PagePaths.Equipment.List);
@@ -77,11 +85,12 @@
         var files = e.GetMultipleFiles();
         foreach (var file in files)
         {
+            filesCollection.Add(file);
             connectedFiles.Add(file);
             using var ms = new MemoryStream();
             await file.OpenReadStream().CopyToAsync(ms);
             var source = $"data:{file.ContentType};base64,{Convert.ToBase64String(ms.ToArray())}";
             sources.Add(source);
-        }
+        }   
     }
 }

@@ -8,6 +8,8 @@ services:
       dockerfile: src/EquipmentManagement.WebApi/Dockerfile
     depends_on:
       - db
+    volumes:
+      - images:/app/images/
   db:
     image: postgres
     restart: always
@@ -17,3 +19,6 @@ services:
     image: adminer
     ports:
       - 8080:8080
+
+volumes:
+  images:

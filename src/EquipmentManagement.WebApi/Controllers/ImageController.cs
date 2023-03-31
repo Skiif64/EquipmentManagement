@@ -1,5 +1,6 @@
 ﻿using EquipmentManagement.DAL.ImagesStorage;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Mime;
 
 namespace EquipmentManagement.WebApi.Controllers;
 
@@ -26,5 +27,14 @@ public class ImageController : ControllerBase
         }
 
         return Ok();
+    }
+
+    [HttpGet("{imageName}")]
+    public async Task<ActionResult> GetImageByNameAsync(string imageName, CancellationToken cancellationToken)
+    {
+        var imageExtension = Path.GetExtension(imageName);
+        var contentType = "image/" + imageExtension.Substring(1);
+        var fileStream = _storage.GetImageStream(imageName);
+        return File(fileStream, contentType);
     }
 }

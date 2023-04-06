@@ -3,13 +3,13 @@ using EquipmentManagement.UI.Abstractions;
 
 namespace EquipmentManagement.UI.Authentification;
 
-public class LocalTokenStorage : ITokenStorage
+public class TokenStorage : ITokenStorage
 {
     private const string AccessToken = "JwtAccess";
     private const string RefreshToken = "JwtRefresh";
     private readonly ILocalStorageService _storage;
 
-    public LocalTokenStorage(ILocalStorageService storage)
+    public TokenStorage(ILocalStorageService storage)
     {
         _storage = storage;        
     }

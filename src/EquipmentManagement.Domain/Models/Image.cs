@@ -3,11 +3,11 @@
 namespace EquipmentManagement.Domain.Models;
 public class Image : BaseModel
 {
-    public Guid EquipmentId { get; init; }
-    public Equipment Equipment { get; init; } = null!;
-    public string FullImagePath { get; init; } = string.Empty;
-    public string ThumbImagePath { get; init; } = string.Empty;
-    protected Image() : base()
+    public Guid EquipmentId { get; set; }
+    public Equipment Equipment { get; set; } = null!;
+    public string FullImagePath { get; set; } = string.Empty;
+    public string ThumbImagePath { get; set; } = string.Empty;
+    public Image() : base()
     {
         
     }

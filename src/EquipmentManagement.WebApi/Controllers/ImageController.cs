@@ -22,12 +22,14 @@ public class ImageController : ControllerBase
         var files = Request.Form.Files;
         if (!files.All(x => x.ContentType.StartsWith("image/")))
             return BadRequest();
+        List<string> fileNames = new();
         foreach (var file in files)
         {
-            await _storage.SaveImageAsync(file, cancellationToken);
+            var fileName = await _storage.SaveImageAsync(file, cancellationToken);
+           fileNames.Add(fileName);
         }
 
-        return Ok();
+        return Ok(fileNames);
     }
 
     [HttpGet("{imageName}")]

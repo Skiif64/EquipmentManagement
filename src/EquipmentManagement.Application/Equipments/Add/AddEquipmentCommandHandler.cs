@@ -18,6 +18,18 @@ public class AddEquipmentCommandHandler : ICommandHandler<AddEquipmentCommand, G
     public async Task<Guid> Handle(AddEquipmentCommand request, CancellationToken cancellationToken)
     {
         var equipment = _mapper.Map<Equipment>(request);
+        equipment.Images = new List<Image>();
+        foreach(var imageName in request.ImageNames!)
+        {
+            var image = new Image
+            {
+                Equipment = equipment,
+                EquipmentId = equipment.Id,
+                FullImagePath = imageName
+            };
+            equipment.Images.Add(image);
+            await _context.Set<Image>().AddAsync(image, cancellationToken);
+        }
         await _context.Set<Equipment>().AddAsync(equipment,cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
         return equipment.Id;

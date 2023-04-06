@@ -12,6 +12,7 @@ public class Equipment : BaseModel
     public string? Description { get; init; }
     public EquipmentRecord? LastRecord => _lastRecord
         ??= GetLastRecord();
+    public virtual IList<Image> Images { get; set; } = null!;
     public virtual IList<EquipmentRecord> Records { get; init; } = null!;
 
     protected Equipment() : base()

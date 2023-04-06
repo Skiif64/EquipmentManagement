@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 
 namespace EquipmentManagement.UI.Services;
 
@@ -15,7 +16,7 @@ public class ImageService
         _client = client;
     }
 
-    public async Task AddImagesAsync(IEnumerable<UploadedFile> files, CancellationToken cancellationToken = default)
+    public async Task<string[]> AddImagesAsync(IEnumerable<UploadedFile> files, CancellationToken cancellationToken = default)
     {
         using var content = new MultipartFormDataContent();
         foreach (var file in files)
@@ -24,6 +25,7 @@ public class ImageService
         }
 
         var response = await _client.PostAsync("/api/image/add", content, cancellationToken);
+        return await response.Content.ReadFromJsonAsync<string[]>();
 
     }
 }

@@ -72,8 +72,9 @@
 
     private async Task OnValidSubmitAsync()
     {
+        var imageNames = await ImageService.AddImagesAsync(uploadedFiles);
+        request.ImageNames = imageNames;
         await EquipmentService.AddAsync(request);
-        await ImageService.AddImagesAsync(uploadedFiles);
         
         Navigation.NavigateTo(PagePaths.Equipment.List);
         

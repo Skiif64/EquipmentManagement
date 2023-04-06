@@ -1,4 +1,5 @@
-﻿<div class="p-2">
+﻿@using EquipmentManagement.UI.Shared.Modal;
+<div class="p-2">
     <img class="img-thumbnail" src="@Source" alt="@Alt"
          @onclick="ExpandAsync" />
 </div>
@@ -14,13 +15,12 @@
     private async Task ExpandAsync()
     {
         var parameteres = new ModalParameters()
-        .Add(nameof(Image.Source), Source)
-        .Add(nameof(Image.Alt), Alt);
+        .Add(nameof(ImageModal.Source), Source);        
         var options = new ModalOptions
             {
                 Size = ModalSize.ExtraLarge
             };
-        var modal = Modal.Show<Image>(string.Empty, parameteres, options);
+        var modal = Modal.Show<ImageModal>(string.Empty, parameteres, options);
         var result = await modal.Result;
     }
 }

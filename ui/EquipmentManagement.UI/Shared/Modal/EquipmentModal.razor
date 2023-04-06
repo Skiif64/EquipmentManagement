@@ -1,5 +1,17 @@
-﻿<h3>EquipmentModal</h3>
+﻿@using EquimentManagement.Contracts.Responses;
+@using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+@if (Equipment is not null)
+{
+    @foreach (var image in Equipment.ImageNames!)
+    {
+        <ImageThumb Source="@($"{ApiPath}/{image}")" Alt="Фото" />
+    }
+}
 
 @code {
-
+    private const string ApiPath = "/api/image";   
+    [CascadingParameter]
+    public BlazoredModalInstance Instance { get; set; } = null!;
+    [Parameter]
+    public EquipmentWithStatusResponse? Equipment { get; set; }
 }

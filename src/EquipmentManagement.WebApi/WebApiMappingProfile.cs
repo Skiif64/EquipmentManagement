@@ -32,6 +32,8 @@ public class WebApiMappingProfile : Profile
             opt => opt.MapFrom(src => (src.LastRecord != null) ? src.LastRecord.Id : default))
             .ForMember(dest => dest.EmployeeId,
             opt => opt.MapFrom(src => (src.LastRecord != null) ? src.LastRecord.EmployeeId : null))
+            .ForMember(dest => dest.ImageNames,
+            opt => opt.MapFrom(src => src.Images.Select(x => x.FullImagePath)))
             .IncludeBase<Equipment, EquipmentResponse>();
         CreateMap<EquipmentRecord, EquipmentRecordResponse>()
             .ForMember(dest => dest.EmployeeFullname,

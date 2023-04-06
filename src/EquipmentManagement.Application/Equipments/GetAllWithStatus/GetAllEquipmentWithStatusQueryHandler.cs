@@ -25,7 +25,8 @@ public class GetAllEquipmentWithStatusQueryHandler
             .Include(x => x.Records)            
             .ThenInclude(x => x.Status)
             .Include(x => x.Records)
-            .ThenInclude(x => x.Employee);
+            .ThenInclude(x => x.Employee)
+            .Include(x => x.Images);
         var statuses = _mapper.Map<IEnumerable<EquipmentWithStatus>>(entities);
         return Task.FromResult(statuses);
     }

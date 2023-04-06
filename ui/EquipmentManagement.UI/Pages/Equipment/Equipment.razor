@@ -71,6 +71,8 @@
                         }
                     </td>
                     <td>
+                        <button class="btn btn-primary"
+                        @onclick="() => ShowDetailsAsync(equipment)">Детали</button>
                         <AuthorizeView Roles="Admin">
                             <Authorized>
                                 <button class="btn btn-danger"
@@ -98,7 +100,7 @@ else
     </div>
 }
 @code {
-    private ObservableCollection<EquipmentWithStatusResponse>? equipments;
+    private ObservableCollection<EquipmentWithStatusResponse> equipments = new();
     private EquipmentWithStatusResponse? selected;
     [CascadingParameter]
     private IModalService Modal { get; set; } = null!;
@@ -147,5 +149,13 @@ else
         equipments?.Remove(selected);
         var employeeId = selected.Id;
         selected = null;
+    }
+
+    private async Task ShowDetailsAsync(EquipmentWithStatusResponse equipment)
+    {
+        var parameters = new ModalParameters()
+        .Add(nameof(EquipmentModal.Equipment), equipment);
+        var modal = Modal.Show<EquipmentModal>("Детали", parameters);
+        var result = await modal.Result;
     }
 }

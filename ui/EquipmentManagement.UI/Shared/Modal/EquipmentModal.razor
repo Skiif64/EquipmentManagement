@@ -2,14 +2,18 @@
 @using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 @if (Equipment is not null)
 {
-    @foreach (var image in Equipment.ImageNames!)
-    {
-        <ImageThumb Source="@($"{ApiPath}/{image}")" Alt="Фото" />
-    }
+    <div class="d-flex justify-content-start p-2">
+        @foreach (var image in Equipment.ImageNames!)
+        {
+            <div class="ml-2">
+                <ImageThumb Source="@($"{ApiPath}/{image}")" Alt="Фото" />
+            </div>
+        }
+    </div>
 }
 
 @code {
-    private const string ApiPath = "/api/image";   
+    private const string ApiPath = "/api/image";
     [CascadingParameter]
     public BlazoredModalInstance Instance { get; set; } = null!;
     [Parameter]

@@ -153,9 +153,13 @@ else
 
     private async Task ShowDetailsAsync(EquipmentWithStatusResponse equipment)
     {
+        var options = new ModalOptions
+            {
+                Size = ModalSize.Large
+            };
         var parameters = new ModalParameters()
         .Add(nameof(EquipmentModal.Equipment), equipment);
-        var modal = Modal.Show<EquipmentModal>("Детали", parameters);
+        var modal = Modal.Show<EquipmentModal>("Детали", parameters, options);
         var result = await modal.Result;
     }
 }

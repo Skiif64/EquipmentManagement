@@ -2,6 +2,20 @@
 @using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 @if (Equipment is not null)
 {
+    <div class="mt-2">
+        <span>Тип: @Equipment.Type</span>        
+    </div>
+    <div class="mt-2">
+        <span>Артикул: @Equipment.Article</span>
+    </div>
+    <div class="mt-2">
+        <span>Серийный номер: @Equipment.SerialNumber</span>
+    </div>
+    <div class="mt-2">
+        <div>Описание:</div>
+        <textarea readonly draggable="false" title="Описание">@Equipment.Description</textarea>
+    </div>
+    <h3>Фото</h3>
     <div class="d-flex justify-content-start p-2">
         @foreach (var image in Equipment.ImageNames!)
         {

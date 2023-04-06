@@ -43,7 +43,7 @@
                     <div class="p-2 d-flex justify-content-start w-100 bg-light">
                         @foreach (var source in sources)
                         {
-                            <ImageThumb Source="@source"/>
+                            <ImageThumb Source="@source" />
                         }
                     </div>
                     <InputFile multiple OnChange="LoadFileAsync"></InputFile>
@@ -62,7 +62,7 @@
 
 
     private AddEquipmentRequest request = new();
-    private ObservableCollection<UploadedFile> uploadedFiles = new();    
+    private ObservableCollection<UploadedFile> uploadedFiles = new();
     private List<string> sources = new();
 
     protected override void OnInitialized()
@@ -72,12 +72,15 @@
 
     private async Task OnValidSubmitAsync()
     {
-        var imageNames = await ImageService.AddImagesAsync(uploadedFiles);
-        request.ImageNames = imageNames;
+        if (uploadedFiles.Count > 0)
+        {
+            var imageNames = await ImageService.AddImagesAsync(uploadedFiles);
+            request.ImageNames = imageNames;
+        }
         await EquipmentService.AddAsync(request);
-        
+
         Navigation.NavigateTo(PagePaths.Equipment.List);
-        
+
     }
 
     private async Task LoadFileAsync(InputFileChangeEventArgs e)
@@ -90,6 +93,6 @@
             await file.OpenReadStream().CopyToAsync(ms);
             var source = $"data:{file.ContentType};base64,{Convert.ToBase64String(ms.ToArray())}";
             sources.Add(source);
-        }   
+        }
     }
 }

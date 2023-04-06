@@ -3,7 +3,7 @@ using EquipmentManagement.UI.Authentification;
 
 namespace EquipmentManagement.UI.States;
 
-public abstract class TokenStorageState : State<TokenStorageState>
+public abstract class TokenStorageState : State
 {
     public abstract Func<IServiceProvider, ITokenStorage> Factory { get; }
     protected TokenStorageState(string name) : base(name)

@@ -1,7 +1,7 @@
 ﻿namespace EquipmentManagement.UI.States;
 
-public abstract class State<T> : IEquatable<State<T>>, IEquatable<string>
-    where T : State<T>
+public abstract class State : IEquatable<State>, IEquatable<string>
+    
 
 {
     public string Name { get; set; }
@@ -11,14 +11,14 @@ public abstract class State<T> : IEquatable<State<T>>, IEquatable<string>
         Name = name;
     }
 
-    public bool Equals(State<T>? other)
+    public bool Equals(State? other)
     {
         return Equals((object?)other);
     }
 
     public override bool Equals(object? obj)
     {
-        if(obj is not State<T> other)
+        if(obj is not State other)
             return false;
         return GetType().Name == other.Name
            && Name == other.Name;

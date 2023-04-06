@@ -1,7 +1,9 @@
 ﻿@attribute [Route(PagePaths.Equipment.List)]
 @using EquimentManagement.Contracts.Responses;
 @using EquipmentManagement.UI.Abstractions;
+@using EquipmentManagement.UI.Shared.Modal;
 @using Microsoft.AspNetCore.Components.Authorization
+@using System.Collections.ObjectModel;
 @inject HttpClient Client;
 @inject IEquipmentService EquipmentService;
 @inject IStatusService StatusService;
@@ -71,7 +73,8 @@
                     <td>
                         <AuthorizeView Roles="Admin">
                             <Authorized>
-                                <button class="btn btn-danger">Удалить</button>
+                                <button class="btn btn-danger"
+                                @onclick="() => ShowDeleteAsync(equipment)">Удалить</button>
                                 <button class="btn btn-primary"
                                 @onclick="() => EditEquipmentStatus(equipment.Id)">
                                     Изменить статус
@@ -95,17 +98,20 @@ else
     </div>
 }
 @code {
-    private IEnumerable<EquipmentWithStatusResponse>? equipments;
-
+    private ObservableCollection<EquipmentWithStatusResponse>? equipments;
+    private EquipmentWithStatusResponse? selected;
+    [CascadingParameter]
+    private IModalService Modal { get; set; } = null!;
     protected override async Task OnInitializedAsync()
     {
         await LoadEquipments();
+        equipments.CollectionChanged += (s, e) => StateHasChanged();
     }
 
     private async Task LoadEquipments()
     {
-        equipments = await EquipmentService.GetAllAsync();
-
+        var response = await EquipmentService.GetAllAsync();
+        equipments = new ObservableCollection<EquipmentWithStatusResponse>(response);
     }
 
     private void EditEquipmentStatus(Guid equipmentId)
@@ -115,5 +121,31 @@ else
     private void ShowHistory(Guid equipmentId)
     {
         Navigation.NavigateTo($"{PagePaths.EquipmentRecord.History}?id={equipmentId}");
+    }
+
+    private async Task ShowDeleteAsync(EquipmentWithStatusResponse equipment)
+    {
+        selected = equipment;
+        var options = new ModalOptions
+            {
+                HideCloseButton = true
+            };
+        var parameters = new ModalParameters()
+        .Add(nameof(DeleteModal.EntityName), equipment.Type);
+        var modal = Modal.Show<DeleteModal>("Удаление оборудования", parameters, options);
+        var result = await modal.Result;
+        if(result.Confirmed)
+        {
+            await DeleteSelectedEquipmentAsync();
+        }
+    }
+
+    private async Task DeleteSelectedEquipmentAsync()
+    {
+        if (selected is null)
+            return;
+        equipments?.Remove(selected);
+        var employeeId = selected.Id;
+        selected = null;
     }
 }

@@ -1,0 +1,64 @@
+﻿@using System.Collections.ObjectModel;
+@using EquimentManagement.Contracts.Responses;
+@using EquipmentManagement.UI.Abstractions;
+@inject IJournalService JournalService;
+@if (journal is not null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Тип
+                </th>
+                <th>
+                    Сообщение
+                </th>
+                <th>
+                    От
+                </th>
+                <th>
+                    Дата
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var record in journal)
+            {
+                <tr>
+                    <td>
+                        @record.EventName
+                    </td>
+                    <td>
+                        @record.Message
+                    </td>
+                    <td>
+                        @record.Username
+                    </td>
+                    <td>
+                        @record.DateCreated?.ToLocalTime().ToString("dd MMMM yyyy г. HH :mm")
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private ObservableCollection<JournalRecordResponse>? journal;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDataAsync();
+    }
+
+    private async Task LoadDataAsync()
+    {
+        var response = await JournalService.GetAsync(20, 0);
+        if (response is not null)
+        {
+            journal = new ObservableCollection<JournalRecordResponse>(response);
+            journal.CollectionChanged += (sender, e) => StateHasChanged();
+            journal.OrderByDescending(x => x.DateCreated);
+        }
+    }
+}

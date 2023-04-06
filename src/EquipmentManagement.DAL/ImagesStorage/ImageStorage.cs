@@ -29,8 +29,9 @@ public class ImageStorage : IImageStorage
             throw new ArgumentException("Invalid FileType");
         var imageName = Path.GetRandomFileName() + imageExtension;
         var path = Path.Combine(_storagePath, imageName);
-        using var fs = File.Create(path);
-        await file.OpenReadStream().CopyToAsync(fs, 1024, cancellationToken); //TODO: Maybe dispose?        
+        using var fileStream = File.Create(path);
+        using var formFileStream = file.OpenReadStream();
+        await formFileStream.CopyToAsync(fileStream, 1024, cancellationToken);      
         return imageName;
     }
 

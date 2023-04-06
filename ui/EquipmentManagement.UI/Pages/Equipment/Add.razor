@@ -2,10 +2,12 @@
 @using EquimentManagement.Contracts.Requests;
 @using System.Collections.ObjectModel;
 @using System.Net.Http.Headers;
+@using EquipmentManagement.UI.Abstractions;
 @using EquipmentManagement.UI.Services;
 @inject HttpClient Client;
 @inject NavigationManager Navigation;
 @inject ImageService ImageService;
+@inject IEquipmentService EquipmentService;
 @attribute [Authorize(Roles = "Admin")]
 
 <div class="container">
@@ -44,7 +46,7 @@
                             <ImageThumb Source="@source"/>
                         }
                     </div>
-                    <InputFile OnChange="LoadFileAsync"></InputFile>
+                    <InputFile multiple OnChange="LoadFileAsync"></InputFile>
                 </div>
                 <div class="mb-3">
                     <button type="submit"
@@ -60,24 +62,21 @@
 
 
     private AddEquipmentRequest request = new();
-    private ObservableCollection<IBrowserFile> connectedFiles = new();
-    private List<IBrowserFile> filesCollection = new();
+    private ObservableCollection<UploadedFile> uploadedFiles = new();    
     private List<string> sources = new();
 
     protected override void OnInitialized()
     {
-        connectedFiles.CollectionChanged += (s, e) => StateHasChanged();
+        uploadedFiles.CollectionChanged += (s, e) => StateHasChanged();
     }
 
     private async Task OnValidSubmitAsync()
     {
-        var response = await Client.PostAsJsonAsync("/api/equipment/add/", request);
-        await ImageService.AddImagesAsync(filesCollection);
-
-        if (response.IsSuccessStatusCode)
-        {
-            Navigation.NavigateTo(PagePaths.Equipment.List);
-        }
+        await EquipmentService.AddAsync(request);
+        await ImageService.AddImagesAsync(uploadedFiles);
+        
+        Navigation.NavigateTo(PagePaths.Equipment.List);
+        
     }
 
     private async Task LoadFileAsync(InputFileChangeEventArgs e)
@@ -85,8 +84,7 @@
         var files = e.GetMultipleFiles();
         foreach (var file in files)
         {
-            filesCollection.Add(file);
-            connectedFiles.Add(file);
+            uploadedFiles.Add(new UploadedFile(file));
             using var ms = new MemoryStream();
             await file.OpenReadStream().CopyToAsync(ms);
             var source = $"data:{file.ContentType};base64,{Convert.ToBase64String(ms.ToArray())}";

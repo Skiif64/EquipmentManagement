@@ -15,14 +15,12 @@ public class ImageService
         _client = client;
     }
 
-    public async Task AddImagesAsync(IEnumerable<IBrowserFile> files, CancellationToken cancellationToken = default)
+    public async Task AddImagesAsync(IEnumerable<UploadedFile> files, CancellationToken cancellationToken = default)
     {
         using var content = new MultipartFormDataContent();
         foreach (var file in files)
-        {
-            var fileContent = new StreamContent(file.OpenReadStream(MaxFileSize, cancellationToken));
-            fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
-            content.Add(fileContent, "\"images\"", file.Name);
+        {            
+            content.Add(file.Content, "\"images\"", file.Name);
         }
 
         var response = await _client.PostAsync("/api/image/add", content, cancellationToken);

@@ -1,4 +1,5 @@
-﻿using EquipmentManagement.DAL.ImagesStorage;
+﻿using EquipmentManagement.Application.Abstractions;
+using EquipmentManagement.DAL.ImagesStorage;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 
@@ -8,9 +9,9 @@ namespace EquipmentManagement.WebApi.Controllers;
 [Route("api/[controller]")]
 public class ImageController : ControllerBase
 {
-    private readonly ImageStorage _storage;
+    private readonly IImageStorage _storage;
 
-    public ImageController(ImageStorage storage)
+    public ImageController(IImageStorage storage)
     {
         _storage = storage;
     }

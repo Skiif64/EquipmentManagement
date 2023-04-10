@@ -1,0 +1,92 @@
+﻿@using EquimentManagement.Contracts.Responses;
+@using EquipmentManagement.UI.Abstractions;
+@using System.Collections.ObjectModel;
+@using EquipmentManagement.UI.Shared.Modal;
+@using Microsoft.AspNetCore.Components.Authorization
+@inject IEmployeeService EmployeeService;
+@attribute [Authorize]
+@if (employees is not null)
+{
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>
+                    <div class="d-flex w-100 justify-content-center">
+                        <span class="text-center">ФИО</span>
+                    </div>
+                </th>
+                <th>
+                    <div class="d-flex w-100 justify-content-center">
+                        <span class="text-center">Действия</span>
+                    </div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var employee in employees)
+            {
+                <tr>
+                    <td>
+                        <span>@employee.Lastname @employee.Firstname @employee.Patronymic</span>
+                    </td>
+                    <td>
+                        <AuthorizeView Roles="Admin">
+                            <Authorized>
+                                <button class="btn btn-danger"
+                                @onclick="async () => await DeleteEmployeeRequested.InvokeAsync(employee)">
+                                    <span class="oi oi-trash"></span> Удалить
+                                </button>
+                                <button class="btn btn-primary">
+                                    <span class="oi oi-pencil"></span> Изменить
+                                </button>
+                            </Authorized>
+                        </AuthorizeView>
+                        <button class="btn btn-secondary"
+                        @onclick="async () => await NavigateToEmployeeEquipmentRequested.InvokeAsync(employee)">
+                            <span class="oi oi-list-rich"></span> Оборудование
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="d-flex">
+        <div class="my-auto mx-auto">
+            <LoadingCircle />
+        </div>
+    </div>
+}
+
+@code {
+    private ObservableCollection<EmployeeResponse>? employees;
+    [Parameter]
+    public EventCallback<EmployeeResponse> DeleteEmployeeRequested { get; set; } = default!;
+    [Parameter]
+    public EventCallback<EmployeeResponse> NavigateToEmployeeEquipmentRequested { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadEmployeesAsync();
+    }
+
+    public void DeleteEmployee(EmployeeResponse employee)
+    {
+        employees?.Remove(employee);
+    }
+
+    private async Task LoadEmployeesAsync()
+    {
+        var response = await EmployeeService.GetAllAsync();
+        if (response is not null)
+        {
+            employees = new ObservableCollection<EmployeeResponse>(response);
+            employees.CollectionChanged += (sender, e) => StateHasChanged();
+        }
+    }
+
+
+}

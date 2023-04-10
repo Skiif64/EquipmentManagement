@@ -9,6 +9,7 @@ using EquipmentManagement.Application.Equipments.Get;
 using EquipmentManagement.Application.Equipments.GetAll;
 using EquipmentManagement.Application.Equipments.GetAllWithStatus;
 using EquipmentManagement.Application.Equipments.GetByEmployeeId;
+using EquipmentManagement.Application.Statuses.GetOrCreate;
 using EquipmentManagement.Auth;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -21,6 +22,7 @@ namespace EquipmentManagement.WebApi.Controllers;
 [Authorize]
 public class EquipmentController : ControllerBase
 {
+    private const string DefaultStatusName = "Создано";
     private readonly ISender _sender;
     private readonly IMapper _mapper;
     private readonly IJournal _journal;
@@ -58,12 +60,21 @@ public class EquipmentController : ControllerBase
         var id = await _sender.Send(command, cancellationToken);
         var author = User.Identity?.Name;
 
+        var statusCommand = new GetOrCreateStatusCommand
+        {
+            Title = DefaultStatusName
+        };
+
+        var status = await _sender.Send(statusCommand, cancellationToken);
+
         var recordCommand = new AddEquipmentRecordCommand
         {
             EquipmentId = id,
             ModifyAuthor = author ?? "неизвестно",
-            StatusId
-        }
+            StatusId = status.Id
+        };
+
+        await _sender.Send(recordCommand, cancellationToken);
 
         await _journal.WriteAsync(AppLogEvents.Create,
        $"Добавлено оборудование {request.Type} {request.Article} {request.SerialNumber}",

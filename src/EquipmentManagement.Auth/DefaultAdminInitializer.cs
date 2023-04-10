@@ -20,8 +20,8 @@ internal class DefaultAdminInitializer : IMigrationableDatabase
     public void Migrate()
     {
         var user = CreateAdminUser();
-        if(_context.Set<ApplicationUser>()
-            .SingleOrDefault(x => x.Login == user.Login) is null)
+        if(!_context.Set<ApplicationUser>()
+            .Any(x => x.Role == Roles.Admin))
         {
             _context.Set<ApplicationUser>()
                 .Add(user);
@@ -32,8 +32,8 @@ internal class DefaultAdminInitializer : IMigrationableDatabase
     public async Task MigrateAsync(CancellationToken cancellationToken)
     {
         var user = CreateAdminUser();
-        if (await _context.Set<ApplicationUser>()
-            .SingleOrDefaultAsync(x => x.Login == user.Login, cancellationToken) is null)
+        if (!await _context.Set<ApplicationUser>()
+            .AnyAsync(x => x.Role == Roles.Admin, cancellationToken))
         {
             await _context.Set<ApplicationUser>()
                 .AddAsync(user, cancellationToken);

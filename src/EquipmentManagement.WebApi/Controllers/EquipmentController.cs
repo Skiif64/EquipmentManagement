@@ -3,6 +3,7 @@ using EquimentManagement.Contracts.Requests;
 using EquimentManagement.Contracts.Responses;
 using EquipmentManagement.Application;
 using EquipmentManagement.Application.Abstractions;
+using EquipmentManagement.Application.EquipmentRecords.Add;
 using EquipmentManagement.Application.Equipments.Add;
 using EquipmentManagement.Application.Equipments.Get;
 using EquipmentManagement.Application.Equipments.GetAll;
@@ -55,8 +56,15 @@ public class EquipmentController : ControllerBase
 
         var command = _mapper.Map<AddEquipmentCommand>(request);
         var id = await _sender.Send(command, cancellationToken);
-
         var author = User.Identity?.Name;
+
+        var recordCommand = new AddEquipmentRecordCommand
+        {
+            EquipmentId = id,
+            ModifyAuthor = author ?? "неизвестно",
+            StatusId
+        }
+
         await _journal.WriteAsync(AppLogEvents.Create,
        $"Добавлено оборудование {request.Type} {request.Article} {request.SerialNumber}",
        author,

@@ -29,4 +29,9 @@ public static class PagePaths
     {
         public const string List = "/user/";        
     }
+
+    public static class Journal
+    {
+        public const string List = "/journal/";
+    }
 }

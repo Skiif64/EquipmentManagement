@@ -1,4 +1,5 @@
-﻿@using System.Collections.ObjectModel;
+﻿@attribute [Route(PagePaths.Journal.List)]
+@using System.Collections.ObjectModel;
 @using EquimentManagement.Contracts.Responses;
 @using EquipmentManagement.UI.Abstractions;
 @inject IJournalService JournalService;
@@ -45,7 +46,9 @@
             <tr>
                 <td>
                     <button class="btn btn-primary"
-                    @onclick="NavigateToJournal">Посмотреть все</button>
+                        @onclick="NavigateToJournal">
+                        Посмотреть все
+                    </button>
                 </td>
             </tr>
         </tfoot>
@@ -62,12 +65,12 @@
 
     private async Task LoadDataAsync()
     {
-        var response = await JournalService.GetAsync(10, 0);
+        var response = await JournalService.GetAllAsync();
         if (response is not null)
         {
-            journal = new ObservableCollection<JournalRecordResponse>(response);
-            journal.CollectionChanged += (sender, e) => StateHasChanged();
-            journal.OrderByDescending(x => x.DateCreated);
+            journal = new ObservableCollection<JournalRecordResponse>(response
+                .OrderByDescending(x => x.DateCreated));
+            journal.CollectionChanged += (sender, e) => StateHasChanged();            
         }
     }
 

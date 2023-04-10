@@ -2,11 +2,9 @@
 @using EquimentManagement.Contracts.Responses;
 @using EquipmentManagement.UI.Abstractions;
 @using EquipmentManagement.UI.Shared.Modal;
+@using EquipmentManagement.UI.Shared.Tables
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Collections.ObjectModel;
-@inject HttpClient Client;
-@inject IEquipmentService EquipmentService;
-@inject IStatusService StatusService;
 @inject NavigationManager Navigation;
 @attribute [Authorize]
 <h3>Оборудование</h3>
@@ -18,116 +16,32 @@
                      href="/equipment/add">Добавить оборудование</NavLink>
         </Authorized>
     </AuthorizeView>
-
+    <EquipmentTable @ref="Table"
+                    HistoryRequested="OnHistoryRequested"
+                    EditRequested="OnEditRequested"
+                    DeleteRequested="OnDeleteRequestedAsync"
+                    DetailsRequested="OnDetailsRequestedAsync" />
 </div>
-   @if (equipments is not null)
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    <span>Тип</span>
-                </th>
-                <th>
-                    <span>Артикул</span>
-                </th>
-                <th>
-                    <span>Серийный номер</span>
-                </th>
-                <th>
-                    <span>Описание</span>
-                </th>
-                <th>
-                    <span>Статус</span>
-                </th>
-                <th>
-
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-
-            @foreach (var equipment in equipments)
-            {
-                <tr>
-                    <td>
-                        <span>@equipment.Type</span>
-                    </td>
-                    <td>
-                        <span>@equipment.Article</span>
-                    </td>
-                    <td>
-                        <span>@equipment.SerialNumber</span>
-                    </td>
-                    <td>
-                        <textarea draggable="false"
-                                  readonly="readonly">@equipment.Description</textarea>
-                    </td>
-                    <td>
-                        <strong>@equipment.StatusTitle</strong>
-                        @if (equipment.EmployeeFullname is not null)
-                        {
-                            <span> (@equipment.EmployeeFullname)</span>
-                        }
-                    </td>
-                    <td>
-                        <button class="btn btn-primary"
-                        @onclick="() => ShowDetailsAsync(equipment)">Детали</button>
-                        <AuthorizeView Roles="Admin">
-                            <Authorized>
-                                <button class="btn btn-danger"
-                                @onclick="() => ShowDeleteAsync(equipment)">Удалить</button>
-                                <button class="btn btn-primary"
-                                @onclick="() => EditEquipmentStatus(equipment.Id)">
-                                    Изменить статус
-                                </button>
-                            </Authorized>
-                        </AuthorizeView>
-                        <button class="btn btn-primary"
-                        @onclick="() => ShowHistory(equipment.Id)">История</button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-else
-{
-    <div class="d-flex">
-        <div class="my-auto mx-auto">
-            <LoadingCircle />
-        </div>
-    </div>
-}
+  
 @code {
-    private ObservableCollection<EquipmentWithStatusResponse> equipments = new();
-    private EquipmentWithStatusResponse? selected;
+    [Parameter]
+    public EquipmentTable? Table { get; set; }
     [CascadingParameter]
     private IModalService Modal { get; set; } = null!;
-    protected override async Task OnInitializedAsync()
+
+
+    private void OnEditRequested(EquipmentWithStatusResponse equipment)
     {
-        await LoadEquipments();
-        equipments.CollectionChanged += (s, e) => StateHasChanged();
+        Navigation.NavigateTo($"{PagePaths.EquipmentRecord.Add}?id={equipment.Id}");
     }
 
-    private async Task LoadEquipments()
+    private void OnHistoryRequested(EquipmentWithStatusResponse equipment)
     {
-        var response = await EquipmentService.GetAllAsync();
-        equipments = new ObservableCollection<EquipmentWithStatusResponse>(response);
+        Navigation.NavigateTo($"{PagePaths.EquipmentRecord.History}?id={equipment.Id}");
     }
 
-    private void EditEquipmentStatus(Guid equipmentId)
-    {
-        Navigation.NavigateTo($"{PagePaths.EquipmentRecord.Add}?id={equipmentId}");
-    }
-    private void ShowHistory(Guid equipmentId)
-    {
-        Navigation.NavigateTo($"{PagePaths.EquipmentRecord.History}?id={equipmentId}");
-    }
-
-    private async Task ShowDeleteAsync(EquipmentWithStatusResponse equipment)
-    {
-        selected = equipment;
+    private async Task OnDeleteRequestedAsync(EquipmentWithStatusResponse equipment)
+    {        
         var options = new ModalOptions
             {
                 HideCloseButton = true
@@ -138,20 +52,19 @@ else
         var result = await modal.Result;
         if(result.Confirmed)
         {
-            await DeleteSelectedEquipmentAsync();
+            await DeleteSelectedEquipmentAsync(equipment);
         }
     }
 
-    private async Task DeleteSelectedEquipmentAsync()
+    private async Task DeleteSelectedEquipmentAsync(EquipmentWithStatusResponse equipment)
     {
-        if (selected is null)
-            return;
-        equipments?.Remove(selected);
-        var employeeId = selected.Id;
-        selected = null;
+        Table?.DeleteEquipment(equipment);
+        var equipmentId = equipment.Id;
+        //TODO: Add Delete
+        
     }
 
-    private async Task ShowDetailsAsync(EquipmentWithStatusResponse equipment)
+    private async Task OnDetailsRequestedAsync(EquipmentWithStatusResponse equipment)
     {
         var options = new ModalOptions
             {

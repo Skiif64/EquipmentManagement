@@ -4,6 +4,9 @@ using EquipmentManagement.Auth;
 using EquipmentManagement.DAL;
 using EquipmentManagement.WebApi;
 using EquipmentManagement.WebApi.OptionSetups;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption;
+using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +24,12 @@ builder.Services.AddAuth(builder.Configuration);
 builder.Services.AddRazorPages();
 builder.Services.AddControllersWithViews();
 builder.Services.AddCors(opt => opt.AddPolicy("CorsPolicy", policy => policy.AllowAnyOrigin()));
-
+builder.Services.AddDataProtection()
+    .UseCryptographicAlgorithms(new AuthenticatedEncryptorConfiguration
+    {
+        EncryptionAlgorithm = EncryptionAlgorithm.AES_256_CBC,
+        ValidationAlgorithm = ValidationAlgorithm.HMACSHA256
+    });
 builder.Services.ConfigureOptions<JwtTokenOptionsSetup>();
 
 var app = builder.Build();

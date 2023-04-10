@@ -41,17 +41,7 @@
                     </td>
                 </tr>
             }
-        </tbody>
-        <tfoot>
-            <tr>
-                <td>
-                    <button class="btn btn-primary"
-                        @onclick="NavigateToJournal">
-                        Посмотреть все
-                    </button>
-                </td>
-            </tr>
-        </tfoot>
+        </tbody>        
     </table>
 }
 
@@ -72,10 +62,5 @@
                 .OrderByDescending(x => x.DateCreated));
             journal.CollectionChanged += (sender, e) => StateHasChanged();            
         }
-    }
-
-    private void NavigateToJournal()
-    {
-        Navigation.NavigateTo(PagePaths.Journal.List);
     }
 }

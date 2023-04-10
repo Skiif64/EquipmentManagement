@@ -66,8 +66,7 @@
         if (response is not null)
         {
             journal = new ObservableCollection<JournalRecordResponse>(response);
-            journal.CollectionChanged += (sender, e) => StateHasChanged();
-            journal.OrderByDescending(x => x.DateCreated);
+            journal.CollectionChanged += (sender, e) => StateHasChanged();            
         }
     }
 

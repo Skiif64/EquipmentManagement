@@ -10,7 +10,8 @@ public class EquipmentRecord : BaseModel
     public virtual Equipment Equipment { get; set; } = null!;
     public Guid StatusId { get; set; }
     public virtual Status Status { get; set; } = null!;
-	public DateTimeOffset Modified { get; set; }    
+	public DateTimeOffset Modified { get; set; }
+    public string ModifyAuthor { get; set; } = string.Empty;
 
     protected EquipmentRecord() : base()
     {

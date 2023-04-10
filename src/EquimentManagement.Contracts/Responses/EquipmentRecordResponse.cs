@@ -9,4 +9,5 @@ public class EquipmentRecordResponse
     public Guid StatusId { get; set; }
     public string StatusTitle { get; set; } = string.Empty;
     public DateTimeOffset Modified { get; set; }
+    public string ModifyAuthor { get; set; } = string.Empty;
 }

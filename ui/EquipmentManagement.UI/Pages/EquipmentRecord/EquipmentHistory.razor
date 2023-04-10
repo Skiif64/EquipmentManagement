@@ -27,6 +27,9 @@
                 <th>
                     <span class="text-center">Дата</span>
                 </th>
+                <th>
+                    <span class="text-center">Автор изменения</span>
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -42,6 +45,9 @@
                     </td>
                     <td>
                         <span>@record.Modified.ToLocalTime().ToString("d MMMM yyyy г. hh:mm")</span>
+                    </td>
+                    <td>
+                        <span>@record.ModifyAuthor</span>
                     </td>
                 </tr>
             }

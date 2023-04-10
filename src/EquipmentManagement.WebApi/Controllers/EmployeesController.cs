@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using EquimentManagement.Contracts.Requests;
 using EquimentManagement.Contracts.Responses;
+using EquipmentManagement.Application;
+using EquipmentManagement.Application.Abstractions;
 using EquipmentManagement.Application.Employees.Add;
 using EquipmentManagement.Application.Employees.Delete;
 using EquipmentManagement.Application.Employees.Get;
@@ -9,6 +11,7 @@ using EquipmentManagement.Auth;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static EquipmentManagement.UI.Utils.PagePaths;
 
 namespace EquipmentManagement.WebApi.Controllers
 {
@@ -20,11 +23,13 @@ namespace EquipmentManagement.WebApi.Controllers
         private readonly ISender _sender;
         private readonly IMapper _mapper;
         private readonly ILogger<EmployeesController>? _logger;
-        public EmployeesController(ISender sender, IMapper mapper, ILogger<EmployeesController>? logger = null)
+        private readonly IJournal _journal;
+        public EmployeesController(ISender sender, IMapper mapper, IJournal journal, ILogger<EmployeesController>? logger = null)
         {
             _sender = sender;
             _mapper = mapper;
             _logger = logger;
+            _journal = journal;
         }
         [HttpPost("add")]
         [Authorize(Roles = Roles.Admin)]
@@ -34,6 +39,14 @@ namespace EquipmentManagement.WebApi.Controllers
                 return BadRequest(ModelState);
             var command = _mapper.Map<AddEmployeeCommand>(request);
             var id = await _sender.Send(command, cancellationToken);
+
+            var author = User.Identity?.Name;
+            await _journal.WriteAsync(AppLogEvents.Create,
+           $"Добавлен сотрудник {request.Lastname} {request.Firstname} {request.Patronymic}",
+           author,
+           DateTimeOffset.UtcNow,
+           cancellationToken);
+
             return Ok(id);
         }
         [HttpGet]

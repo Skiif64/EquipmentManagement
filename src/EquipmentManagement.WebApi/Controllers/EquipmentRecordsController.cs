@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using EquimentManagement.Contracts.Requests;
 using EquimentManagement.Contracts.Responses;
+using EquipmentManagement.Application;
+using EquipmentManagement.Application.Abstractions;
 using EquipmentManagement.Application.EquipmentRecords.Add;
 using EquipmentManagement.Application.EquipmentRecords.GetActualsByEmployeeID;
 using EquipmentManagement.Application.EquipmentRecords.GetAll;
@@ -20,11 +22,13 @@ public class EquipmentRecordsController : ControllerBase
 {
     private readonly ISender _sender;
     private readonly IMapper _mapper;
+    private readonly IJournal _journal;
 
-    public EquipmentRecordsController(ISender sender, IMapper mapper)
+    public EquipmentRecordsController(ISender sender, IMapper mapper, IJournal journal)
     {
         _sender = sender;
         _mapper = mapper;
+        _journal = journal;
     }
 
     [HttpPost("add")]
@@ -34,8 +38,17 @@ public class EquipmentRecordsController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
+        var author = User.Identity?.Name;
+        request.ModifyAuthor = author ?? "неизвестно";
         var command = _mapper.Map<AddEquipmentRecordCommand>(request);
         var id = await _sender.Send(command, cancellationToken);
+
+        await _journal.WriteAsync(AppLogEvents.Update,
+            "Изменен статус оборудования",
+            author,
+            DateTimeOffset.UtcNow,
+            cancellationToken);
+
         return Ok(id);
     }
 

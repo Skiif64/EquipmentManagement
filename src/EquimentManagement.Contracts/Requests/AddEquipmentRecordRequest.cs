@@ -11,4 +11,5 @@ public class AddEquipmentRecordRequest
     [Required]
     [NotNull]
     public Guid? StatusId { get; set; }
+    public string ModifyAuthor { get; set; } = string.Empty;
 }

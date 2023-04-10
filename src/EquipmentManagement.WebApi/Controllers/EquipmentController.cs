@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using EquimentManagement.Contracts.Requests;
 using EquimentManagement.Contracts.Responses;
+using EquipmentManagement.Application;
+using EquipmentManagement.Application.Abstractions;
 using EquipmentManagement.Application.Equipments.Add;
 using EquipmentManagement.Application.Equipments.Get;
 using EquipmentManagement.Application.Equipments.GetAll;
@@ -20,11 +22,13 @@ public class EquipmentController : ControllerBase
 {
     private readonly ISender _sender;
     private readonly IMapper _mapper;
+    private readonly IJournal _journal;
 
-    public EquipmentController(ISender sender, IMapper mapper)
+    public EquipmentController(ISender sender, IMapper mapper, IJournal journal)
     {
         _sender = sender;
         _mapper = mapper;
+        _journal = journal;
     }
 
     [HttpGet]
@@ -51,6 +55,14 @@ public class EquipmentController : ControllerBase
 
         var command = _mapper.Map<AddEquipmentCommand>(request);
         var id = await _sender.Send(command, cancellationToken);
+
+        var author = User.Identity?.Name;
+        await _journal.WriteAsync(AppLogEvents.Create,
+       $"Добавлено оборудование {request.Type} {request.Article} {request.SerialNumber}",
+       author,
+       DateTimeOffset.UtcNow,
+       cancellationToken);
+
         return Ok(id);
     }
 

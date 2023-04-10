@@ -23,9 +23,7 @@ public class UsersDbContext : DbContext, IUserDbContext, IMigrationableDatabase
        => Set<TEntity>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<ApplicationUser>()
-            .HasData(ApplicationUser.Create("Admin", "example", "Admin"));
+    {       
         modelBuilder.ApplyConfiguration(new ApplicationUserEntityTypeConfiguration());
     }
 }

@@ -33,6 +33,7 @@ public static class DependencyInjection
 
         services.AddTransient<IJwtTokenProvider, JwtTokenProvider>();        
         services.AddTransient<IMigrationableDatabase, UsersDbContext>();
+        services.AddTransient<IMigrationableDatabase, DefaultAdminInitializer>();
        
         return services;
     }

@@ -12,25 +12,18 @@
         <thead>
             <tr>
                 <th>
-                    <div class="d-flex w-100 justify-content-center">
-                        <span class="text-center">Логин</span>
-                    </div>
+                    <span class="text-center">Логин</span>
                 </th>
                 <th>
-                    <div class="d-flex w-100 justify-content-center">
-                        <span class="text-center">Роль</span>
-                    </div>
+                    <span class="text-center">Роль</span>
                 </th>
                 <th>
-                    <div class="d-flex w-100 justify-content-center">
-                        <span class="text-center">Состояние</span>
-                    </div>
+                    <span class="text-center">Состояние</span>
+
                 </th>
                 <th>
-                    <div class="d-flex w-100 justify-content-center">
-                        <span class="text-center">Действия</span>
-                    </div>
-                </th>                
+                    <span class="text-center">Действия</span>
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -44,10 +37,9 @@
                         <span>@user.Role</span>
                     </td>
                     <td>
-                        <span>@(user.IsBlocked? "Заблокирован" : "Активен")</span>
+                        <span>@(user.IsBlocked ? "Заблокирован" : "Активен")</span>
                     </td>
                     <td>
-
                     </td>
                 </tr>
             }
@@ -56,7 +48,7 @@
 }
 else
 {
-    <LoadingCircle/>
+    <LoadingCircle />
 }
 
 @code {
@@ -70,7 +62,7 @@ else
     private async Task LoadDataAsync()
     {
         var response = await AuthService.GetAllAsync(default);
-        if(response is not null)
+        if (response is not null)
         {
             users = new ObservableCollection<ApplicationUserResponse>(response);
             users.CollectionChanged += (s, e) => StateHasChanged();

@@ -24,6 +24,8 @@ public class RefreshTokenHttpMessageHandler : DelegatingHandler
     private bool TokenExpire(string token)
     {        
         var parsedToken = JwtTokenParser.Parse(token);
+        if (parsedToken is null)
+            return true;
         return parsedToken.ValidTo < DateTime.UtcNow;
     }
 

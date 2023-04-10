@@ -4,10 +4,17 @@ namespace EquipmentManagement.UI.Utils;
 
 public class JwtTokenParser
 {
-    public static JwtSecurityToken Parse(string token)
+    public static JwtSecurityToken? Parse(string token)
     {
-        var handler = new JwtSecurityTokenHandler();
-        var parsedToken = handler.ReadJwtToken(token);
-        return parsedToken;
+        try
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var parsedToken = handler.ReadJwtToken(token);
+            return parsedToken;
+        }
+        catch (ArgumentException)
+        {
+            return null;
+        }
     }
 }

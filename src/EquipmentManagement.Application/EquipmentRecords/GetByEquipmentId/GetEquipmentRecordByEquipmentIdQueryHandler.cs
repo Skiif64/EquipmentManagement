@@ -17,9 +17,10 @@ public class GetEquipmentRecordByEquipmentIdQueryHandler
     {
         var records = _context
             .Set<EquipmentRecord>()
+            .Where(x => x.EquipmentId == request.EquipmentId)
             .Include(x => x.Employee)
             .Include(x => x.Status)
-            .Where(x => x.EquipmentId == request.EquipmentId);
+            .OrderByDescending(x => x.Modified);
 
         return Task.FromResult(records?.AsEnumerable());
     }

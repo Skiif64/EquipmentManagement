@@ -34,7 +34,7 @@ public class JwtTokenRefresher : IJwtTokenRefresher
         }
         catch(HttpRequestException exception) when (exception.StatusCode == System.Net.HttpStatusCode.BadRequest)
         {
-            _logger.LogWarning("Exception Occured. Deleting tokens");
+            _logger.LogWarning("Exception Occured. Deleting tokens"); //TODO: remove
             await _storage.RemoveAccessTokenAsync(cancellationToken);
             await _storage.RemoveRefreshTokenAsync(cancellationToken);
         }

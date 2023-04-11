@@ -8,7 +8,7 @@ public class Employee : BaseModel
 	public string Lastname { get; init; } = string.Empty;
     public string? Patronymic { get; init; }
     public string Fullname => $"{Lastname} {Firstname} {Patronymic}";
-    public bool Fired { get; set; }
+    public EmployeeStatus Status { get; set; }
     public virtual IList<EquipmentRecord> Records { get; init; } = null!;
     
     protected Employee() : base()

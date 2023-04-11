@@ -22,7 +22,7 @@ public class DeleteEmployeeCommandHandler : ICommandHandler<DeleteEmployeeComman
             .SingleOrDefaultAsync(x => x.Id == request.EmployeeId, cancellationToken);
         if (employee is null)
             throw new NotFoundException("Employee");
-        employee.Fired = true;
+        employee.Status = EmployeeStatus.Fired;
         _context.Set<Employee>().Update(employee);
         await _context.SaveChangesAsync(cancellationToken);
         return employee.Id;

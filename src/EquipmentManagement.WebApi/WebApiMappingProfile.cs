@@ -46,6 +46,7 @@ public class WebApiMappingProfile : Profile
             opt => opt.MapFrom(src => src.Status.Title));
         CreateMap<Status, StatusResponse>();
         CreateMap<AuthenticationResult, AuthentificationResponse>();
+        CreateMap<EmployeeStatus, EmployeeStatusResponse>();
 
         CreateMap<RegisterRequest, RegisterCommand>();
         CreateMap<LoginRequest, SignInCommand>();

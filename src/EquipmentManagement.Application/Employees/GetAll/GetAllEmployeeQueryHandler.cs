@@ -16,7 +16,9 @@ public class GetAllEmployeeQueryHandler : IQueryHandler<GetAllEmployeeQuery, IEn
     public Task<IEnumerable<Employee>?> Handle(GetAllEmployeeQuery request, CancellationToken cancellationToken)
     {
         var set = _context
-            .Set<Employee>()            
+            .Set<Employee>()
+            .OrderByDescending(x => x.Fullname)
+            .ThenBy(x => x.Status)
             ;
         return Task.FromResult(set?.AsEnumerable());
     }

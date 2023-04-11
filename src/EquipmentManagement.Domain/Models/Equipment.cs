@@ -9,6 +9,8 @@ public class Equipment : BaseModel
 	public string Article { get; set; } = string.Empty;
     public string SerialNumber { get; set; } = string.Empty;
     public string? Description { get; set; }
+    public string Author { get; set; } = string.Empty;
+    public DateTimeOffset CreatedAt { get; set; }
     public EquipmentRecord? LastRecord => _lastRecord
         ??= GetLastRecord();
     public virtual IList<Image> Images { get; set; } = null!;

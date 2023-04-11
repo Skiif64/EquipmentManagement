@@ -56,9 +56,10 @@ public class EquipmentController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
+        var author = User.Identity?.Name;
+        request.Author = author ?? "неизвестно";
         var command = _mapper.Map<AddEquipmentCommand>(request);
         var id = await _sender.Send(command, cancellationToken);
-        var author = User.Identity?.Name;
 
         var statusCommand = new GetOrCreateStatusCommand
         {

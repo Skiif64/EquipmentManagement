@@ -12,5 +12,6 @@ public class AddEquipmentRequest
     [Required]
     public string SerialNumber { get; set; } = string.Empty;
     public string? Description { get; set; }
+    public string Author { get; set; } = string.Empty;    
     public IEnumerable<string> ImageNames { get; set; } = Enumerable.Empty<string>();
 }

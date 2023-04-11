@@ -4,13 +4,16 @@ using EquimentManagement.Contracts.Responses;
 using EquipmentManagement.Application.EquipmentTypes.Add;
 using EquipmentManagement.Application.EquipmentTypes.GetAll;
 using EquipmentManagement.Application.EquipmentTypes.GetById;
+using EquipmentManagement.Auth;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EquipmentManagement.WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class TypeController : ControllerBase
 {
     private readonly ISender _sender;
@@ -39,6 +42,7 @@ public class TypeController : ControllerBase
         return Ok(response);
     }
 
+    [Authorize(Roles = Roles.Admin)]
     [HttpPost]
     public async Task<ActionResult<Guid>> AddAsync(AddEquipmentTypeRequest request, CancellationToken cancellationToken)
     {

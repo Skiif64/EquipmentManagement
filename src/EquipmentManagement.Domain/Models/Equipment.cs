@@ -1,12 +1,11 @@
 ﻿using EquipmentManagement.Domain.Models.Base;
-using System.Runtime.Serialization;
 
 namespace EquipmentManagement.Domain.Models;
 
 public class Equipment : BaseModel
 {
     private EquipmentRecord? _lastRecord;
-	public string Type { get; init; } = string.Empty;
+    public EquipmentType Type { get; init; } = null!;
 	public string Article { get; init; } = string.Empty;
     public string SerialNumber { get; init; } = string.Empty;
     public string? Description { get; init; }

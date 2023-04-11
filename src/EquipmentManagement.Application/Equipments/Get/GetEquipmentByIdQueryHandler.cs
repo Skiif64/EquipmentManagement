@@ -18,7 +18,7 @@ public class GetEquipmentByIdQueryHandler : IQueryHandler<GetEquipmentByIdQuery,
     {
         return await _context
             .Set<Equipment>()
-            .SingleOrDefaultAsync(x => x.Id == request.EquipmentId)
+            .SingleOrDefaultAsync(x => x.Id == request.EquipmentId)            
             ?? throw new NotFoundException("Equipment");
     }
 }

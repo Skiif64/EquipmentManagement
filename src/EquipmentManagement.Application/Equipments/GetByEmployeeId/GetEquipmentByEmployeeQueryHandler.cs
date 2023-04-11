@@ -17,9 +17,10 @@ public class GetEquipmentByEmployeeQueryHandler : IQueryHandler<GetEquipmentsByE
     {
         var equipments = _context
             .Set<Equipment>()
-            .Include(x => x.Records)
-            .AsEnumerable()
             .Where(x =>x.LastRecord != null && x.LastRecord.EmployeeId == request.EmployeeId)            
+            .Include(x => x.Records)
+            .Include(x => x.Type)
+            .AsEnumerable()
             ;
                
         return Task.FromResult(equipments?.AsEnumerable());

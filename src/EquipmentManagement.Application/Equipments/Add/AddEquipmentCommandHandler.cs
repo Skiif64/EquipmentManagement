@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using EquipmentManagement.Application.Abstractions;
+using EquipmentManagement.Application.Exceptions;
 using EquipmentManagement.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace EquipmentManagement.Application.Equipments.Add;
 
@@ -30,6 +32,10 @@ public class AddEquipmentCommandHandler : ICommandHandler<AddEquipmentCommand, G
             equipment.Images.Add(image);
             await _context.Set<Image>().AddAsync(image, cancellationToken);
         }
+        equipment.Type = await _context
+            .Set<EquipmentType>()
+            .FindAsync(new[] { request.TypeId }, cancellationToken)
+            ?? throw new NotFoundException("EquipmentType");
         await _context.Set<Equipment>().AddAsync(equipment,cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
         return equipment.Id;

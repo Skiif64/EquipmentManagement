@@ -17,8 +17,9 @@ public class GetAllEmployeeQueryHandler : IQueryHandler<GetAllEmployeeQuery, IEn
     {
         var set = _context
             .Set<Employee>()
-            .OrderByDescending(x => x.Fullname)
-            .ThenBy(x => x.Status)
+            .OrderBy(x => x.Status)
+            .ThenBy(x => x.Lastname)
+            .ThenBy(x => x.Firstname)            
             ;
         return Task.FromResult(set?.AsEnumerable());
     }

@@ -16,10 +16,13 @@
                     </div>
                 </th>
                 <th>
+                    <span class="text-center">Статус</span>
+                </th>
+                <th>
                     <div class="d-flex w-100">
                         <span class="text-center">Действия</span>
                     </div>
-                </th>
+                </th>               
             </tr>
         </thead>
         <tbody>
@@ -31,11 +34,14 @@
                         <span>@employee.Lastname @employee.Firstname @employee.Patronymic</span>
                     </td>
                     <td>
+                        <span>@(employee.Status == EmployeeStatusResponse.Active? "Активен" : "Уволен")</span>
+                    </td>
+                    <td>
                         <AuthorizeView Roles="Admin">
                             <Authorized>
                                 <button class="btn btn-danger"
                                 @onclick="async () => await DeleteEmployeeRequested.InvokeAsync(employee)">
-                                    <span class="oi oi-trash"></span> Удалить
+                                    <span class="oi oi-trash"></span> Уволить
                                 </button>
                                 <button class="btn btn-primary">
                                     <span class="oi oi-pencil"></span> Изменить

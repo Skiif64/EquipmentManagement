@@ -92,7 +92,7 @@ public class AuthController : ControllerBase
             ? Ok(response)
             : BadRequest(response);
     }
-
+    [AllowAnonymous]
     [HttpGet("logout/{userId:guid}")]
     public async Task<IActionResult> LogoutAsync(Guid userId, CancellationToken cancellationToken)
     {

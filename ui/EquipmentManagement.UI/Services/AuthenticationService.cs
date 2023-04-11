@@ -13,9 +13,9 @@ public class AuthenticationService : IAuthentificationService
     private readonly ITokenStorage _storage;
     private readonly IAuthenticationStateNotifier _notifier;
 
-    public AuthenticationService(HttpClient client, ITokenStorage storage, IAuthenticationStateNotifier notifier)
+    public AuthenticationService(IHttpClientFactory factory, ITokenStorage storage, IAuthenticationStateNotifier notifier)
     {
-        _client = client;
+        _client = factory.CreateClient("Auth");
         _storage = storage;
         _notifier = notifier;
     }

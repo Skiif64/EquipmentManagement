@@ -15,14 +15,16 @@ public class RefreshTokenHttpMessageHandler : DelegatingHandler
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
         var token = await _tokenStorage.GetAccessTokenAsync(cancellationToken);        
-        if (token is not null && TokenExpire(token))
+        if (IsTokenExpired(token))
             await RefreshTokenAsync(cancellationToken);
         var response = await base.SendAsync(request, cancellationToken);
         return response;
     }
 
-    private bool TokenExpire(string token)
-    {        
+    private bool IsTokenExpired(string? token)
+    {
+        if (token is null)
+            return true;
         var parsedToken = JwtTokenParser.Parse(token);
         if (parsedToken is null)
             return true;

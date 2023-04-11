@@ -9,18 +9,22 @@ public class JwtTokenRefresher : IJwtTokenRefresher
     private readonly IHttpClientFactory _factory;
     private readonly ITokenStorage _storage;
     private readonly IAuthenticationStateNotifier _notifier;
+    private readonly ILogger<JwtTokenRefresher> _logger;
 
-    public JwtTokenRefresher(IHttpClientFactory factory, ITokenStorage storage, IAuthenticationStateNotifier notifier)
+    public JwtTokenRefresher(IHttpClientFactory factory, ITokenStorage storage, IAuthenticationStateNotifier notifier, ILogger<JwtTokenRefresher> logger)
     {
         _factory = factory;
         _storage = storage;
         _notifier = notifier;
+        _logger = logger;
     }
 
     public async Task RefreshAccessToken(CancellationToken cancellationToken)
     {
         var refreshToken = await _storage.GetRefreshTokenAsync(cancellationToken);
-        var client = _factory.CreateClient("RefreshAccessToken");
+        if (refreshToken is null)
+            return;
+        var client = _factory.CreateClient("Auth");
         AuthentificationResponse? response = null;
         try
         {
@@ -30,6 +34,7 @@ public class JwtTokenRefresher : IJwtTokenRefresher
         }
         catch(HttpRequestException exception) when (exception.StatusCode == System.Net.HttpStatusCode.BadRequest)
         {
+            _logger.LogWarning("Exception Occured. Deleting tokens");
             await _storage.RemoveAccessTokenAsync(cancellationToken);
             await _storage.RemoveRefreshTokenAsync(cancellationToken);
         }

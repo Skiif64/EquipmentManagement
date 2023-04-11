@@ -21,7 +21,7 @@ builder.Services.AddHttpClient("Api", client
 builder.Services.AddScoped(sp =>
     sp.GetRequiredService<IHttpClientFactory>().CreateClient("Api"));
 
-builder.Services.AddHttpClient("RefreshAccessToken", cfg =>
+builder.Services.AddHttpClient("Auth", cfg =>
 cfg.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
 
 builder.Services.AddScoped<JwtAuthentificationStateProvider>();

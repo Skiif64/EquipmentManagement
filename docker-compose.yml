@@ -16,7 +16,7 @@ services:
     restart: always
     environment:
       POSTGRES_PASSWORD: example
-      PGDATA: /var/lib/postgresql/data/ 
+      PGDATA: /var/lib/postgresql/data
     volumes:
     - data:/var/lib/postgresql/data
   adminer:

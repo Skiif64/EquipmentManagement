@@ -5,5 +5,8 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
-      - 81:80      
+      - 80:80  
+  adminer:
+    ports:
+      - 8080:8080
 

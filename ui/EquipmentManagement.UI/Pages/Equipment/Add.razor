@@ -4,10 +4,10 @@
 @using System.Net.Http.Headers;
 @using EquipmentManagement.UI.Abstractions;
 @using EquipmentManagement.UI.Services;
-@inject HttpClient Client;
 @inject NavigationManager Navigation;
 @inject ImageService ImageService;
 @inject IEquipmentService EquipmentService;
+
 @attribute [Authorize(Roles = "Admin")]
 
 <div class="container">

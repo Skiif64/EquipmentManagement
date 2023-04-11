@@ -6,15 +6,13 @@ using System.Net.Http.Json;
 
 namespace EquipmentManagement.UI.Services;
 
-public class EquipmentServiceWithCaching : IEquipmentService
+public class EquipmentService : IEquipmentService
 {
-    private const string CachePrefix = "Equipment";
-    private readonly IMemoryCache _cache;
+    
     private readonly HttpClient _client;
 
-    public EquipmentServiceWithCaching(IMemoryCache cache, HttpClient client)
-    {
-        _cache = cache;
+    public EquipmentService(HttpClient client)
+    {        
         _client = client;
     }
 

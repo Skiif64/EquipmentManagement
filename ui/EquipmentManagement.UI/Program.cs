@@ -29,7 +29,7 @@ builder.Services.AddScoped<IAuthenticationStateNotifier>(sp =>
     sp.GetRequiredService<JwtAuthentificationStateProvider>());
 builder.Services.AddScoped<AuthenticationStateProvider>(sp =>
     sp.GetRequiredService<JwtAuthentificationStateProvider>());
-builder.Services.AddScoped<IEquipmentService, EquipmentServiceWithCaching>();
+builder.Services.AddScoped<IEquipmentService, EquipmentService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IStatusService, StatusService>();
 builder.Services.AddScoped<IEquipmentRecordService, EquipmentRecordService>();

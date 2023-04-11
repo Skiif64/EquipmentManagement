@@ -1,6 +1,13 @@
 ﻿<p>@ErrorMessage</p>
+<div class="d-flex justify-content-center">
+    <button class="btn btn-primary" @onclick="CloseAsync">ОК</button>
+</div>
 
 @code {
+    [CascadingParameter]
+    private BlazoredModalInstance Instance { get; set; } = null!;
     [Parameter]
     public string? ErrorMessage { get; set; }
+
+    public async Task CloseAsync() => await Instance.CloseAsync();
 }

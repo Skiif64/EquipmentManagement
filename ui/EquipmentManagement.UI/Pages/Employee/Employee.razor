@@ -4,6 +4,7 @@
 @using EquipmentManagement.UI.Shared.Tables
 @attribute [Route(PagePaths.Employee.List)]
 @inject IEmployeeService EmployeeService;
+@inject IEquipmentService EquipmentService;
 @inject NavigationManager Navigation;
 @attribute [Authorize]
 
@@ -32,7 +33,13 @@
     public EmployeeTable? Table { get; set; }     
 
     private async Task OnShowDeleteModalRequested(EmployeeResponse employee)
-    {       
+    {
+        if (await HasEquipment(employee))
+        {
+            await ShowErrorModal();
+            return;
+        }
+
         var options = new ModalOptions { HideCloseButton = true };
         var fullname = $"{employee.Lastname} {employee.Firstname} {employee.Patronymic}";
         var parameters = new ModalParameters()
@@ -46,12 +53,33 @@
 
 
     private async Task DeleteSelectedEmployee(EmployeeResponse employee)
-    {
+    {        
         Table?.DeleteEmployee(employee);
         var employeeId = employee.Id;
 
         await EmployeeService.DeleteAsync(employeeId);
 
+    }
+
+    private async Task<bool> HasEquipment(EmployeeResponse employee)
+    {
+        var equipments = await EquipmentService.GetByEmployeeIdAsync(employee.Id);
+        if (equipments!.Any())
+            return true;
+        return false;
+    }
+
+    private async Task ShowErrorModal()
+    {
+        var message = "За данным сотрудником есть закрепленное оборудование.";
+        var options = new ModalOptions
+            {
+                HideCloseButton = true
+            };
+        var parameters = new ModalParameters()
+        .Add(nameof(ErrorModal.ErrorMessage), message);
+        var modal = Modal.Show<ErrorModal>("Внимание", parameters, options);
+        await modal.Result;
     }
 
     public void OnNavigateToEmployeeEquipmentRequested(EmployeeResponse employee)

@@ -81,7 +81,8 @@ else
 
     public void DeleteEmployee(EmployeeResponse employee)
     {
-        employees?.Remove(employee);
+        employee.Status = EmployeeStatusResponse.Fired;
+        StateHasChanged();
     }
 
     private async Task LoadEmployeesAsync()

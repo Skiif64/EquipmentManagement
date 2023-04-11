@@ -113,6 +113,7 @@
     private async Task LoadDataAsync()
     {
         employees = await EmployeeService.GetAllAsync();
+        employees = employees?.Where(x => x.Status != EmployeeStatusResponse.Fired);
         var statusResponse = await StatusService.GetAll();
         if (statusResponse is not null)
             statuses = new ObservableCollection<StatusResponse>(statusResponse);

@@ -5,4 +5,9 @@ public class EquipmentType : BaseModel
 {
     public string Name { get; set; } = string.Empty;
     public IList<Equipment> Equipments { get; set; } = null!;
+
+    public EquipmentType() : base()
+    {
+        
+    }
 }

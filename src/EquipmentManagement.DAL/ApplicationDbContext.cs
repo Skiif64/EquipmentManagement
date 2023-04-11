@@ -14,6 +14,7 @@ internal class ApplicationDbContext : DbContext, IApplicationDbContext, IMigrati
     public DbSet<Status> Statuses { get; set; } = null!;
     public DbSet<Image> Images { get; set; } = null!;
     public DbSet<JournalRecord> Journal { get; set; } = null!;
+    public DbSet<EquipmentType> EquipmentTypes { get; set; } = null!;
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {

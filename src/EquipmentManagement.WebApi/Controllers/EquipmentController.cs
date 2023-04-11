@@ -77,11 +77,11 @@ public class EquipmentController : ControllerBase
         await _sender.Send(recordCommand, cancellationToken);
 
         await _journal.WriteAsync(AppLogEvents.Create,
-       $"Добавлено оборудование {request.Type} {request.Article} {request.SerialNumber}",
+       $"Добавлено оборудование {request.Article} {request.SerialNumber}",
        author,
        DateTimeOffset.UtcNow,
        cancellationToken);
-
+        //TODO: Normal Journaling
         return Ok(id);
     }
 

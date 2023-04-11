@@ -6,7 +6,7 @@ namespace EquimentManagement.Contracts.Requests;
 public class AddEquipmentRequest
 {
     [Required]
-    public string Type { get; set; } = string.Empty;
+    public Guid TypeId { get; set; }
     [Required]
     public string Article { get; set; } = string.Empty;
     [Required]

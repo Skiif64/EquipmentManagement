@@ -28,7 +28,9 @@ public class WebApiMappingProfile : Profile
         CreateMap<Employee, EmployeeResponse>();
         CreateMap<Equipment, EquipmentResponse>()
             .ForMember(dest => dest.LastRecordId,
-            opt => opt.MapFrom(src => (src.LastRecord != null) ? src.LastRecord.Id : default));
+            opt => opt.MapFrom(src => (src.LastRecord != null) ? src.LastRecord.Id : default))
+            .ForMember(dest => dest.Type,
+            opt => opt.MapFrom(src => src.Type.Name));
         CreateMap<EquipmentWithStatus, EquipmentWithStatusResponse>()
             .ForMember(dest => dest.LastRecordId,
             opt => opt.MapFrom(src => (src.LastRecord != null) ? src.LastRecord.Id : default))

@@ -1,0 +1,19 @@
+﻿@using EquimentManagement.Contracts.Requests;
+<EditForm Model="@request" OnValidSubmit="@ConfirmAsync">
+    <div class="mb-3">
+        <label class="form-label">Название</label>
+        <InputText class="form-control" @bind-Value="request.Name"></InputText>
+    </div>    
+    <div class="mb-3">
+        <button class="btn btn-primary" type="submit">Создать</button>
+    </div>
+</EditForm>
+
+@code {
+    private AddEquipmentTypeRequest request = new();
+    [CascadingParameter]
+    private BlazoredModalInstance Instance { get; set; } = null!;
+
+    private async Task CancelAsync() => await Instance.CancelAsync();
+    private async Task ConfirmAsync() => await Instance.CloseAsync(ModalResult.Ok(request));
+}

@@ -34,7 +34,7 @@ public class AddEquipmentCommandHandler : ICommandHandler<AddEquipmentCommand, G
         }
         equipment.Type = await _context
             .Set<EquipmentType>()
-            .FindAsync(new[] { request.TypeId }, cancellationToken)
+            .FindAsync(new object[] { request.TypeId }, cancellationToken)
             ?? throw new NotFoundException("EquipmentType");
         await _context.Set<Equipment>().AddAsync(equipment,cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);

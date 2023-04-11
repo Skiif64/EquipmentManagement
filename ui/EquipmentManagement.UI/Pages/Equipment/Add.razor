@@ -2,12 +2,14 @@
 @using EquimentManagement.Contracts.Requests;
 @using System.Collections.ObjectModel;
 @using System.Net.Http.Headers;
+@using EquimentManagement.Contracts.Responses;
 @using EquipmentManagement.UI.Abstractions;
 @using EquipmentManagement.UI.Services;
+@using EquipmentManagement.UI.Shared.Modal;
 @inject NavigationManager Navigation;
 @inject ImageService ImageService;
 @inject IEquipmentService EquipmentService;
-
+@inject IEquipmentTypeService TypeService;
 @attribute [Authorize(Roles = "Admin")]
 
 <div class="container">
@@ -19,9 +21,21 @@
                 <DataAnnotationsValidator />
                 <ValidationSummary />
                 <div class="mb-3">
-                    <label class="form-label">Тип</label>
-                    <InputText class="form-control"
-                               @bind-Value="@request.Type"></InputText>
+                    <button type="button" class="btn btn-primary"
+                            @onclick="ShowAddTypeModalAsync">
+                        Добавить тип
+                    </button>
+                    <label class="mt-3 form-label">Тип</label>
+                    <InputSelect class="form-select" @bind-Value="request.TypeId">
+                        <option selected hidden value="">Выбрать тип</option>                        
+                        @if (types is not null)
+                        {
+                            foreach (var type in types)
+                            {
+                                <option value="@type.Id">@type.Name</option>
+                            }
+                        }
+                    </InputSelect>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Артикул</label>
@@ -59,15 +73,24 @@
     </div>
 </div>
 @code {
-
-
+    private ObservableCollection<EquipmentTypeResponse>? types;
     private AddEquipmentRequest request = new();
     private ObservableCollection<UploadedFile> uploadedFiles = new();
     private List<string> sources = new();
+    [CascadingParameter]
+    private IModalService Modal { get; set; } = null!;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+        await LoadDataAsync();
         uploadedFiles.CollectionChanged += (s, e) => StateHasChanged();
+    }
+
+    private async Task LoadDataAsync()
+    {
+        var response = await TypeService.GetAllAsync();
+        types = new ObservableCollection<EquipmentTypeResponse>(response);
+        types.CollectionChanged += (s, e) => StateHasChanged();
     }
 
     private async Task OnValidSubmitAsync()
@@ -81,6 +104,18 @@
 
         Navigation.NavigateTo(PagePaths.Equipment.List);
 
+    }
+
+    private async Task ShowAddTypeModalAsync()
+    {
+        var modal = Modal.Show<AddTypeModal>("Добавление нового типа");
+        var result = await modal.Result;
+        if(result.Confirmed)
+        {
+            var id = await TypeService.AddAsync((AddEquipmentTypeRequest)result.Data!);
+            var newType = await TypeService.GetByIdAsync(id);
+            types?.Add(newType!);
+        }
     }
 
     private async Task LoadFileAsync(InputFileChangeEventArgs e)

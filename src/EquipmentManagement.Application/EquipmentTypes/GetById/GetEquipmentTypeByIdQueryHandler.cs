@@ -14,6 +14,6 @@ internal class GetEquipmentTypeByIdQueryHandler : IQueryHandler<GetEquipmentType
     public async Task<EquipmentType?> Handle(GetEquipmentTypeByIdQuery request, CancellationToken cancellationToken)
     {
         return await _context.Set<EquipmentType>()
-            .FindAsync(new[] { request.TypeId }, cancellationToken);
+            .FindAsync(new object[] { request.TypeId }, cancellationToken);
     }
 }

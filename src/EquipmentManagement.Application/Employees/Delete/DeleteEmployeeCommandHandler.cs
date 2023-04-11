@@ -1,6 +1,7 @@
 ﻿using EquipmentManagement.Application.Abstractions;
 using EquipmentManagement.Application.Exceptions;
 using EquipmentManagement.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace EquipmentManagement.Application.Employees.Delete;
 
@@ -17,13 +18,12 @@ public class DeleteEmployeeCommandHandler : ICommandHandler<DeleteEmployeeComman
     {
         var employee = await _context
             .Set<Employee>()
-            .FindAsync(request.EmployeeId);
+            .Include(x => x.Records)
+            .SingleOrDefaultAsync(x => x.Id == request.EmployeeId, cancellationToken);
         if (employee is null)
             throw new NotFoundException("Employee");
-
-        _context
-            .Set<Employee>()
-            .Remove(employee);
+        employee.Fired = true;
+        _context.Set<Employee>().Update(employee);
         await _context.SaveChangesAsync(cancellationToken);
         return employee.Id;
     }

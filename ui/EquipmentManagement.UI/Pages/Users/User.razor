@@ -3,7 +3,7 @@
 @using EquipmentManagement.UI.Abstractions;
 @attribute [Route(PagePaths.User.List)]
 @attribute [Authorize(Roles = "Admin")]
-@inject IAuthentificationService AuthService;
+@inject IUserService UserService;
 
 <NavLink class="btn btn-primary" href="/auth/register/">Зарегистрировать пользователя</NavLink>
  @if (users is not null)
@@ -61,7 +61,7 @@ else
 
     private async Task LoadDataAsync()
     {
-        var response = await AuthService.GetAllAsync(default);
+        var response = await UserService.GetAllAsync();
         if (response is not null)
         {
             users = new ObservableCollection<ApplicationUserResponse>(response);

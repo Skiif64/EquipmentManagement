@@ -8,6 +8,5 @@ public interface IAuthentificationService
 {
     Task<AuthentificationResult> SignInAsync(LoginRequest request, CancellationToken cancellationToken);
     Task<AuthentificationResult> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken);
-    Task SignOutAsync(Guid userId, CancellationToken cancellationToken);
-    Task<IEnumerable<ApplicationUserResponse>> GetAllAsync(CancellationToken cancellationToken);
+    Task SignOutAsync(Guid userId, CancellationToken cancellationToken);    
 }

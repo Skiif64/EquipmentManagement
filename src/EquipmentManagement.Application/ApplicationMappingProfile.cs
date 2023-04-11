@@ -3,6 +3,7 @@ using EquipmentManagement.Application.ApplicationUsers.Register;
 using EquipmentManagement.Application.Employees.Add;
 using EquipmentManagement.Application.EquipmentRecords.Add;
 using EquipmentManagement.Application.Equipments.Add;
+using EquipmentManagement.Application.EquipmentTypes.Add;
 using EquipmentManagement.Application.Models;
 using EquipmentManagement.Application.Statuses.Add;
 using EquipmentManagement.Domain.Models;
@@ -31,5 +32,7 @@ public class ApplicationMappingProfile : Profile
 
         CreateMap<RegisterCommand, ApplicationUser>()
             .ConstructUsing(src => ApplicationUser.Create(src.Login, src.Password, src.Role));
+
+        CreateMap<AddEquipmentTypeCommand, EquipmentType>();
     }
 }

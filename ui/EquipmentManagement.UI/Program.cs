@@ -36,6 +36,7 @@ builder.Services.AddScoped<IEquipmentRecordService, EquipmentRecordService>();
 builder.Services.AddScoped<IAuthentificationService, AuthenticationService>();
 builder.Services.AddScoped<IJournalService, JournalService>();
 builder.Services.AddScoped<IEquipmentTypeService, EquipmentTypeService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ImageService>();
 builder.Services.AddScoped<AuthenticationHttpMessageHandler>();
 builder.Services.AddScoped<RefreshTokenHttpMessageHandler>();

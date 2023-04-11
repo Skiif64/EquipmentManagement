@@ -7,6 +7,7 @@ using EquipmentManagement.Application.Employees.Add;
 using EquipmentManagement.Application.EquipmentRecords.Add;
 using EquipmentManagement.Application.EquipmentRecords.Update;
 using EquipmentManagement.Application.Equipments.Add;
+using EquipmentManagement.Application.EquipmentTypes.Add;
 using EquipmentManagement.Application.Models;
 using EquipmentManagement.Application.Statuses.Add;
 using EquipmentManagement.Domain.Models;
@@ -22,6 +23,7 @@ public class WebApiMappingProfile : Profile
         CreateMap<AddEquipmentRecordRequest, AddEquipmentRecordCommand>();
         CreateMap<AddStatusRequest, AddStatusCommand>();
         CreateMap<UpdateEquipmentRecordRequest, UpdateEquipmentRecordCommand>();
+        CreateMap<AddEquipmentTypeRequest, AddEquipmentTypeCommand>();
 
         CreateMap<Employee, EmployeeResponse>();
         CreateMap<Equipment, EquipmentResponse>()
@@ -47,5 +49,6 @@ public class WebApiMappingProfile : Profile
         CreateMap<LoginRequest, SignInCommand>();
         CreateMap<ApplicationUser, ApplicationUserResponse>();
         CreateMap<JournalRecord, JournalRecordResponse>();
+        CreateMap<EquipmentType, EquipmentTypeResponse>();
     }
 }

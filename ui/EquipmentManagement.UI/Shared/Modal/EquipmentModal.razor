@@ -6,31 +6,31 @@
         <div class="row">
             <div class="col-6">
                 <div class="mt-3">
-                    <span><strong>Тип:</strong>@Equipment.Type</span>
+                    <span><strong>Тип: </strong>@Equipment.Type</span>
                 </div>
                 <div class="mt-3">
-                    <span><strong>Артикул:</strong>@Equipment.Article</span>
+                    <span><strong>Артикул: </strong>@Equipment.Article</span>
                 </div>
                 <div class="mt-3">
-                    <span><strong>Серийный номер:</strong>@Equipment.SerialNumber</span>
+                    <span><strong>Серийный номер: </strong>@Equipment.SerialNumber</span>
                 </div>
                 <div class="mt-3">
-                    <div><strong>Описание:</strong></div>
+                    <div><strong>Описание: </strong></div>
                     <textarea readonly draggable="false" title="Описание">@Equipment.Description</textarea>
                 </div>
             </div>
             <div class="col-6">
                 <div class="mt-3">
-                    <span><strong>Текущий статус:</strong>@Equipment.StatusTitle</span>
+                    <span><strong>Текущий статус: </strong>@Equipment.StatusTitle</span>
                 </div>
                 <div class="mt-3">
-                    <span><strong>Назначено на:</strong>@Equipment.EmployeeFullname</span>
+                    <span><strong>Назначено на: </strong>@Equipment.EmployeeFullname</span>
                 </div>
                 <div class="mt-3">
-                    <span><strong>Создатель:</strong>@Equipment.Author</span>
+                    <span><strong>Создатель: </strong>@Equipment.Author</span>
                 </div>
                 <div class="mt-3">
-                    <span><strong>Создано:</strong>@Equipment.CreatedAt.ToLocalTime().ToString("d MMMM yyyy г. hh:mm")</span>
+                    <span><strong>Создано: </strong>@Equipment.CreatedAt.ToLocalTime().ToString("d MMMM yyyy г. hh:mm")</span>
                 </div>
             </div>
         </div>

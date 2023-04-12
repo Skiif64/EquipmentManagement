@@ -2,7 +2,7 @@
 @using EquimentManagement.Contracts.Requests;
 @using EquipmentManagement.UI.Abstractions;
 @using EquipmentManagement.UI.Shared.Alert;
-@inject IAuthentificationService AuthService;
+@inject IUserService UserService;
 @inject NavigationManager Navigation;
 @attribute [Authorize(Roles = "Admin")]
 <div class="container p-2">
@@ -66,7 +66,7 @@
     private async Task OnRegisterSuccessAsync()
     {
         Alert?.Hide();
-        var result = await AuthService.RegisterAsync(request, default);
+        var result = await UserService.RegisterAsync(request, default);
         if (result.IsSuccess)
         {
             Navigation.NavigateTo(PagePaths.Home);

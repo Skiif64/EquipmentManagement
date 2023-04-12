@@ -18,17 +18,7 @@ public class AuthenticationService : IAuthentificationService
         _client = factory.CreateClient("Auth");
         _storage = storage;
         _notifier = notifier;
-    } 
-    public async Task<AuthentificationResult> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken)
-    {
-        var response = await _client.PostAsJsonAsync("/api/auth/register/", request, cancellationToken);
-        
-        var result = await response.Content.ReadFromJsonAsync<AuthentificationResult>();
-        if (!result.IsSuccess)
-            return new AuthentificationResult(result.Errors!);
-
-        return new AuthentificationResult();
-    }
+    }    
 
     public async Task<AuthentificationResult> SignInAsync(LoginRequest request, CancellationToken cancellationToken)
     {

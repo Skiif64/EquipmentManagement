@@ -17,11 +17,7 @@
             <h3>Изменение статуса оборудования</h3>
             <p>Тип: @equipment?.Type</p>
             <p>Артикул: @equipment?.Article</p>
-            <p>Серийный номер: @equipment?.SerialNumber</p>
-            <button type="button" class="btn btn-primary"
-                    @onclick="ShowAddStatusModal">
-                Добавить новый статус
-            </button>
+            <p>Серийный номер: @equipment?.SerialNumber</p>            
             <EditForm Model="@request" OnValidSubmit="@OnValidInputAsync">
                 <DataAnnotationsValidator />
                 <ValidationSummary />
@@ -43,17 +39,23 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Статус</label>
-                    <InputSelect class="form-select" @bind-Value="request.StatusId">
-                        <option selected hidden value="">Выбрать статус</option>
-                        @if (statuses is not null)
-                        {
-                            foreach (var status in statuses)
+                    <div class="d-flex">
+                        <button type="button" class="btn btn-primary me-auto"
+                                @onclick="ShowAddStatusModal">
+                            <span class="oi oi-plus"></span>
+                        </button>
+                        <InputSelect class="form-select ms-1" @bind-Value="request.StatusId">
+                            <option selected hidden value="">Выбрать статус</option>
+                            @if (statuses is not null)
                             {
-                                <option value="@status.Id">@status.Title</option>
+                                foreach (var status in statuses)
+                                {
+                                    <option value="@status.Id">@status.Title</option>
+                                }
                             }
-                        }
-                    </InputSelect>
-                </div>
+                        </InputSelect>
+                    </div>
+                </div>               
                 <div class="mb-3">
                     <button type="submit"
                             class="btn btn-primary">

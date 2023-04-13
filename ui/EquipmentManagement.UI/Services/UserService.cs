@@ -24,8 +24,10 @@ public class UserService : IUserService
     public async Task<AuthentificationResult> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken)
     {
         var response = await _client.PostAsJsonAsync("/api/auth/register/", request, cancellationToken);
-
+        response.EnsureSuccessStatusCode();
         var result = await response.Content.ReadFromJsonAsync<AuthentificationResult>();
+        if (result is null)
+            throw new Exception();//TODO: Normal exception
         if (!result.IsSuccess)
             return new AuthentificationResult(result.Errors!);
 

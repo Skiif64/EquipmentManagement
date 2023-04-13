@@ -7,6 +7,7 @@ using EquipmentManagement.Application.Employees.Add;
 using EquipmentManagement.Application.Employees.Delete;
 using EquipmentManagement.Application.Employees.Get;
 using EquipmentManagement.Application.Employees.GetAll;
+using EquipmentManagement.Application.Employees.Restore;
 using EquipmentManagement.Auth;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -71,6 +72,14 @@ namespace EquipmentManagement.WebApi.Controllers
         public async Task<ActionResult<Guid>> DeleteByIdAsync(Guid id, CancellationToken cancellationToken)
         {
             var command = new DeleteEmployeeCommand(id);
+            var resultId = await _sender.Send(command, cancellationToken);
+            return Ok(resultId);
+        }
+
+        [HttpPost("restore")]
+        public async Task<ActionResult<Guid>> RestoreByIdAsync(Guid id, CancellationToken cancellationToken)
+        {
+            var command = new RestoreEmployeeCommand(id);
             var resultId = await _sender.Send(command, cancellationToken);
             return Ok(resultId);
         }

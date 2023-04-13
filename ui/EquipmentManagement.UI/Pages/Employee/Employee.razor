@@ -23,6 +23,7 @@
         <EmployeeTable @ref="Table"
             DeleteEmployeeRequested="@OnShowDeleteModalRequested"
             RestoreEmployeeRequested="@OnShowRestoreModalRequested"
+            EditEmployeeRequested="@OnEditEmployeeRequested"
             NavigateToEmployeeEquipmentRequested="@OnNavigateToEmployeeEquipmentRequested"/>
     </div>
 </div>
@@ -105,8 +106,13 @@
         await modal.Result;
     }
 
-    public void OnNavigateToEmployeeEquipmentRequested(EmployeeResponse employee)
+    private void OnNavigateToEmployeeEquipmentRequested(EmployeeResponse employee)
     {
         Navigation.NavigateTo($"{PagePaths.Equipment.EmployeeEquipment}?id={employee.Id}");
+    }
+
+    private void OnEditEmployeeRequested(EmployeeResponse employee)
+    {
+        Navigation.NavigateTo(PagePaths.Employee.Edit + $"/{employee.Id}");
     }
 }

@@ -72,7 +72,7 @@ namespace EquipmentManagement.WebApi.Controllers
         public async Task<IActionResult> UpdateAsync(UpdateEmployeeRequest request, CancellationToken cancellationToken)
         {
             var command = _mapper.Map<UpdateEmployeeCommand>(request);
-            await _sender.Send(request, cancellationToken);
+            await _sender.Send(command, cancellationToken);
             return Ok();
         }
 

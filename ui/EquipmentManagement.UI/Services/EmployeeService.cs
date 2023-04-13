@@ -2,6 +2,7 @@
 using EquimentManagement.Contracts.Responses;
 using EquipmentManagement.UI.Abstractions;
 using System.Net.Http.Json;
+using System.Runtime.CompilerServices;
 
 namespace EquipmentManagement.UI.Services;
 
@@ -51,6 +52,13 @@ public class EmployeeService : IEmployeeService
         };
         var content = JsonContent.Create(request);
         var response = await _client.PatchAsync("/api/employees/restore", content, cancellationToken);
+        response.EnsureSuccessStatusCode();
+    }
+
+    public async Task UpdateAsync(UpdateEmployeeRequest request, CancellationToken cancellationToken = default)
+    {
+        var content = JsonContent.Create(request);
+        var response = await _client.PatchAsync("/api/employees/update", content, cancellationToken);
         response.EnsureSuccessStatusCode();
     }
 }

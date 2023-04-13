@@ -10,4 +10,5 @@ public interface IEmployeeService
     Task AddAsync(AddEmployeeRequest request, CancellationToken cancellationToken = default);
     Task DeleteAsync(Guid id, CancellationToken cancellationToken= default);
     Task RestoreAsync(Guid id, CancellationToken cancellationToken = default);
+    Task UpdateAsync(UpdateEmployeeRequest request, CancellationToken cancellationToken = default);
 }

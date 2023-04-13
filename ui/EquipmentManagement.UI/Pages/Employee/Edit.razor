@@ -1,8 +1,9 @@
 ﻿@attribute [Route(PagePaths.Employee.Edit)]
-@attribute [Route(PagePaths.Employee.Edit + "/{id:guid}")]
+@attribute [Route(PagePaths.Employee.Edit + "/{employeeid:guid}")]
 @using EquimentManagement.Contracts.Requests;
 @using EquipmentManagement.UI.Abstractions;
 @inject IEmployeeService EmployeeService;
+@inject NavigationManager Navigation;
 @attribute [Authorize(Roles = "Admin")]
 <div class="container">
     <div class="row">
@@ -15,11 +16,11 @@
                 </div>
                 <div class="mt-3">
                     <label class="form-label">Имя</label>
-                    <InputText class="form-control" @bind-Value="request.Lastname"></InputText>
+                    <InputText class="form-control" @bind-Value="request.Firstname"></InputText>
                 </div>
                 <div class="mt-3">
                     <label class="form-label">Отчество</label>
-                    <InputText class="form-control" @bind-Value="request.Lastname"></InputText>
+                    <InputText class="form-control" @bind-Value="request.Patronymic"></InputText>
                 </div>
                 <div class="mt-3">
                     <button class="btn btn-primary">Изменить</button>
@@ -29,8 +30,7 @@
     </div>
 </div>
 @code {
-    private UpdateEmployeeRequest request = null!;
-    [SupplyParameterFromQuery(Name = "id")]
+    private UpdateEmployeeRequest request = new();   
     [Parameter]
     public Guid EmployeeId { get; set; }
 
@@ -50,6 +50,7 @@
 
     private async Task SubmitAsync()
     {
-        
+        await EmployeeService.UpdateAsync(request);
+        Navigation.NavigateTo(PagePaths.Employee.List);
     }
 }

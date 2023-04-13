@@ -85,6 +85,8 @@ else
     public EventCallback<EmployeeResponse> RestoreEmployeeRequested { get; set; } = default!;
     [Parameter]
     public EventCallback<EmployeeResponse> NavigateToEmployeeEquipmentRequested { get; set; } = default!;
+    [Parameter]
+    public EventCallback<EmployeeResponse> EditEmployeeRequested { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {

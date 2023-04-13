@@ -8,6 +8,7 @@ using EquipmentManagement.Application.Employees.Delete;
 using EquipmentManagement.Application.Employees.Get;
 using EquipmentManagement.Application.Employees.GetAll;
 using EquipmentManagement.Application.Employees.Restore;
+using EquipmentManagement.Application.Employees.Update;
 using EquipmentManagement.Auth;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -65,6 +66,14 @@ namespace EquipmentManagement.WebApi.Controllers
             var employee = await _sender.Send(new GetEmployeeQuery(id), cancellationToken);
             var response = _mapper.Map<EmployeeResponse>(employee);
             return Ok(response);
+        }
+
+        [HttpPatch("update")]
+        public async Task<IActionResult> UpdateAsync(UpdateEmployeeRequest request, CancellationToken cancellationToken)
+        {
+            var command = _mapper.Map<UpdateEmployeeCommand>(request);
+            await _sender.Send(request, cancellationToken);
+            return Ok();
         }
 
         [HttpPatch("delete")]

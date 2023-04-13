@@ -4,6 +4,7 @@ using EquimentManagement.Contracts.Responses;
 using EquipmentManagement.Application.ApplicationUsers.Register;
 using EquipmentManagement.Application.ApplicationUsers.SignIn;
 using EquipmentManagement.Application.Employees.Add;
+using EquipmentManagement.Application.Employees.Update;
 using EquipmentManagement.Application.EquipmentRecords.Add;
 using EquipmentManagement.Application.EquipmentRecords.Update;
 using EquipmentManagement.Application.Equipments.Add;
@@ -24,6 +25,7 @@ public class WebApiMappingProfile : Profile
         CreateMap<AddStatusRequest, AddStatusCommand>();
         CreateMap<UpdateEquipmentRecordRequest, UpdateEquipmentRecordCommand>();
         CreateMap<AddEquipmentTypeRequest, AddEquipmentTypeCommand>();
+        CreateMap<UpdateEmployeeRequest, UpdateEmployeeCommand>();
 
         CreateMap<Employee, EmployeeResponse>();
         CreateMap<Equipment, EquipmentResponse>()

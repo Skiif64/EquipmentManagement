@@ -14,12 +14,13 @@
 {
     <h4>Оборудование сотрудника @employee.Lastname @employee.Firstname @employee.Patronymic</h4>
 }
-<EmployeeEquipmentTable EmployeeId="@EmployeeId"
+<EmployeeEquipmentTable @ref="table"
+                        EmployeeId="@EmployeeId"
                         AttachRequested="OnAttachRequested"
                         DetachRequested="OnDetachRequested" />
 
 @code {
-
+    private EmployeeEquipmentTable? table;
     private EmployeeResponse? employee;
     [Parameter]
     [SupplyParameterFromQuery(Name = "id")]
@@ -54,6 +55,7 @@
                     StatusId = newStatus.Id
                 };
             await RecordService.AddAsync(request);
+            await table?.ReloadAsync();
         }
     }
 
@@ -74,6 +76,7 @@
                     StatusId = freeStatus.Id
                 };
             await RecordService.AddAsync(request);
+            await table?.ReloadAsync();
         }
     }
 }

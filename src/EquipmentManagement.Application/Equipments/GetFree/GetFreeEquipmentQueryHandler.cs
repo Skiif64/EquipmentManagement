@@ -19,7 +19,7 @@ internal class GetFreeEquipmentQueryHandler : IQueryHandler<GetFreeEquipmentQuer
             .Set<Equipment>()
             .Include(x => x.Records)
             .ThenInclude(x => x.Employee)
-            .Where(x => x.LastRecord == null || x.LastRecord.Employee == null)
+            .Where(x => x.LastRecord == null || x.LastRecord.Employee == null);
             //.Where(x => x.LastRecord.Status.Title != DiscardedTitle);
 
         return Task.FromResult(equipments.AsEnumerable());

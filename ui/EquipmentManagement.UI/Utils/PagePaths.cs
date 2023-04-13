@@ -13,6 +13,7 @@ public static class PagePaths
     {
         public const string List = "/employee";
         public const string Add = "/employee/add";
+        public const string Edit = "/employee/edit";
     }
     public static class Equipment
     {

@@ -1,0 +1,55 @@
+﻿@attribute [Route(PagePaths.Employee.Edit)]
+@attribute [Route(PagePaths.Employee.Edit + "/{id:guid}")]
+@using EquimentManagement.Contracts.Requests;
+@using EquipmentManagement.UI.Abstractions;
+@inject IEmployeeService EmployeeService;
+@attribute [Authorize(Roles = "Admin")]
+<div class="container">
+    <div class="row">
+        <div class="align-content-center justify-content-center">
+            <h3>Изменение сотрудника </h3>
+            <EditForm Model="@request" OnValidSubmit="@SubmitAsync">
+                <div class="mt-3">
+                    <label class="form-label">Фамилия</label>
+                    <InputText class="form-control" @bind-Value="request.Lastname"></InputText>
+                </div>
+                <div class="mt-3">
+                    <label class="form-label">Имя</label>
+                    <InputText class="form-control" @bind-Value="request.Lastname"></InputText>
+                </div>
+                <div class="mt-3">
+                    <label class="form-label">Отчество</label>
+                    <InputText class="form-control" @bind-Value="request.Lastname"></InputText>
+                </div>
+                <div class="mt-3">
+                    <button class="btn btn-primary">Изменить</button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+@code {
+    private UpdateEmployeeRequest request = null!;
+    [SupplyParameterFromQuery(Name = "id")]
+    [Parameter]
+    public Guid EmployeeId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var employee = await EmployeeService.GetByIdAsync(EmployeeId);
+        if (employee is null)
+            return;
+        request = new UpdateEmployeeRequest
+            {
+                EmployeeId = EmployeeId,
+                Lastname = employee.Lastname,
+                Firstname = employee.Firstname,
+                Patronymic = employee.Patronymic
+            };
+    }
+
+    private async Task SubmitAsync()
+    {
+        
+    }
+}

@@ -1,5 +1,6 @@
 ﻿using EquimentManagement.Contracts.Responses;
 using EquipmentManagement.UI.Abstractions;
+using System.Net;
 using System.Net.Http.Json;
 
 namespace EquipmentManagement.UI.Authentification;
@@ -19,27 +20,34 @@ public class JwtTokenRefresher : IJwtTokenRefresher
         _logger = logger;
     }
 
-    public async Task RefreshAccessToken(CancellationToken cancellationToken)
+    public async Task<bool> RefreshAccessToken(CancellationToken cancellationToken)
     {
         var refreshToken = await _storage.GetRefreshTokenAsync(cancellationToken);
         if (refreshToken is null)
-            return;
+            return false;
         var client = _factory.CreateClient("Auth");
-        AuthentificationResponse? response = null;
-        try
+        var response = await client.GetAsync($"/api/auth/refresh/{refreshToken}", cancellationToken);
+        if (response.IsSuccessStatusCode)
         {
-            response = await client.GetFromJsonAsync<AuthentificationResponse>($"/api/auth/refresh/{refreshToken}", cancellationToken);
-            await _storage.SetRefreshTokenAsync(response.RefreshToken, cancellationToken);
-            await _storage.SetAccessTokenAsync(response.Token, cancellationToken);
+            var result = await response.Content.ReadFromJsonAsync<AuthentificationResponse>(
+                cancellationToken: cancellationToken)
+                ?? throw new Exception(); //TODO: normal exception
+            await _storage.SetRefreshTokenAsync(result.RefreshToken!, cancellationToken);
+            await _storage.SetAccessTokenAsync(result.Token, cancellationToken);
         }
-        catch(HttpRequestException exception) when (exception.StatusCode == System.Net.HttpStatusCode.BadRequest)
+        else if (response.StatusCode is HttpStatusCode.BadRequest)
         {
             _logger.LogWarning("Exception Occured. Deleting tokens"); //TODO: remove
             await _storage.RemoveAccessTokenAsync(cancellationToken);
             await _storage.RemoveRefreshTokenAsync(cancellationToken);
+            return false;
         }
-              
-        
+        else
+        {
+            throw new InvalidOperationException("Something went wrong.");
+        }
+
         _notifier.Notify();
+        return true;
     }
 }

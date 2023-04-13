@@ -2,5 +2,5 @@
 
 public interface IJwtTokenRefresher
 {
-    Task RefreshAccessToken(CancellationToken cancellationToken);
+    Task<bool> RefreshAccessToken(CancellationToken cancellationToken);
 }

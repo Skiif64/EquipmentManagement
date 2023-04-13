@@ -1,5 +1,6 @@
 ﻿using EquipmentManagement.UI.Abstractions;
 using EquipmentManagement.UI.Utils;
+using System.Net;
 
 namespace EquipmentManagement.UI.Authentification;
 
@@ -16,24 +17,29 @@ public class RefreshTokenHttpMessageHandler : DelegatingHandler
     {
         var token = await _tokenStorage.GetAccessTokenAsync(cancellationToken);        
         if (IsTokenExpired(token))
-            await RefreshTokenAsync(cancellationToken);
+        {
+            if (!await RefreshTokenAsync(cancellationToken))
+            {
+                return new HttpResponseMessage(HttpStatusCode.Unauthorized);
+            }
+        }
         var response = await base.SendAsync(request, cancellationToken);
         return response;
     }
 
-    private bool IsTokenExpired(string? token)
+    private static bool IsTokenExpired(string? token)
     {
         if (token is null)
             return true;
         var parsedToken = JwtTokenParser.Parse(token);
         if (parsedToken is null)
             return true;
-        return parsedToken.ValidTo < DateTime.UtcNow.AddSeconds(-3);
+        return parsedToken.ValidTo < DateTime.UtcNow;
     }
 
-    private async Task RefreshTokenAsync(CancellationToken cancellationToken)
+    private async Task<bool> RefreshTokenAsync(CancellationToken cancellationToken)
     {
         var refresher = _serviceProvider.GetRequiredService<IJwtTokenRefresher>();
-        await refresher.RefreshAccessToken(cancellationToken);
+        return await refresher.RefreshAccessToken(cancellationToken);
     }
 }

@@ -1,31 +1,64 @@
 ﻿@attribute [Route(PagePaths.Equipment.EmployeeEquipment)]
+@using EquimentManagement.Contracts.Requests;
 @using EquimentManagement.Contracts.Responses;
 @using System.Collections.ObjectModel;
 @using EquipmentManagement.UI.Abstractions;
+@using EquipmentManagement.UI.Shared.Modal;
 @using EquipmentManagement.UI.Shared.Tables
 @inject IEmployeeService EmployeeService;
+@inject IEquipmentRecordService RecordService;
 @attribute [Authorize]
 
 @if (employee is not null)
 {
     <h4>Оборудование сотрудника @employee.Lastname @employee.Firstname @employee.Patronymic</h4>
 }
-<EmployeeEquipmentTable EmployeeId="@EmployeeId"/>
+<EmployeeEquipmentTable EmployeeId="@EmployeeId"
+                        AttachRequested="OnAttachRequested"
+                        DetachRequested="OnDetachRequested" />
 
 @code {
-    
+
     private EmployeeResponse? employee;
     [Parameter]
     [SupplyParameterFromQuery(Name = "id")]
     public Guid EmployeeId { get; set; }
+    [CascadingParameter]
+    private IModalService Modal { get; set; } = null!;
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadDataAsync();       
+        await LoadDataAsync();
     }
 
     private async Task LoadDataAsync()
     {
-        employee = await EmployeeService.GetByIdAsync(EmployeeId);        
+        employee = await EmployeeService.GetByIdAsync(EmployeeId);
+    }
+
+    private async Task OnAttachRequested()
+    {
+        var modal = Modal.Show<AttachEquipmentModal>();
+
+        var result = await modal.Result;
+    }
+
+    private async Task OnDetachRequested(EquipmentResponse equipment)
+    {
+        var options = new ModalOptions { HideCloseButton = true };
+        var parameters = new ModalParameters();
+        var modal = Modal.Show<DeleteModal>("Подтверждение", parameters, options);
+
+        var result = await modal.Result;
+        if (result.Confirmed)
+        {
+            var request = new AddEquipmentRecordRequest
+                {
+                    EquipmentId = equipment.Id,
+                    EmployeeId = null,
+                    StatusId = Guid.Empty //TODO: normal statusId
+                };
+            await RecordService.AddAsync(request);
+        }
     }
 }

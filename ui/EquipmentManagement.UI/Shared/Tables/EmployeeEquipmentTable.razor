@@ -3,7 +3,12 @@
 @using EquipmentManagement.UI.Abstractions;
 @inject IEquipmentService EquipmentService;
 @attribute [Authorize]
-
+<div>
+    <button class="btn btn-primary"
+    @onclick="async () => await AttachRequested.InvokeAsync()">
+        <span class="oi oi-plus"></span> Назначить
+    </button>
+</div>
 @if (equipments is not null)
 {
     <table class="table">
@@ -20,6 +25,9 @@
                 </th>
                 <th>
                     <span>Описание</span>
+                </th>
+                <th>
+                    <span>Действия</span>
                 </th>
             </tr>
         </thead>
@@ -40,6 +48,12 @@
                     <td>
                         <textarea readonly="readonly">@equipment.Description</textarea>
                     </td>
+                    <td>
+                        <button class="btn btn-primary"
+                        @onclick="async () => await DetachRequested.InvokeAsync(equipment)">
+                            <span>Снять</span>
+                        </button>
+                    </td>
                 </tr>
             }
         </tbody>
@@ -57,6 +71,10 @@ else
     private ObservableCollection<EquipmentResponse>? equipments;
     [Parameter]
     public Guid EmployeeId { get; set; }
+    [Parameter]
+    public EventCallback<EquipmentResponse> DetachRequested { get; set; }
+    [Parameter]
+    public EventCallback AttachRequested { get; set; }    
 
     protected override async Task OnInitializedAsync()
     {

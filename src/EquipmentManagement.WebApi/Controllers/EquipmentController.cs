@@ -9,6 +9,7 @@ using EquipmentManagement.Application.Equipments.Get;
 using EquipmentManagement.Application.Equipments.GetAll;
 using EquipmentManagement.Application.Equipments.GetAllWithStatus;
 using EquipmentManagement.Application.Equipments.GetByEmployeeId;
+using EquipmentManagement.Application.Equipments.GetFree;
 using EquipmentManagement.Application.Statuses.GetOrCreate;
 using EquipmentManagement.Auth;
 using MediatR;
@@ -46,6 +47,16 @@ public class EquipmentController : ControllerBase
     {
         var equipment = await _sender.Send(new GetEquipmentByIdQuery(id), cancellationToken);
         var response = _mapper.Map<EquipmentResponse>(equipment);
+        return Ok(response);
+    }
+
+    [HttpGet("free")]
+    public async Task<ActionResult<IEnumerable<EquipmentResponse>>> GetFreeAsync(CancellationToken cancellationToken)
+    {
+        var query = new GetFreeEquipmentQuery();
+        var equipments = await _sender.Send(query, cancellationToken);
+
+        var response = _mapper.Map<IEnumerable<EquipmentResponse>>(equipments);
         return Ok(response);
     }
 

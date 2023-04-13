@@ -28,7 +28,7 @@ public class RefreshTokenHttpMessageHandler : DelegatingHandler
         var parsedToken = JwtTokenParser.Parse(token);
         if (parsedToken is null)
             return true;
-        return parsedToken.ValidTo < DateTime.UtcNow;
+        return parsedToken.ValidTo < DateTime.UtcNow.AddSeconds(-3);
     }
 
     private async Task RefreshTokenAsync(CancellationToken cancellationToken)

@@ -17,11 +17,16 @@ internal class GetFreeEquipmentQueryHandler : IQueryHandler<GetFreeEquipmentQuer
     {
         var equipments = _context
             .Set<Equipment>()
-            .Include(x => x.Records)
+            .Include(x => x.Type)
+            .Include(x => x.Records)            
             .ThenInclude(x => x.Employee)
-            .Where(x => x.LastRecord == null || x.LastRecord.Employee == null);
-            //.Where(x => x.LastRecord.Status.Title != DiscardedTitle);
+            .Include(x => x.Records)
+            .ThenInclude(x => x.Status)
+            .AsEnumerable()
+            .Where(x => x.LastRecord != null)
+            .Where(x => x.LastRecord!.Employee == null)
+            .Where(x => x.LastRecord!.Status.Title != DiscardedTitle);
 
-        return Task.FromResult(equipments.AsEnumerable());
+        return Task.FromResult(equipments);
     }
 }

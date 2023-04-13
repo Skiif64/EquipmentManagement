@@ -1,7 +1,6 @@
 ﻿using EquimentManagement.Contracts.Requests;
 using EquimentManagement.Contracts.Responses;
 using EquipmentManagement.UI.Abstractions;
-using Microsoft.Extensions.Caching.Memory;
 using System.Net.Http.Json;
 
 namespace EquipmentManagement.UI.Services;
@@ -39,5 +38,11 @@ public class EquipmentService : IEquipmentService
     {
         var equipment = await _client.GetFromJsonAsync<EquipmentResponse>($"/api/equipment/{id}", cancellationToken);
         return equipment;
+    }
+
+    public async Task<IEnumerable<EquipmentResponse>> GetFreeAsync(CancellationToken cancellationToken = default)
+    {
+        var equipments = await _client.GetFromJsonAsync<IEnumerable<EquipmentResponse>>("/api/equipment/free", cancellationToken);
+        return equipments ?? Enumerable.Empty<EquipmentResponse>();
     }
 }

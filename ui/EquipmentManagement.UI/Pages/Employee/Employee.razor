@@ -22,6 +22,7 @@
         </div>
         <EmployeeTable @ref="Table"
             DeleteEmployeeRequested="@OnShowDeleteModalRequested"
+            RestoreEmployeeRequested="@OnShowRestoreModalRequested"
             NavigateToEmployeeEquipmentRequested="@OnNavigateToEmployeeEquipmentRequested"/>
     </div>
 </div>
@@ -51,6 +52,20 @@
             await DeleteSelectedEmployee(employee);
     }
 
+    private async Task OnShowRestoreModalRequested(EmployeeResponse employee)
+    {       
+
+        var options = new ModalOptions { HideCloseButton = true };
+        var fullname = $"{employee.Lastname} {employee.Firstname} {employee.Patronymic}";
+        var parameters = new ModalParameters()
+        .Add(nameof(RestoreModal.EntityName), fullname);
+
+        var modal = Modal.Show<RestoreModal>("Восстановление сотрудника", parameters, options);
+        var result = await modal.Result;
+        if (result.Confirmed)
+            await RestoreSelectedEmployee(employee);
+    }
+
 
     private async Task DeleteSelectedEmployee(EmployeeResponse employee)
     {        
@@ -59,6 +74,14 @@
 
         await EmployeeService.DeleteAsync(employeeId);
 
+    }
+
+    private async Task RestoreSelectedEmployee(EmployeeResponse employee)
+    {
+        Table?.RestoreEmployee(employee);
+        var employeeId = employee.Id;
+
+        await EmployeeService.RestoreAsync(employeeId);
     }
 
     private async Task<bool> HasEquipment(EmployeeResponse employee)

@@ -22,27 +22,37 @@
                     <div class="d-flex w-100">
                         <span class="text-center">Действия</span>
                     </div>
-                </th>               
+                </th>
             </tr>
         </thead>
         <tbody>
 
             @foreach (var employee in employees)
             {
-                <tr>
+                <tr class="@(employee.Status is EmployeeStatusResponse.Fired? "bg-secondary" : "")">
                     <td>
                         <span>@employee.Lastname @employee.Firstname @employee.Patronymic</span>
                     </td>
                     <td>
-                        <span>@(employee.Status == EmployeeStatusResponse.Active? "Активен" : "Уволен")</span>
+                        <span>@(employee.Status == EmployeeStatusResponse.Active ? "Активен" : "Уволен")</span>
                     </td>
                     <td>
                         <AuthorizeView Roles="Admin">
                             <Authorized>
-                                <button class="btn btn-danger"
-                                @onclick="async () => await DeleteEmployeeRequested.InvokeAsync(employee)">
-                                    <span class="oi oi-trash"></span> Уволить
-                                </button>
+                                @if (employee.Status is not EmployeeStatusResponse.Fired)
+                                {
+                                    <button class="btn btn-danger"
+                                        @onclick="async () => await DeleteEmployeeRequested.InvokeAsync(employee)">
+                                        <span class="oi oi-trash"></span> Уволить
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-danger"
+                                        @onclick="async () => await RestoreEmployeeRequested.InvokeAsync(employee)">
+                                        <span class="oi oi-trash"></span> Восстановить
+                                    </button>
+                                }
                                 <button class="btn btn-primary">
                                     <span class="oi oi-pencil"></span> Изменить
                                 </button>
@@ -72,6 +82,8 @@ else
     [Parameter]
     public EventCallback<EmployeeResponse> DeleteEmployeeRequested { get; set; } = default!;
     [Parameter]
+    public EventCallback<EmployeeResponse> RestoreEmployeeRequested { get; set; } = default!;
+    [Parameter]
     public EventCallback<EmployeeResponse> NavigateToEmployeeEquipmentRequested { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
@@ -82,6 +94,12 @@ else
     public void DeleteEmployee(EmployeeResponse employee)
     {
         employee.Status = EmployeeStatusResponse.Fired;
+        StateHasChanged();
+    }
+
+    public void RestoreEmployee(EmployeeResponse employee)
+    {
+        employee.Status = EmployeeStatusResponse.Active;
         StateHasChanged();
     }
 

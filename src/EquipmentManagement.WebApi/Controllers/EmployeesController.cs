@@ -67,19 +67,19 @@ namespace EquipmentManagement.WebApi.Controllers
             return Ok(response);
         }
 
-        [HttpDelete("{id:guid}")]
+        [HttpPatch("delete")]
         [Authorize(Roles = Roles.Admin)]
-        public async Task<ActionResult<Guid>> DeleteByIdAsync(Guid id, CancellationToken cancellationToken)
+        public async Task<ActionResult<Guid>> DeleteByIdAsync(DeleteEmployeeRequest request, CancellationToken cancellationToken)
         {
-            var command = new DeleteEmployeeCommand(id);
+            var command = new DeleteEmployeeCommand(request.EmployeeId);
             var resultId = await _sender.Send(command, cancellationToken);
             return Ok(resultId);
         }
 
-        [HttpPost("restore")]
-        public async Task<ActionResult<Guid>> RestoreByIdAsync(Guid id, CancellationToken cancellationToken)
+        [HttpPatch("restore")]
+        public async Task<ActionResult<Guid>> RestoreByIdAsync(RestoreEmployeeRequest request, CancellationToken cancellationToken)
         {
-            var command = new RestoreEmployeeCommand(id);
+            var command = new RestoreEmployeeCommand(request.EmployeeId);
             var resultId = await _sender.Send(command, cancellationToken);
             return Ok(resultId);
         }

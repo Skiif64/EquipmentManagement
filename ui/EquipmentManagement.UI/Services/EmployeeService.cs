@@ -22,7 +22,12 @@ public class EmployeeService : IEmployeeService
 
     public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var response = await _client.DeleteAsync($"/api/employees/{id}", cancellationToken);
+        var request = new DeleteEmployeeRequest
+        {
+            EmployeeId = id
+        };
+        var content = JsonContent.Create(request);
+        var response = await _client.PatchAsync($"/api/employees/delete", content, cancellationToken);
         response.EnsureSuccessStatusCode();
     }
 
@@ -36,5 +41,16 @@ public class EmployeeService : IEmployeeService
     {
         var employee = await _client.GetFromJsonAsync<EmployeeResponse>($"/api/employees/{id}", cancellationToken);
         return employee;
+    }
+
+    public async Task RestoreAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        var request = new RestoreEmployeeRequest
+        {
+            EmployeeId = id
+        };
+        var content = JsonContent.Create(request);
+        var response = await _client.PatchAsync("/api/employees/restore", content, cancellationToken);
+        response.EnsureSuccessStatusCode();
     }
 }

@@ -7,6 +7,7 @@
 @using EquipmentManagement.UI.Shared.Tables
 @inject IEmployeeService EmployeeService;
 @inject IEquipmentRecordService RecordService;
+@inject IStatusService StatusService;
 @attribute [Authorize]
 
 @if (employee is not null)
@@ -52,11 +53,12 @@
         var result = await modal.Result;
         if (result.Confirmed)
         {
+            var freeStatus = await StatusService.GetOrCreateByNameAsync("Свободно"); //TODO: fix it
             var request = new AddEquipmentRecordRequest
                 {
                     EquipmentId = equipment.Id,
                     EmployeeId = null,
-                    StatusId = Guid.Empty //TODO: normal statusId
+                    StatusId = freeStatus.Id
                 };
             await RecordService.AddAsync(request);
         }

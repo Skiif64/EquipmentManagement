@@ -34,7 +34,7 @@ public class StatusService : IStatusService
         return status;
     }
 
-    public async Task<StatusResponse?> GetOrCreateByNameAsync(string title, string? description = null, CancellationToken cancellationToken = default)
+    public async Task<StatusResponse> GetOrCreateByNameAsync(string title, string? description = null, CancellationToken cancellationToken = default)
     {
         var statuses = await GetAll(cancellationToken);
         var status = statuses?.FirstOrDefault(x => x.Title == title);

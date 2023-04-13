@@ -19,21 +19,27 @@ public class JwtTokenRefresher : IJwtTokenRefresher
         _logger = logger;
     }
 
-    public async Task<bool> RefreshAccessToken(CancellationToken cancellationToken)
+    public async Task RefreshAccessToken(CancellationToken cancellationToken)
     {
         var refreshToken = await _storage.GetRefreshTokenAsync(cancellationToken);
         if (refreshToken is null)
-            return false;
+            return;
         var client = _factory.CreateClient("Auth");
-
-        var response = await client.GetFromJsonAsync<AuthentificationResponse>($"/api/auth/refresh/{refreshToken}", cancellationToken);
-        if (response is null || !response.IsSuccess)
-            return false;
-        await _storage.SetRefreshTokenAsync(response.RefreshToken!, cancellationToken);
-        await _storage.SetAccessTokenAsync(response.Token, cancellationToken);
-
-
+        AuthentificationResponse? response = null;
+        try
+        {
+            response = await client.GetFromJsonAsync<AuthentificationResponse>($"/api/auth/refresh/{refreshToken}", cancellationToken);
+            await _storage.SetRefreshTokenAsync(response.RefreshToken, cancellationToken);
+            await _storage.SetAccessTokenAsync(response.Token, cancellationToken);
+        }
+        catch(HttpRequestException exception) when (exception.StatusCode == System.Net.HttpStatusCode.BadRequest)
+        {
+            _logger.LogWarning("Exception Occured. Deleting tokens"); //TODO: remove
+            await _storage.RemoveAccessTokenAsync(cancellationToken);
+            await _storage.RemoveRefreshTokenAsync(cancellationToken);
+        }
+              
+        
         _notifier.Notify();
-        return true;
     }
 }

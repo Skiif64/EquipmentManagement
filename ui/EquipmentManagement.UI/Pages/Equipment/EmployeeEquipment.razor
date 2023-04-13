@@ -39,9 +39,22 @@
 
     private async Task OnAttachRequested()
     {
-        var modal = Modal.Show<AttachEquipmentModal>();
+        var options = new ModalOptions { Size = ModalSize.Large };
+        var modal = Modal.Show<AttachEquipmentModal>("Выбор оборудования", options);
 
         var result = await modal.Result;
+        if (result.Confirmed)
+        {
+            var data = (EquipmentResponse)result.Data!;
+            var newStatus = await StatusService.GetOrCreateByNameAsync("Выдано");
+            var request = new AddEquipmentRecordRequest
+                {
+                    EmployeeId = employee?.Id,
+                    EquipmentId = data.Id,
+                    StatusId = newStatus.Id
+                };
+            await RecordService.AddAsync(request);
+        }
     }
 
     private async Task OnDetachRequested(EquipmentResponse equipment)

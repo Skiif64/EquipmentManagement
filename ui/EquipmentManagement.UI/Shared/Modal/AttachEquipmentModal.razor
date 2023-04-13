@@ -1,6 +1,16 @@
-﻿@using EquipmentManagement.UI.Shared.Tables
-<FreeEquipmentTable/>
+﻿@using EquimentManagement.Contracts.Responses;
+@using EquipmentManagement.UI.Shared.Tables
+
+
+<FreeEquipmentTable
+    ChooseRequested="OnChooseRequested"/>
 
 @code {
+    [CascadingParameter]
+    private BlazoredModalInstance Instance { get; set; } = null!;
 
+    private async Task OnChooseRequested(EquipmentResponse equipment)
+    {
+        await Instance.CloseAsync(ModalResult.Ok(equipment));
+    }
 }

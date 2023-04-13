@@ -40,7 +40,8 @@
                         @equipment.Description
                     </td>                    
                     <td>
-                        <button class="btn btn-primary">
+                        <button class="btn btn-primary"
+                        @onclick="async () => await ChooseRequested.InvokeAsync(equipment)">
                             <span class="oi oi-plus"></span> Выбрать
                         </button>
                     </td>
@@ -52,6 +53,8 @@
 
 @code {
     private IEnumerable<EquipmentResponse>? equipments;
+    [Parameter]
+    public EventCallback<EquipmentResponse> ChooseRequested { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {

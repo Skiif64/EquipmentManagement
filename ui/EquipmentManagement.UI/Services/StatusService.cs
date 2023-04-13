@@ -33,4 +33,22 @@ public class StatusService : IStatusService
         var status = await _client.GetFromJsonAsync<StatusResponse?>($"api/status/{id}");
         return status;
     }
+
+    public async Task<StatusResponse?> GetOrCreateByNameAsync(string title, string? description = null, CancellationToken cancellationToken = default)
+    {
+        var statuses = await GetAll(cancellationToken);
+        var status = statuses?.FirstOrDefault(x => x.Title == title);
+
+        if(status is null)
+        {
+            var request = new AddStatusRequest
+            {
+                Title = title,
+                Description = description
+            };
+            status = await AddAsync(request, cancellationToken);
+        }
+
+        return status;
+    }
 }

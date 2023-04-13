@@ -59,11 +59,7 @@
                             <span class="oi oi-info"></span> Детали
                         </button>
                         <AuthorizeView Roles="Admin">
-                            <Authorized>
-                                <button class="btn btn-danger"
-                                @onclick="async () => await DeleteRequested.InvokeAsync(equipment)">
-                                    <span class="oi oi-trash"></span> Удалить
-                                </button>
+                            <Authorized>                                
                                 <button class="btn btn-primary"
                                 @onclick="async() => await EditRequested.InvokeAsync(equipment)">
                                     <span class="oi oi-pencil"></span> Изменить статус
@@ -90,9 +86,7 @@ else
 }
 
 @code {
-    private ObservableCollection<EquipmentWithStatusResponse>? equipments;
-    [Parameter]
-    public EventCallback<EquipmentWithStatusResponse> DeleteRequested { get; set; } = default!;
+    private ObservableCollection<EquipmentWithStatusResponse>? equipments;    
     [Parameter]
     public EventCallback<EquipmentWithStatusResponse> EditRequested { get; set; } = default!;
     [Parameter]

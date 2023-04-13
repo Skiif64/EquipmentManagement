@@ -18,8 +18,7 @@
     </AuthorizeView>
     <EquipmentTable @ref="Table"
                     HistoryRequested="OnHistoryRequested"
-                    EditRequested="OnEditRequested"
-                    DeleteRequested="OnDeleteRequestedAsync"
+                    EditRequested="OnEditRequested"                   
                     DetailsRequested="OnDetailsRequestedAsync" />
 </div>
   
@@ -38,31 +37,7 @@
     private void OnHistoryRequested(EquipmentWithStatusResponse equipment)
     {
         Navigation.NavigateTo($"{PagePaths.EquipmentRecord.History}?id={equipment.Id}");
-    }
-
-    private async Task OnDeleteRequestedAsync(EquipmentWithStatusResponse equipment)
-    {        
-        var options = new ModalOptions
-            {
-                HideCloseButton = true
-            };
-        var parameters = new ModalParameters()
-        .Add(nameof(DeleteModal.EntityName), equipment.Type);
-        var modal = Modal.Show<DeleteModal>("Удаление оборудования", parameters, options);
-        var result = await modal.Result;
-        if(result.Confirmed)
-        {
-            await DeleteSelectedEquipmentAsync(equipment);
-        }
-    }
-
-    private async Task DeleteSelectedEquipmentAsync(EquipmentWithStatusResponse equipment)
-    {
-        Table?.DeleteEquipment(equipment);
-        var equipmentId = equipment.Id;
-        //TODO: Add Delete
-        
-    }
+    }    
 
     private async Task OnDetailsRequestedAsync(EquipmentWithStatusResponse equipment)
     {

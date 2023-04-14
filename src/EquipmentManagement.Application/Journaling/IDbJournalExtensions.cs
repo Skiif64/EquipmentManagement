@@ -1,8 +1,7 @@
-﻿using EquipmentManagement.Application.Abstractions;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 
-namespace EquipmentManagement.Application.Journaling;
+namespace EquipmentManagement.Application.Abstractions;
 public static class IDbJournalExtensions
 {
     public static async Task WriteAsync(this IJournal journal, EventId eventId, string message, CancellationToken cancellationToken = default)

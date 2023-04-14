@@ -18,12 +18,19 @@
                     </NavLink>
                 </NotAuthorized>
                 <Authorized>
-                    <NavLink class="nav-link" href="/auth/logout/">   
-                            <span class="oi oi-account-logout" aria-hidden="true"></span> Выйти                        
-                    </NavLink>
+                    <div class="rounded-3">
+                        <div class="px-3">
+                            <span class="text-light oi oi-person"></span>
+                            <span class="text-light"> @user?.Identity?.Name</span>
+                        </div>
+
+                        <NavLink class="nav-link" href="/auth/logout/">
+                            <span class="oi oi-account-logout" aria-hidden="true"></span> Выйти
+                        </NavLink>
+                    </div>
                 </Authorized>
             </AuthorizeView>
-        </div>        
+        </div>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
                 <span class="oi oi-home" aria-hidden="true"></span> Главная

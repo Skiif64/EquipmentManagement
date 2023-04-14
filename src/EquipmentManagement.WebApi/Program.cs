@@ -3,6 +3,7 @@ using EquipmentManagement.Application.Abstractions;
 using EquipmentManagement.Auth;
 using EquipmentManagement.DAL;
 using EquipmentManagement.WebApi;
+using EquipmentManagement.WebApi.Middlewares;
 using EquipmentManagement.WebApi.OptionSetups;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption;
@@ -53,6 +54,8 @@ app.UseStaticFiles();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseCors("CorsPolicy");
+
+app.UseMiddleware<CreateJournalMiddleware>();
 
 app.MapControllers();
 app.MapRazorPages();

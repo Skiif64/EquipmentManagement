@@ -21,14 +21,12 @@ namespace EquipmentManagement.WebApi.Controllers;
 public class EquipmentRecordsController : ControllerBase
 {
     private readonly ISender _sender;
-    private readonly IMapper _mapper;
-    private readonly IJournal _journal;
+    private readonly IMapper _mapper;    
 
-    public EquipmentRecordsController(ISender sender, IMapper mapper, IJournal journal)
+    public EquipmentRecordsController(ISender sender, IMapper mapper)
     {
         _sender = sender;
-        _mapper = mapper;
-        _journal = journal;
+        _mapper = mapper;       
     }
 
     [HttpPost("add")]
@@ -41,13 +39,7 @@ public class EquipmentRecordsController : ControllerBase
         var author = User.Identity?.Name;
         request.ModifyAuthor = author ?? "неизвестно";
         var command = _mapper.Map<AddEquipmentRecordCommand>(request);
-        var id = await _sender.Send(command, cancellationToken);
-
-        await _journal.WriteAsync(AppLogEvents.Update,
-            "Изменен статус оборудования",
-            author,
-            DateTimeOffset.UtcNow,
-            cancellationToken);
+        var id = await _sender.Send(command, cancellationToken);        
 
         return Ok(id);
     }

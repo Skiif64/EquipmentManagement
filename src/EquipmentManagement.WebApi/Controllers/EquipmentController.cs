@@ -25,14 +25,12 @@ public class EquipmentController : ControllerBase
 {
     private const string DefaultStatusName = "Создано";
     private readonly ISender _sender;
-    private readonly IMapper _mapper;
-    private readonly IJournal _journal;
+    private readonly IMapper _mapper;   
 
-    public EquipmentController(ISender sender, IMapper mapper, IJournal journal)
+    public EquipmentController(ISender sender, IMapper mapper)
     {
         _sender = sender;
-        _mapper = mapper;
-        _journal = journal;
+        _mapper = mapper;        
     }
 
     [HttpGet]
@@ -87,13 +85,7 @@ public class EquipmentController : ControllerBase
         };
 
         await _sender.Send(recordCommand, cancellationToken);
-
-        await _journal.WriteAsync(AppLogEvents.Create,
-       $"Добавлено оборудование {request.Article} {request.SerialNumber}",
-       author,
-       DateTimeOffset.UtcNow,
-       cancellationToken);
-        //TODO: Normal Journaling
+       
         return Ok(id);
     }
 

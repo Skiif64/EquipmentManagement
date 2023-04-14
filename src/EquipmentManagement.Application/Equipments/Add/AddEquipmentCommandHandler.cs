@@ -10,11 +10,13 @@ public class AddEquipmentCommandHandler : ICommandHandler<AddEquipmentCommand, G
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
+    private readonly IJournal _journal;
 
-    public AddEquipmentCommandHandler(IApplicationDbContext context, IMapper mapper)
+    public AddEquipmentCommandHandler(IApplicationDbContext context, IMapper mapper, IJournal journal)
     {
         _context = context;
         _mapper = mapper;
+        _journal = journal;
     }
 
     public async Task<Guid> Handle(AddEquipmentCommand request, CancellationToken cancellationToken)
@@ -38,6 +40,9 @@ public class AddEquipmentCommandHandler : ICommandHandler<AddEquipmentCommand, G
             ?? throw new NotFoundException("EquipmentType");
         await _context.Set<Equipment>().AddAsync(equipment,cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
+        await _journal.WriteAsync(AppLogEvents.Create,
+            $"Создано оборудование: {equipment.Type.Name} {equipment.Article} {equipment.SerialNumber}",
+            cancellationToken);
         return equipment.Id;
     }
 }

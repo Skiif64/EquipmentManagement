@@ -18,13 +18,11 @@ namespace EquipmentManagement.WebApi.Controllers;
 public class StatusController : ControllerBase
 {
     private readonly ISender _sender;
-    private readonly IMapper _mapper;
-    private readonly IJournal _journal;
-    public StatusController(ISender sender, IMapper mapper, IJournal journal)
+    private readonly IMapper _mapper;    
+    public StatusController(ISender sender, IMapper mapper)
     {
         _sender = sender;
-        _mapper = mapper;
-        _journal = journal;
+        _mapper = mapper;        
     }
 
     [HttpGet]
@@ -48,13 +46,6 @@ public class StatusController : ControllerBase
         var command = _mapper.Map<AddStatusCommand>(request);
         var status = await _sender.Send(command, cancellationToken);
         var response = _mapper.Map<StatusResponse>(status);
-
-        var author = User.Identity?.Name;
-        await _journal.WriteAsync(AppLogEvents.Create,
-       $"Добавлен статус: {request.Title}",
-       author,
-       DateTimeOffset.UtcNow,
-       cancellationToken);
 
         return Ok(response);
     }

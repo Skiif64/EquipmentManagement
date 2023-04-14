@@ -25,14 +25,12 @@ public class AuthController : ControllerBase
     private readonly ISender _sender;
     private readonly IMapper _mapper;
     private readonly ILogger<AuthController> _logger;
-    private readonly IJournal _journal;
 
-    public AuthController(ISender sender, ILogger<AuthController> logger, IMapper mapper, IJournal journal)
+    public AuthController(ISender sender, ILogger<AuthController> logger, IMapper mapper)
     {
         _sender = sender;
         _logger = logger;
-        _mapper = mapper;
-        _journal = journal;
+        _mapper = mapper;        
     }
 
     [HttpPost("login")]
@@ -63,11 +61,7 @@ public class AuthController : ControllerBase
         var response = await _sender.Send(command, cancellationToken);
         if (response.IsSuccess)
         {
-            _logger.LogInformation(AppLogEvents.Register, "User {username} is registered", request.Login);
-            await _journal.WriteAsync(AppLogEvents.Register,
-                $"Пользователь {request.Login} зарегистрирован.",
-                User,
-                cancellationToken);
+            _logger.LogInformation(AppLogEvents.Register, "User {username} is registered", request.Login);            
         }
         else
             _logger.LogInformation(AppLogEvents.Register, "User {username} is already exists", request.Login);

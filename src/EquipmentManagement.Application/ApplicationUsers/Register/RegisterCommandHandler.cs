@@ -8,11 +8,13 @@ internal class RegisterCommandHandler : ICommandHandler<RegisterCommand, Authent
 {
     private readonly IUserDbContext _context;
     private readonly IMapper _mapper;
+    private readonly IJournal _journal;
 
-    public RegisterCommandHandler(IUserDbContext context, IMapper mapper)
+    public RegisterCommandHandler(IUserDbContext context, IMapper mapper, IJournal journal)
     {
         _context = context;
         _mapper = mapper;
+        _journal = journal;
     }
 
     public async Task<AuthenticationResult> Handle(RegisterCommand request, CancellationToken cancellationToken)
@@ -28,6 +30,9 @@ internal class RegisterCommandHandler : ICommandHandler<RegisterCommand, Authent
             .Set<ApplicationUser>()
             .AddAsync(user, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
+        await _journal.WriteAsync(AppLogEvents.Register,
+            $"Пользователь {request.Login}({request.Role}) зарегистрирован.",
+            cancellationToken);
         return AuthenticationResult.CreateSuccess("");
     }
 }

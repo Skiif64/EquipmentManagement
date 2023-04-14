@@ -14,7 +14,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddHttpClient("Api", client
     => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
-    //.AddHttpMessageHandler<RefreshTokenHttpMessageHandler>()
+    .AddHttpMessageHandler<RefreshTokenHttpMessageHandler>()
     .AddHttpMessageHandler<AuthenticationHttpMessageHandler>()
     .AddHttpMessageHandler<RedirectToLoginHttpMessageHandler>(); 
 
@@ -39,7 +39,7 @@ builder.Services.AddScoped<IEquipmentTypeService, EquipmentTypeService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ImageService>();
 builder.Services.AddScoped<AuthenticationHttpMessageHandler>();
-//builder.Services.AddScoped<RefreshTokenHttpMessageHandler>();
+builder.Services.AddScoped<RefreshTokenHttpMessageHandler>();
 builder.Services.AddScoped<RedirectToLoginHttpMessageHandler>();
 builder.Services.AddScoped<IJwtTokenRefresher, JwtTokenRefresher>();
 builder.Services.AddAuthorizationCore();

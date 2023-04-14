@@ -8,10 +8,12 @@ public class RefreshTokenHttpMessageHandler : DelegatingHandler
 {
     private readonly ITokenStorage _tokenStorage;
     private readonly IServiceProvider _serviceProvider;
-    public RefreshTokenHttpMessageHandler(ITokenStorage tokenStorage, IServiceProvider serviceProvider)
+    private readonly ILogger<RefreshTokenHttpMessageHandler> _logger;
+    public RefreshTokenHttpMessageHandler(ITokenStorage tokenStorage, IServiceProvider serviceProvider, ILogger<RefreshTokenHttpMessageHandler> logger)
     {
         _tokenStorage = tokenStorage;
         _serviceProvider = serviceProvider;
+        _logger = logger;
     }
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
@@ -20,6 +22,7 @@ public class RefreshTokenHttpMessageHandler : DelegatingHandler
         {
             if (!await RefreshTokenAsync(cancellationToken))
             {
+                _logger.LogWarning("Cannot refresh Tokens.");
                 return new HttpResponseMessage(HttpStatusCode.Unauthorized);
             }
         }
@@ -27,13 +30,14 @@ public class RefreshTokenHttpMessageHandler : DelegatingHandler
         return response;
     }
 
-    private static bool IsTokenExpired(string? token)
+    private  bool IsTokenExpired(string? token)
     {
         if (token is null)
             return true;
         var parsedToken = JwtTokenParser.Parse(token);
         if (parsedToken is null)
             return true;
+        _logger.LogWarning("Token valid to: {valid}", parsedToken.ValidTo);
         return parsedToken.ValidTo < DateTime.UtcNow;
     }
 

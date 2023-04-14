@@ -34,6 +34,7 @@ public class JwtTokenRefresher : IJwtTokenRefresher
                 ?? throw new Exception(); //TODO: normal exception
             await _storage.SetRefreshTokenAsync(result.RefreshToken!, cancellationToken);
             await _storage.SetAccessTokenAsync(result.Token, cancellationToken);
+            _logger.LogWarning("Successufully updated tokens");
         }
         else if (response.StatusCode is HttpStatusCode.BadRequest)
         {

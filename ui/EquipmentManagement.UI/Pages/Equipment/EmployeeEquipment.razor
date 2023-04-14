@@ -55,7 +55,7 @@
                     StatusId = newStatus.Id
                 };
             await RecordService.AddAsync(request);
-            await table?.ReloadAsync();
+            await table!.ReloadAsync();
         }
     }
 
@@ -76,7 +76,7 @@
                     StatusId = freeStatus.Id
                 };
             await RecordService.AddAsync(request);
-            await table?.ReloadAsync();
+            await table!.ReloadAsync();
         }
     }
 }

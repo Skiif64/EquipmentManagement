@@ -11,6 +11,8 @@ services:
       - db
     volumes:
       - images:/app/images/
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
   db:
     image: postgres
     restart: always

@@ -18,12 +18,11 @@
                     </NavLink>
                 </NotAuthorized>
                 <Authorized>
-                    <div class="rounded-3">
-                        <div class="px-3">
+                    <div class="border-bottom border-dark shadow rounded-3">
+                        <div class="px-3 mt-3">
                             <span class="text-light oi oi-person"></span>
-                            <span class="text-light"> @user?.Identity?.Name</span>
+                            <span class="text-light"> @user?.Identity?.Name</span>                           
                         </div>
-
                         <NavLink class="nav-link" href="/auth/logout/">
                             <span class="oi oi-account-logout" aria-hidden="true"></span> Выйти
                         </NavLink>

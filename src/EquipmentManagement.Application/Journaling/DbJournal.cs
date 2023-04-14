@@ -6,10 +6,12 @@ namespace EquipmentManagement.Application.Journaling;
 public class DbJournal : IJournal
 {
     private readonly IApplicationDbContext _context;
+    private readonly string _username;
 
-    public DbJournal(IApplicationDbContext context)
+    public DbJournal(string? username, IApplicationDbContext context)
     {
         _context = context;
+        _username = username ?? string.Empty;
     }    
 
     public async Task WriteAsync(EventId eventId,
@@ -20,7 +22,7 @@ public class DbJournal : IJournal
     {
         var record = new JournalRecord
         {
-            Username = user,
+            Username = user ?? _username,
             EventName = eventId.Name ?? string.Empty,
             DateCreated = created,
             Message = message

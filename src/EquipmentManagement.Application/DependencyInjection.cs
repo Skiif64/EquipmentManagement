@@ -11,7 +11,8 @@ public static class DependencyInjection
         var assembly = typeof(ICommand).Assembly;
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));
         services.AddTransient<IDatabaseMigrator, DatabaseMigrator>();
-        services.AddScoped<IJournal, DbJournal>();
+        //services.AddScoped<IJournal, DbJournal>();
+        services.AddScoped<IJournalFactory, DbJournalFactory>();
         return services;
     }
 }

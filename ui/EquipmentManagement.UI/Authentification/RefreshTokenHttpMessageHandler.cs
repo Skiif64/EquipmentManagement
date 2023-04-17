@@ -37,7 +37,7 @@ public class RefreshTokenHttpMessageHandler : DelegatingHandler
         var parsedToken = JwtTokenParser.Parse(token);
         if (parsedToken is null)
             return true;
-        _logger.LogInformation("Token valid to: {valid}", parsedToken.ValidTo);
+        _logger.LogInformation("Token valid to: {valid}", parsedToken.ValidTo.ToLocalTime());
         return parsedToken.ValidTo < DateTime.UtcNow;
     }
 

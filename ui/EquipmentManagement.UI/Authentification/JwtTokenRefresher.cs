@@ -9,15 +9,15 @@ public class JwtTokenRefresher : IJwtTokenRefresher
 {
     private readonly IHttpClientFactory _factory;
     private readonly ITokenStorage _storage;
-    private readonly IAuthenticationStateNotifier _notifier;
+    private readonly JwtAuthentificationStateProvider _provider;
     private readonly ILogger<JwtTokenRefresher> _logger;
 
-    public JwtTokenRefresher(IHttpClientFactory factory, ITokenStorage storage, IAuthenticationStateNotifier notifier, ILogger<JwtTokenRefresher> logger)
+    public JwtTokenRefresher(IHttpClientFactory factory, ITokenStorage storage, ILogger<JwtTokenRefresher> logger, JwtAuthentificationStateProvider provider)
     {
         _factory = factory;
         _storage = storage;
-        _notifier = notifier;
         _logger = logger;
+        _provider = provider;
     }
 
     public async Task<bool> RefreshAccessToken(CancellationToken cancellationToken)
@@ -34,6 +34,7 @@ public class JwtTokenRefresher : IJwtTokenRefresher
                 ?? throw new Exception(); //TODO: normal exception
             await _storage.SetRefreshTokenAsync(result.RefreshToken!, cancellationToken);
             await _storage.SetAccessTokenAsync(result.Token, cancellationToken);
+            await _provider.LoginUser(result.Token);
             _logger.LogWarning("Successufully updated tokens");
         }
         else if (response.StatusCode is HttpStatusCode.BadRequest)
@@ -41,14 +42,14 @@ public class JwtTokenRefresher : IJwtTokenRefresher
             _logger.LogWarning("Exception Occured. Deleting tokens"); //TODO: remove
             await _storage.RemoveAccessTokenAsync(cancellationToken);
             await _storage.RemoveRefreshTokenAsync(cancellationToken);
+            await _provider.LogoutUser();
             return false;
         }
         else
         {
             throw new InvalidOperationException("Something went wrong.");
         }
-
-        _notifier.Notify();
+        
         return true;
     }
 }

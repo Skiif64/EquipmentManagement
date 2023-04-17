@@ -1,6 +1,7 @@
 ﻿using EquimentManagement.Contracts.Requests;
 using EquimentManagement.Contracts.Responses;
 using EquipmentManagement.UI.Abstractions;
+using EquipmentManagement.UI.Authentification;
 using EquipmentManagement.UI.Models;
 using System.Net;
 using System.Net.Http.Json;
@@ -11,14 +12,14 @@ public class AuthenticationService : IAuthentificationService
 {
     private readonly HttpClient _client;
     private readonly ITokenStorage _storage;
-    private readonly IAuthenticationStateNotifier _notifier;
+    private readonly JwtAuthentificationStateProvider _provider;
 
-    public AuthenticationService(IHttpClientFactory factory, ITokenStorage storage, IAuthenticationStateNotifier notifier)
+    public AuthenticationService(IHttpClientFactory factory, ITokenStorage storage, JwtAuthentificationStateProvider provider)
     {
         _client = factory.CreateClient("Auth");
-        _storage = storage;
-        _notifier = notifier;
-    }    
+        _storage = storage;       
+        _provider = provider;
+    }
 
     public async Task<AuthentificationResult> SignInAsync(LoginRequest request, CancellationToken cancellationToken)
     {
@@ -30,8 +31,8 @@ public class AuthenticationService : IAuthentificationService
         if (!authResponse.IsSuccess)
             return new AuthentificationResult(authResponse.Errors!);
         await _storage.SetAccessTokenAsync(authResponse.Token, cancellationToken);
-        await _storage.SetRefreshTokenAsync(authResponse.RefreshToken, cancellationToken);
-        _notifier.Notify();
+        await _storage.SetRefreshTokenAsync(authResponse.RefreshToken!, cancellationToken);
+        await _provider.LoginUser(authResponse.Token);
         return new AuthentificationResult();
     }
 
@@ -41,6 +42,6 @@ public class AuthenticationService : IAuthentificationService
         
         await _storage.RemoveAccessTokenAsync(cancellationToken);
         await _storage.RemoveRefreshTokenAsync(cancellationToken);
-        _notifier.Notify();
+        await _provider.LogoutUser();
     }
 }

@@ -3,38 +3,38 @@ using EquipmentManagement.UI.Utils;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Principal;
 
 namespace EquipmentManagement.UI.Authentification;
 
-public class JwtAuthentificationStateProvider : AuthenticationStateProvider, IAuthenticationStateNotifier
-{
-    private readonly ITokenStorage _tokenStorage;
-
-    public JwtAuthentificationStateProvider(ITokenStorage tokenStorage)
+public class JwtAuthentificationStateProvider : AuthenticationStateProvider
+{   
+    public override Task<AuthenticationState> GetAuthenticationStateAsync()
     {
-        _tokenStorage = tokenStorage;
+        var identity = new ClaimsIdentity();
+        var state = Task.FromResult(new AuthenticationState(new ClaimsPrincipal(identity)));        
+        return state;
     }
 
-    public void Notify()
-        => NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
-    public override async Task<AuthenticationState> GetAuthenticationStateAsync()
+    public Task<AuthenticationState> LoginUser(string token)
     {
-        string? token = await _tokenStorage.GetAccessTokenAsync();
-        var identity = new ClaimsIdentity();
-        if (!string.IsNullOrWhiteSpace(token))
+        var parsedToken = JwtTokenParser.Parse(token);
+        if (parsedToken is null)
         {
-            var parsedToken = JwtTokenParser.Parse(token);
-            if (parsedToken is not null)
-            {
-                identity = new ClaimsIdentity(parsedToken.Claims, "jwt",
-                    JwtRegisteredClaimNames.Name,
-                    ClaimTypes.Role);
-            }
-
+            throw new ArgumentException("Invalid Token");
         }
+            var identity = new ClaimsIdentity(parsedToken.Claims, "jwt",
+                JwtRegisteredClaimNames.Name,
+                ClaimTypes.Role);
+            var state = Task.FromResult(new AuthenticationState(new ClaimsPrincipal(identity)));
+            NotifyAuthenticationStateChanged(state);
+            return state; 
+    }
 
-        var state = new AuthenticationState(new ClaimsPrincipal(identity));
-
+    public Task<AuthenticationState> LogoutUser()
+    {
+        var state = GetAuthenticationStateAsync();
+        NotifyAuthenticationStateChanged(state);
         return state;
     }
 }

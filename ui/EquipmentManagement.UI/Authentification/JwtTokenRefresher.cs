@@ -35,11 +35,11 @@ public class JwtTokenRefresher : IJwtTokenRefresher
             await _storage.SetRefreshTokenAsync(result.RefreshToken!, cancellationToken);
             await _storage.SetAccessTokenAsync(result.Token, cancellationToken);
             await _provider.LoginUser(result.Token);
-            _logger.LogWarning("Successufully updated tokens");
+            _logger.LogInformation("Successufully updated tokens");
         }
         else if (response.StatusCode is HttpStatusCode.BadRequest)
         {
-            _logger.LogWarning("Exception Occured. Deleting tokens"); //TODO: remove
+            _logger.LogInformation("Exception Occured. Deleting tokens"); //TODO: remove
             await _storage.RemoveAccessTokenAsync(cancellationToken);
             await _storage.RemoveRefreshTokenAsync(cancellationToken);
             await _provider.LogoutUser();

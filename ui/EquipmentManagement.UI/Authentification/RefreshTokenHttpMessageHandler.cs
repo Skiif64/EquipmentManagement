@@ -22,7 +22,7 @@ public class RefreshTokenHttpMessageHandler : DelegatingHandler
         {
             if (!await RefreshTokenAsync(cancellationToken))
             {
-                _logger.LogWarning("Cannot refresh Tokens.");
+                _logger.LogInformation("Cannot refresh Tokens.");
                 return new HttpResponseMessage(HttpStatusCode.Unauthorized);
             }
         }
@@ -37,7 +37,7 @@ public class RefreshTokenHttpMessageHandler : DelegatingHandler
         var parsedToken = JwtTokenParser.Parse(token);
         if (parsedToken is null)
             return true;
-        _logger.LogWarning("Token valid to: {valid}", parsedToken.ValidTo);
+        _logger.LogInformation("Token valid to: {valid}", parsedToken.ValidTo);
         return parsedToken.ValidTo < DateTime.UtcNow;
     }
 

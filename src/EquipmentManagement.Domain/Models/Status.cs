@@ -4,16 +4,10 @@ namespace EquipmentManagement.Domain.Models;
 
 public class Status : BaseModel
 {
-	public string Title { get; init; }
-	public string Description { get; init; }
-    public Status(string title,
-                  string description)
-    {
-        Title = title;
-        Description = description;
-    }
-
-    protected Status() : base()
+	public string Title { get; init; } = string.Empty;
+	public string? Description { get; init; }
+    public virtual IList<EquipmentRecord> Records { get; init; } = null!;
+    public Status() : base()
     {
 
     }

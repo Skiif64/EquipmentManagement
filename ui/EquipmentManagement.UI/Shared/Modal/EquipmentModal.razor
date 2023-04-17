@@ -1,0 +1,55 @@
+﻿@using EquimentManagement.Contracts.Responses;
+@using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+@if (Equipment is not null)
+{
+    <div class="container">
+        <div class="row">
+            <div class="col-6">
+                <div class="mt-3">
+                    <span><strong>Тип: </strong>@Equipment.Type</span>
+                </div>
+                <div class="mt-3">
+                    <span><strong>Артикул: </strong>@Equipment.Article</span>
+                </div>
+                <div class="mt-3">
+                    <span><strong>Серийный номер: </strong>@Equipment.SerialNumber</span>
+                </div>
+                <div class="mt-3">
+                    <div><strong>Описание: </strong></div>
+                    <textarea readonly draggable="false" title="Описание">@Equipment.Description</textarea>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="mt-3">
+                    <span><strong>Текущий статус: </strong>@Equipment.StatusTitle</span>
+                </div>
+                <div class="mt-3">
+                    <span><strong>Назначено на: </strong>@Equipment.EmployeeFullname</span>
+                </div>
+                <div class="mt-3">
+                    <span><strong>Создатель: </strong>@Equipment.Author</span>
+                </div>
+                <div class="mt-3">
+                    <span><strong>Создано: </strong>@Equipment.CreatedAt.ToLocalTime().ToString("dd MMMM yyyy г. HH:mm")</span>
+                </div>
+            </div>
+        </div>
+    </div>    
+    <h3 class="mt-3">Фото</h3>
+    <div class="d-flex justify-content-start p-2">
+        @foreach (var image in Equipment.ImageNames!)
+        {
+            <div class="ml-2">
+                <ImageThumb Source="@($"{ApiPath}/{image}")" Alt="Фото" />
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private const string ApiPath = "/api/image";
+    [CascadingParameter]
+    public BlazoredModalInstance Instance { get; set; } = null!;
+    [Parameter]
+    public EquipmentWithStatusResponse? Equipment { get; set; }
+}

@@ -1,0 +1,88 @@
+﻿@attribute [Route(PagePaths.Equipment.EmployeeEquipment)]
+@using EquimentManagement.Contracts.Requests;
+@using EquimentManagement.Contracts.Responses;
+@using System.Collections.ObjectModel;
+@using EquipmentManagement.UI.Abstractions;
+@using EquipmentManagement.UI.Shared.Modal;
+@using EquipmentManagement.UI.Shared.Tables
+@inject IEmployeeService EmployeeService;
+@inject IEquipmentRecordService RecordService;
+@inject IStatusService StatusService;
+@attribute [Authorize]
+
+@if (employee is not null)
+{
+    <h4>Оборудование сотрудника @employee.Lastname @employee.Firstname @employee.Patronymic</h4>
+    <div>
+        <button class="btn btn-primary"
+            @onclick="OnAttachRequested"
+        disabled="@(employee.Status is EmployeeStatusResponse.Fired? true : false)">        
+            <span class="oi oi-plus"></span> Назначить
+        </button>
+    </div>
+}
+<EmployeeEquipmentTable @ref="table"
+                        EmployeeId="@EmployeeId"                        
+                        DetachRequested="OnDetachRequested" />
+
+@code {
+    private EmployeeEquipmentTable? table;
+    private EmployeeResponse? employee;
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "id")]
+    public Guid EmployeeId { get; set; }
+    [CascadingParameter]
+    private IModalService Modal { get; set; } = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDataAsync();
+    }
+
+    private async Task LoadDataAsync()
+    {
+        employee = await EmployeeService.GetByIdAsync(EmployeeId);
+    }
+
+    private async Task OnAttachRequested()
+    {
+        var options = new ModalOptions { Size = ModalSize.Large };
+        var modal = Modal.Show<AttachEquipmentModal>("Выбор оборудования", options);
+
+        var result = await modal.Result;
+        if (result.Confirmed)
+        {
+            var data = (EquipmentResponse)result.Data!;
+            var newStatus = await StatusService.GetOrCreateByNameAsync("Выдано");
+            var request = new AddEquipmentRecordRequest
+                {
+                    EmployeeId = employee?.Id,
+                    EquipmentId = data.Id,
+                    StatusId = newStatus.Id
+                };
+            await RecordService.AddAsync(request);
+            await table!.ReloadAsync();
+        }
+    }
+
+    private async Task OnDetachRequested(EquipmentResponse equipment)
+    {
+        var options = new ModalOptions { HideCloseButton = true };
+        var parameters = new ModalParameters();
+        var modal = Modal.Show<DeleteModal>("Подтверждение", parameters, options);
+
+        var result = await modal.Result;
+        if (result.Confirmed)
+        {
+            var freeStatus = await StatusService.GetOrCreateByNameAsync("Свободно"); //TODO: fix it
+            var request = new AddEquipmentRecordRequest
+                {
+                    EquipmentId = equipment.Id,
+                    EmployeeId = null,
+                    StatusId = freeStatus.Id
+                };
+            await RecordService.AddAsync(request);
+            await table!.ReloadAsync();
+        }
+    }
+}

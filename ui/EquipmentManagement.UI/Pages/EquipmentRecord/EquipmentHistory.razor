@@ -1,0 +1,87 @@
+﻿@attribute [Route(PagePaths.EquipmentRecord.History)]
+@using EquimentManagement.Contracts.Responses;
+@using System.Collections.ObjectModel;
+@using EquipmentManagement.UI.Abstractions;
+@inject IEquipmentRecordService RecordService;
+@inject IEquipmentService EquipmentService;
+@attribute [Authorize]
+<div class="container">
+    <div class="row justify-content-around align-content-start">
+        <h3>История оборудования</h3>
+        <p>Тип: @equipment?.Type</p>
+        <p>Артикул: @equipment?.Article</p>
+        <p>Серийный номер: @equipment?.SerialNumber</p>
+    </div>
+</div>
+    @if (records is not null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    <span class="text-center">Назначено на</span>
+                </th>
+                <th>
+                    <span class="text-center">Статус</span>
+                </th>
+                <th>
+                    <span class="text-center">Дата</span>
+                </th>
+                <th>
+                    <span class="text-center">Автор изменения</span>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var record in records)
+            {
+                <tr>
+                    <td>
+                        <span>@record.EmployeeFullname</span>
+                    </td>
+                    <td>
+                        <span>@record.StatusTitle</span>
+                    </td>
+                    <td>
+                        <span>@record.Modified.ToLocalTime().ToString("dd MMMM yyyy г. HH:mm")</span>
+                    </td>
+                    <td>
+                        <span>@record.ModifyAuthor</span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="d-flex">
+        <div class="my-auto mx-auto">
+            <LoadingCircle />
+        </div>
+    </div>
+}
+
+@code {
+    private ObservableCollection<EquipmentRecordResponse>? records;
+    private EquipmentResponse? equipment;
+    [SupplyParameterFromQuery( Name = "id")]
+    [Parameter]
+    public Guid EquipmentId { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadRecordsAsync();
+    }
+
+    private async Task LoadRecordsAsync()
+    {
+        var response = await RecordService.GetByEquipmentIdAsync(EquipmentId);
+        if (response is not null)
+        {
+            records = new ObservableCollection<EquipmentRecordResponse>(response);
+            records.CollectionChanged += (sender, e) => StateHasChanged();
+        }
+        equipment = await EquipmentService.GetByIdAsync(EquipmentId);
+    }
+}

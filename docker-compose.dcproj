@@ -3,7 +3,7 @@
   <PropertyGroup Label="Globals">
     <ProjectVersion>2.1</ProjectVersion>
     <DockerTargetOS>Linux</DockerTargetOS>
-    <ProjectGuid>3244f4af-ad4e-4d64-85c7-022987874192</ProjectGuid>
+    <ProjectGuid>25ec9e0f-dbbe-4eed-a836-09bd224972e8</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/swagger</DockerServiceUrl>
     <DockerServiceName>equipmentmanagement.webapi</DockerServiceName>

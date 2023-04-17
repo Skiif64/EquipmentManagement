@@ -1,0 +1,151 @@
+﻿@using EquimentManagement.Contracts.Responses;
+@using EquipmentManagement.UI.Abstractions;
+@using System.Collections.ObjectModel;
+@using EquipmentManagement.UI.Shared.Modal;
+@using Microsoft.AspNetCore.Components.Authorization
+@inject IEmployeeService EmployeeService;
+@attribute [Authorize]
+@if (employees is not null)
+{
+    <div class="input-group rounded">
+        <div class="d-flex flex-row">
+            <span class="input-group-text border-0" id="search-addon">
+                <i class="oi oi-magnifying-glass"></i>
+            </span>
+            <input type="search" class="form-control rounded" placeholder="Поиск" aria-label="Search" aria-describedby="search-addon"
+               @oninput="OnSearchBarInput" />
+        </div>
+    </div>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>
+                    <div class="d-flex w-100">
+                        <span class="text-center">ФИО</span>
+                    </div>
+                </th>
+                <th>
+                    <span class="text-center">Статус</span>
+                </th>
+                <th>
+                    <div class="d-flex w-100">
+                        <span class="text-center">Действия</span>
+                    </div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var employee in employees.Where(EmployeeSelector))
+            {
+                <tr class="@(employee.Status is EmployeeStatusResponse.Fired? "bg-secondary" : "")">
+                    <td>
+                        <span>@employee.Lastname @employee.Firstname @employee.Patronymic</span>
+                    </td>
+                    <td>
+                        <span>@(employee.Status == EmployeeStatusResponse.Active ? "Активен" : "Уволен")</span>
+                    </td>
+                    <td>
+                        <AuthorizeView Roles="Admin">
+                            <Authorized>
+                                @if (employee.Status is not EmployeeStatusResponse.Fired)
+                                {
+                                    <button class="btn btn-danger"
+                                @onclick="async () => await DeleteEmployeeRequested.InvokeAsync(employee)">
+                                        <span class="oi oi-trash"></span> Уволить
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-danger"
+                                @onclick="async () => await RestoreEmployeeRequested.InvokeAsync(employee)">
+                                        <span class="oi oi-trash"></span> Восстановить
+                                    </button>
+                                }
+                                <button class="btn btn-primary"
+                                @onclick="async () => await EditEmployeeRequested.InvokeAsync(employee)">
+                                    <span class="oi oi-pencil"></span> Изменить
+                                </button>
+                            </Authorized>
+                        </AuthorizeView>
+                        <button class="btn btn-secondary"
+                        @onclick="async () => await NavigateToEmployeeEquipmentRequested.InvokeAsync(employee)">
+                            <span class="oi oi-list-rich"></span> Оборудование
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="d-flex">
+        <div class="my-auto mx-auto">
+            <LoadingCircle />
+        </div>
+    </div>
+}
+
+@code {
+    private string? searchQuery;
+    private ObservableCollection<EmployeeResponse>? employees;
+    [Parameter]
+    public EventCallback<EmployeeResponse> DeleteEmployeeRequested { get; set; } = default!;
+    [Parameter]
+    public EventCallback<EmployeeResponse> RestoreEmployeeRequested { get; set; } = default!;
+    [Parameter]
+    public EventCallback<EmployeeResponse> NavigateToEmployeeEquipmentRequested { get; set; } = default!;
+    [Parameter]
+    public EventCallback<EmployeeResponse> EditEmployeeRequested { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadEmployeesAsync();
+    }
+
+    public void DeleteEmployee(EmployeeResponse employee)
+    {
+        employee.Status = EmployeeStatusResponse.Fired;
+        StateHasChanged();
+    }
+
+    public void RestoreEmployee(EmployeeResponse employee)
+    {
+        employee.Status = EmployeeStatusResponse.Active;
+        StateHasChanged();
+    }
+
+    private async Task LoadEmployeesAsync()
+    {
+        var response = await EmployeeService.GetAllAsync();
+        if (response is not null)
+        {
+            employees = new ObservableCollection<EmployeeResponse>(response);
+            employees.CollectionChanged += (sender, e) => StateHasChanged();
+        }
+    }
+
+    private void OnSearchBarInput(ChangeEventArgs e)
+    {
+        searchQuery = e.Value?.ToString();
+    }
+
+    private bool EmployeeSelector(EmployeeResponse employee)
+    {
+        var query = searchQuery ?? string.Empty;
+        const StringComparison comparsion = StringComparison.InvariantCultureIgnoreCase;
+        if (employee.Lastname.Contains(query, comparsion))
+            return true;
+        if (employee.Firstname.Contains(query, comparsion))
+            return true;
+        if (employee.Patronymic is not null
+            && employee.Patronymic.Contains(query, comparsion))
+            return true;
+
+        return false;
+    }
+
+
+
+}

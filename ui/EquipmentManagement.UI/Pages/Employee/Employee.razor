@@ -1,0 +1,118 @@
+﻿@using EquimentManagement.Contracts.Responses;
+@using EquipmentManagement.UI.Abstractions;
+@using EquipmentManagement.UI.Shared.Modal;
+@using EquipmentManagement.UI.Shared.Tables
+@attribute [Route(PagePaths.Employee.List)]
+@inject IEmployeeService EmployeeService;
+@inject IEquipmentService EquipmentService;
+@inject NavigationManager Navigation;
+@attribute [Authorize]
+
+
+<div class="container">
+    <div class="row justify-content-around align-content-start">
+        <h3>Сотрудники</h3>
+        <div class="my-2 p-2">
+            <AuthorizeView Roles="Admin">
+                <Authorized>
+                    <NavLink class="btn btn-primary align-self-start"
+                             href="/employee/add">Добавить соотрудника</NavLink>
+                </Authorized>
+            </AuthorizeView>
+        </div>
+        <EmployeeTable @ref="Table"
+            DeleteEmployeeRequested="@OnShowDeleteModalRequested"
+            RestoreEmployeeRequested="@OnShowRestoreModalRequested"
+            EditEmployeeRequested="@OnEditEmployeeRequested"
+            NavigateToEmployeeEquipmentRequested="@OnNavigateToEmployeeEquipmentRequested"/>
+    </div>
+</div>
+    
+@code {
+    [CascadingParameter]
+    public IModalService Modal { get; set; } = null!;
+    [Parameter]
+    public EmployeeTable? Table { get; set; }     
+
+    private async Task OnShowDeleteModalRequested(EmployeeResponse employee)
+    {
+        if (await HasEquipment(employee))
+        {
+            await ShowErrorModal();
+            return;
+        }
+
+        var options = new ModalOptions { HideCloseButton = true };
+        var fullname = $"{employee.Lastname} {employee.Firstname} {employee.Patronymic}";
+        var parameters = new ModalParameters()
+        .Add(nameof(DeleteModal.EntityName), fullname);
+
+        var modal = Modal.Show<DeleteModal>("Удаление сотрудника", parameters, options);
+        var result = await modal.Result;
+        if (result.Confirmed)
+            await DeleteSelectedEmployee(employee);
+    }
+
+    private async Task OnShowRestoreModalRequested(EmployeeResponse employee)
+    {       
+
+        var options = new ModalOptions { HideCloseButton = true };
+        var fullname = $"{employee.Lastname} {employee.Firstname} {employee.Patronymic}";
+        var parameters = new ModalParameters()
+        .Add(nameof(RestoreModal.EntityName), fullname);
+
+        var modal = Modal.Show<RestoreModal>("Восстановление сотрудника", parameters, options);
+        var result = await modal.Result;
+        if (result.Confirmed)
+            await RestoreSelectedEmployee(employee);
+    }
+
+
+    private async Task DeleteSelectedEmployee(EmployeeResponse employee)
+    {        
+        Table?.DeleteEmployee(employee);
+        var employeeId = employee.Id;
+
+        await EmployeeService.DeleteAsync(employeeId);
+
+    }
+
+    private async Task RestoreSelectedEmployee(EmployeeResponse employee)
+    {
+        Table?.RestoreEmployee(employee);
+        var employeeId = employee.Id;
+
+        await EmployeeService.RestoreAsync(employeeId);
+    }
+
+    private async Task<bool> HasEquipment(EmployeeResponse employee)
+    {
+        var equipments = await EquipmentService.GetByEmployeeIdAsync(employee.Id);
+        if (equipments!.Any())
+            return true;
+        return false;
+    }
+
+    private async Task ShowErrorModal()
+    {
+        var message = "За данным сотрудником есть закрепленное оборудование.";
+        var options = new ModalOptions
+            {
+                HideCloseButton = true
+            };
+        var parameters = new ModalParameters()
+        .Add(nameof(ErrorModal.ErrorMessage), message);
+        var modal = Modal.Show<ErrorModal>("Внимание", parameters, options);
+        await modal.Result;
+    }
+
+    private void OnNavigateToEmployeeEquipmentRequested(EmployeeResponse employee)
+    {
+        Navigation.NavigateTo($"{PagePaths.Equipment.EmployeeEquipment}?id={employee.Id}");
+    }
+
+    private void OnEditEmployeeRequested(EmployeeResponse employee)
+    {
+        Navigation.NavigateTo(PagePaths.Employee.Edit + $"/{employee.Id}");
+    }
+}

@@ -4,18 +4,13 @@ namespace EquipmentManagement.Domain.Models;
 
 public class Employee : BaseModel
 {
-    public string Firstname { get; init; } = string.Empty;
-	public string Lastname { get; init; } = string.Empty;
-    public string Patronymic { get; init; } = string.Empty;
-    public Employee(string firstname,
-                    string lastname,
-                    string patronymic)
-    {
-        Firstname = firstname;
-        Lastname = lastname;
-        Patronymic = patronymic;
-    }
-
+    public string Firstname { get; set; } = string.Empty;
+	public string Lastname { get; set; } = string.Empty;
+    public string? Patronymic { get; set; }
+    public string Fullname => $"{Lastname} {Firstname} {Patronymic}";
+    public EmployeeStatus Status { get; set; }
+    public virtual IList<EquipmentRecord> Records { get; set; } = null!;
+    
     protected Employee() : base()
     {
 

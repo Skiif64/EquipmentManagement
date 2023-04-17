@@ -1,0 +1,26 @@
+﻿<div class="alert @Class @VisibleClass">
+    @ChildContent
+</div>
+
+@code {
+    private bool isVisible = false;
+    private string VisibleClass => isVisible ? "show" : "d-none";
+
+    [Parameter]
+    public string? Class { get; set; }
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    public void Show()
+    {
+        isVisible = true;
+        StateHasChanged();
+    }
+
+    public void Hide()
+    {
+        isVisible = false;
+        StateHasChanged();
+    }
+
+}

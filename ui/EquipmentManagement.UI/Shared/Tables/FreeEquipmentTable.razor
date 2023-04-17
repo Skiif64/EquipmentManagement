@@ -1,0 +1,68 @@
+﻿@using EquimentManagement.Contracts.Responses;
+@using EquipmentManagement.UI.Abstractions;
+@inject IEquipmentService EquipmentService;
+@if (equipments is not null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    <span>Тип</span>
+                </th>
+                <th>
+                    <span>Артикул</span>
+                </th>
+                <th>
+                    <span>Серийный номер</span>
+                </th>
+                <th>
+                    <span>Описание</span>
+                </th>               
+                <th>
+
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var equipment in equipments)
+            {
+                <tr>
+                    <td>
+                        @equipment.Type
+                    </td>
+                    <td>
+                        @equipment.Article
+                    </td>
+                    <td>
+                        @equipment.SerialNumber
+                    </td>
+                    <td>
+                        @equipment.Description
+                    </td>                    
+                    <td>
+                        <button class="btn btn-primary"
+                        @onclick="async () => await ChooseRequested.InvokeAsync(equipment)">
+                            <span class="oi oi-plus"></span> Выбрать
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private IEnumerable<EquipmentResponse>? equipments;
+    [Parameter]
+    public EventCallback<EquipmentResponse> ChooseRequested { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDataAsync();
+    }
+
+    private async Task LoadDataAsync()
+    {
+        equipments = await EquipmentService.GetFreeAsync();
+    }
+}

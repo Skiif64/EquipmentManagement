@@ -1,0 +1,12 @@
+﻿<p class="p-2">Вы уверены, что хотите удалить <strong>@EntityName</strong>?</p>
+<button class="btn btn-danger" @onclick="SubmitAsync">Да</button>
+<button class="btn btn-primary"@onclick="CloseAsync">Отмена</button>
+@code {
+    [CascadingParameter]
+    private BlazoredModalInstance Instance { get; set; } = null!;
+    [Parameter]
+    public string EntityName { get; set; } = null!;
+
+    private async Task CloseAsync() => await Instance.CancelAsync();
+    private async Task SubmitAsync() => await Instance.CloseAsync();
+}

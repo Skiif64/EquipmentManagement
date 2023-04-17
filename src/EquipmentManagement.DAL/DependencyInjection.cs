@@ -1,9 +1,8 @@
-﻿using EquipmentManagement.DAL.Repositories;
-using EquipmentManagement.Domain.Abstractions.Repositories;
+﻿using EquipmentManagement.Application.Abstractions;
+using EquipmentManagement.DAL.ImagesStorage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Data;
 
 namespace EquipmentManagement.DAL;
 
@@ -13,9 +12,12 @@ public static class DependencyInjection
     {
         var connectionString = configuration.GetConnectionString("Data");        
        
-        services.AddDbContext<ApplicationDbContext>(opt => opt.UseNpgsql(connectionString));
-        services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-
+        services.AddDbContext<IApplicationDbContext, ApplicationDbContext>(opt => opt
+        .UseNpgsql(connectionString, cfg => cfg
+        .MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)
+        .UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
+        services.AddTransient<IMigrationableDatabase, ApplicationDbContext>();
+        services.AddTransient<IImageStorage, ImageStorage>();
         return services;
     }
 }

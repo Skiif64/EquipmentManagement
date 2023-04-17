@@ -1,0 +1,16 @@
+﻿@attribute [Route(PagePaths.Auth.Logout)]
+@using EquipmentManagement.UI.Abstractions;
+@using Microsoft.IdentityModel.JsonWebTokens;
+@inject NavigationManager Navigation;
+@inject IAuthentificationService AuthService;
+@code {
+    [CascadingParameter] Task<AuthenticationState> AuthenticationState { get; set; } = default!;
+    protected override async Task OnInitializedAsync()
+    {
+        var state = await AuthenticationState;
+        var userId = state.User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+        if (userId is not null)
+            await AuthService.SignOutAsync(Guid.Parse(userId), default);
+        Navigation.NavigateTo(PagePaths.Home);
+    }
+}

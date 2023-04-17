@@ -1,0 +1,71 @@
+﻿@using System.Collections.ObjectModel;
+@using EquimentManagement.Contracts.Responses;
+@using EquipmentManagement.UI.Abstractions;
+@attribute [Route(PagePaths.User.List)]
+@attribute [Authorize(Roles = "Admin")]
+@inject IUserService UserService;
+
+<NavLink class="btn btn-primary" href="/auth/register/">Зарегистрировать пользователя</NavLink>
+ @if (users is not null)
+{
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>
+                    <span class="text-center">Логин</span>
+                </th>
+                <th>
+                    <span class="text-center">Роль</span>
+                </th>
+                <th>
+                    <span class="text-center">Состояние</span>
+
+                </th>
+                <th>
+                    <span class="text-center">Действия</span>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in users)
+            {
+                <tr>
+                    <td>
+                        <span>@user.Login</span>
+                    </td>
+                    <td>
+                        <span>@user.Role</span>
+                    </td>
+                    <td>
+                        <span>@(user.IsBlocked ? "Заблокирован" : "Активен")</span>
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <LoadingCircle />
+}
+
+@code {
+    private ObservableCollection<ApplicationUserResponse>? users;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDataAsync();
+    }
+
+    private async Task LoadDataAsync()
+    {
+        var response = await UserService.GetAllAsync();
+        if (response is not null)
+        {
+            users = new ObservableCollection<ApplicationUserResponse>(response);
+            users.CollectionChanged += (s, e) => StateHasChanged();
+        }
+    }
+}

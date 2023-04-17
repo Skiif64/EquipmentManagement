@@ -1,24 +1,28 @@
 ﻿using EquipmentManagement.Application.Abstractions;
-using EquipmentManagement.Domain.Abstractions.Repositories;
+using EquipmentManagement.Application.Exceptions;
 using EquipmentManagement.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace EquipmentManagement.Application.Equipments.GetByEmployeeId;
 
-public class GetEquipmentByEmployeeQueryHandler : IQueryHandler<GetEquipmentsByEmployeeIdQuery, IEnumerable<Equipment>>
+public class GetEquipmentByEmployeeQueryHandler : IQueryHandler<GetEquipmentsByEmployeeIdQuery, IEnumerable<Equipment>?>
 {
-    private readonly IEquipmentRepository _equipmentRepository;
-    private readonly IEquipmentStatusRepository _equipmentStatusRepository;
+    private readonly IApplicationDbContext _context;    
 
-    public GetEquipmentByEmployeeQueryHandler(IEquipmentRepository equipmentRepository,
-                                              IEquipmentStatusRepository equipmentStatusRepository)
+    public GetEquipmentByEmployeeQueryHandler(IApplicationDbContext context)                                              
     {
-        _equipmentRepository = equipmentRepository;
-        _equipmentStatusRepository = equipmentStatusRepository;
+        _context = context;        
     }
-    public async Task<IEnumerable<Equipment>> Handle(GetEquipmentsByEmployeeIdQuery request, CancellationToken cancellationToken)
+    public Task<IEnumerable<Equipment>?> Handle(GetEquipmentsByEmployeeIdQuery request, CancellationToken cancellationToken)
     {
-        var statuses = await _equipmentStatusRepository.GetActualByEmployeeId(request.EmployeeId, cancellationToken);
-        var equipments = await _equipmentRepository.GetAllAsync(cancellationToken);
-        return equipments.Where(e => statuses.Select(s => s.EquipmentId).Contains(e.Id));
+        var equipments = _context
+            .Set<Equipment>()
+            .Include(x => x.Records)
+            .Include(x => x.Type)
+            .AsEnumerable()
+            .Where(x =>x.LastRecord != null && x.LastRecord.EmployeeId == request.EmployeeId)            
+            ;
+               
+        return Task.FromResult(equipments?.AsEnumerable());
     }
 }

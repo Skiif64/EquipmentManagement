@@ -1,0 +1,135 @@
+﻿@attribute [Route(PagePaths.Equipment.Add)]
+@using EquimentManagement.Contracts.Requests;
+@using System.Collections.ObjectModel;
+@using System.Net.Http.Headers;
+@using EquimentManagement.Contracts.Responses;
+@using EquipmentManagement.UI.Abstractions;
+@using EquipmentManagement.UI.Services;
+@using EquipmentManagement.UI.Shared.Modal;
+@inject NavigationManager Navigation;
+@inject ImageService ImageService;
+@inject IEquipmentService EquipmentService;
+@inject IEquipmentTypeService TypeService;
+@attribute [Authorize(Roles = "Admin")]
+
+<div class="container">
+    <div class="row">
+        <div class="align-content-center justify-content-center">
+            <h3>Добавление оборудования</h3>
+            <EditForm Model="@request"
+                      OnValidSubmit="@OnValidSubmitAsync">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <div class="mb-3">
+                    <label class="form-label">Тип</label>
+                    <div class="d-flex">
+                        <button type="button" class="btn btn-primary me-auto"
+                                @onclick="ShowAddTypeModalAsync">
+                            <span class="oi oi-plus"></span>
+                        </button>
+                        <InputSelect class="form-select ms-1" @bind-Value="request.TypeId">
+                            <option selected hidden value="">Выбрать тип</option>
+                            @if (types is not null)
+                            {
+                                foreach (var type in types)
+                                {
+                                    <option value="@type.Id">@type.Name</option>
+                                }
+                            }
+                        </InputSelect>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Артикул</label>
+                    <InputText class="form-control"
+                               @bind-Value="@request.Article"></InputText>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Серийный номер</label>
+                    <InputText class="form-control"
+                               @bind-Value="@request.SerialNumber"></InputText>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Описание</label>
+                    <InputTextArea class="form-control"
+                                   @bind-Value="@request.Description"></InputTextArea>
+                </div>
+                <div class="mb-3 h-25">
+                    <label class="form-label">Фото</label>
+                    <div class="p-2 d-flex justify-content-start w-100 bg-light">
+                        @foreach (var source in sources)
+                        {
+                            <ImageThumb Source="@source" />
+                        }
+                    </div>
+                    <InputFile multiple OnChange="LoadFileAsync"></InputFile>
+                </div>
+                <div class="mb-3">
+                    <button type="submit"
+                            class="btn btn-primary">
+                        Создать
+                    </button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+@code {
+    private ObservableCollection<EquipmentTypeResponse>? types;
+    private AddEquipmentRequest request = new();
+    private ObservableCollection<UploadedFile> uploadedFiles = new();
+    private List<string> sources = new();
+    [CascadingParameter]
+    private IModalService Modal { get; set; } = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDataAsync();
+        uploadedFiles.CollectionChanged += (s, e) => StateHasChanged();
+    }
+
+    private async Task LoadDataAsync()
+    {
+        var response = await TypeService.GetAllAsync();
+        types = new ObservableCollection<EquipmentTypeResponse>(response);
+        types.CollectionChanged += (s, e) => StateHasChanged();
+    }
+
+    private async Task OnValidSubmitAsync()
+    {
+        if (uploadedFiles.Count > 0)
+        {
+            var imageNames = await ImageService.AddImagesAsync(uploadedFiles);
+            request.ImageNames = imageNames;
+        }
+        await EquipmentService.AddAsync(request);
+
+        Navigation.NavigateTo(PagePaths.Equipment.List);
+
+    }
+
+    private async Task ShowAddTypeModalAsync()
+    {
+        var modal = Modal.Show<AddTypeModal>("Добавление нового типа");
+        var result = await modal.Result;
+        if (result.Confirmed)
+        {
+            var id = await TypeService.AddAsync((AddEquipmentTypeRequest)result.Data!);
+            var newType = await TypeService.GetByIdAsync(id);
+            types?.Add(newType!);
+        }
+    }
+
+    private async Task LoadFileAsync(InputFileChangeEventArgs e)
+    {
+        var files = e.GetMultipleFiles();
+        foreach (var file in files)
+        {
+            uploadedFiles.Add(new UploadedFile(file));
+            using var ms = new MemoryStream();
+            await file.OpenReadStream().CopyToAsync(ms);
+            var source = $"data:{file.ContentType};base64,{Convert.ToBase64String(ms.ToArray())}";
+            sources.Add(source);
+        }
+    }
+}

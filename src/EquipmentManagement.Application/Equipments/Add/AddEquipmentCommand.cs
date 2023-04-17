@@ -2,10 +2,18 @@
 
 namespace EquipmentManagement.Application.Equipments.Add;
 
-public class AddEquipmentCommand : ICommand
+public class AddEquipmentCommand : ICommand<Guid>
 {
-    public string Type { get; set; }
-    public string Article { get; set; }
-    public long SerialNumber { get; set; }
-    public string Description { get; set; }
+    public Guid TypeId { get; init; }
+    public string Article { get; init; } = string.Empty;
+    public string SerialNumber { get; init; } = string.Empty;
+    public string? Description { get; set; }
+    public string Author { get; set; } = string.Empty;
+    public DateTimeOffset CreatedAt { get; set; }
+    public IEnumerable<string>? ImageNames { get; set; }
+
+    public AddEquipmentCommand()
+    {
+        CreatedAt = DateTimeOffset.UtcNow;
+    }
 }

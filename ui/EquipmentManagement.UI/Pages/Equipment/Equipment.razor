@@ -1,0 +1,53 @@
+﻿@attribute [Route(PagePaths.Equipment.List)]
+@using EquimentManagement.Contracts.Responses;
+@using EquipmentManagement.UI.Abstractions;
+@using EquipmentManagement.UI.Shared.Modal;
+@using EquipmentManagement.UI.Shared.Tables
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Collections.ObjectModel;
+@inject NavigationManager Navigation;
+@attribute [Authorize]
+<h3>Оборудование</h3>
+
+<div class="navbar-dark">
+    <AuthorizeView Roles="Admin">
+        <Authorized>
+            <NavLink class="btn btn-primary"
+                     href="/equipment/add">Добавить оборудование</NavLink>
+        </Authorized>
+    </AuthorizeView>
+    <EquipmentTable @ref="Table"
+                    HistoryRequested="OnHistoryRequested"
+                    EditRequested="OnEditRequested"                   
+                    DetailsRequested="OnDetailsRequestedAsync" />
+</div>
+  
+@code {
+    [Parameter]
+    public EquipmentTable? Table { get; set; }
+    [CascadingParameter]
+    private IModalService Modal { get; set; } = null!;
+
+
+    private void OnEditRequested(EquipmentWithStatusResponse equipment)
+    {
+        Navigation.NavigateTo($"{PagePaths.EquipmentRecord.Add}?id={equipment.Id}");
+    }
+
+    private void OnHistoryRequested(EquipmentWithStatusResponse equipment)
+    {
+        Navigation.NavigateTo($"{PagePaths.EquipmentRecord.History}?id={equipment.Id}");
+    }    
+
+    private async Task OnDetailsRequestedAsync(EquipmentWithStatusResponse equipment)
+    {
+        var options = new ModalOptions
+            {
+                Size = ModalSize.Large
+            };
+        var parameters = new ModalParameters()
+        .Add(nameof(EquipmentModal.Equipment), equipment);
+        var modal = Modal.Show<EquipmentModal>("Детали", parameters, options);
+        var result = await modal.Result;
+    }
+}

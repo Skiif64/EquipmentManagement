@@ -1,21 +1,30 @@
 version: '3.4'
 
 services:
-  equipmentmanagement.webapi:
+  webapi:
     image: ${DOCKER_REGISTRY-}equipmentmanagementwebapi
     build:
       context: .
       dockerfile: src/EquipmentManagement.WebApi/Dockerfile
+    restart: on-failure
     depends_on:
       - db
+    volumes:
+      - images:/app/images/
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
   db:
     image: postgres
     restart: always
     environment:
       POSTGRES_PASSWORD: example
-
+      PGDATA: /var/lib/postgresql/data
+    volumes:
+    - data:/var/lib/postgresql/data
   adminer:
     image: adminer
-    restart: always
-    ports:
-      - 8080:8080
+    
+
+volumes:
+  images:
+  data:  

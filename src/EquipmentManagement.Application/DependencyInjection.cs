@@ -1,16 +1,18 @@
 ﻿using EquipmentManagement.Application.Abstractions;
-using MediatR;
+using EquipmentManagement.Application.Journaling;
 using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
 
 namespace EquipmentManagement.Application;
 
-public static class DependencyInjection
+public static class DependencyInjection 
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         var assembly = typeof(ICommand).Assembly;
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));        
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));
+        services.AddTransient<IDatabaseMigrator, DatabaseMigrator>();
+        services.AddScoped<IJournal>(sp => sp.GetRequiredService<IJournalFactory>().Get());
+        services.AddScoped<IJournalFactory, DbJournalFactory>();
         return services;
     }
-}
+}                               

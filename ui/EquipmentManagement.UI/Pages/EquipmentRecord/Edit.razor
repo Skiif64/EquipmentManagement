@@ -1,0 +1,124 @@
+﻿@attribute [Route(PagePaths.EquipmentRecord.Add)]
+@using EquimentManagement.Contracts.Requests;
+@using EquimentManagement.Contracts.Responses;
+@using EquipmentManagement.UI.Abstractions;
+@using System.Collections.ObjectModel;
+@using EquipmentManagement.UI.Shared.Modal;
+@inject IEmployeeService EmployeeService;
+@inject IStatusService StatusService;
+@inject IEquipmentService EquipmentService;
+@inject IEquipmentRecordService RecordService;
+@inject NavigationManager Navigation;
+@attribute [Authorize(Roles = "Admin")]
+
+<div class="container">
+    <div class="row">
+        <div class="align-content-center justify-content-center">
+            <h3>Изменение статуса оборудования</h3>
+            <p>Тип: @equipment?.Type</p>
+            <p>Артикул: @equipment?.Article</p>
+            <p>Серийный номер: @equipment?.SerialNumber</p>            
+            <EditForm Model="@request" OnValidSubmit="@OnValidInputAsync">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <div class="mb-3">
+                    <label class="form-label">Назначно на</label>
+                    <InputSelect class="form-select" @bind-Value="request.EmployeeId">
+                        <option selected hidden value="">Выбрать сотрудника</option>
+                        <option value="">Никто</option>
+                        @if (employees is not null)
+                        {
+                            foreach (var employee in employees)
+                            {
+                                <option value="@employee.Id">@employee.Lastname @employee.Firstname @employee.Patronymic</option>
+                            }
+                        }
+                    </InputSelect>
+                </div>
+                <div class="mb-3">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Статус</label>
+                    <div class="d-flex">
+                        <button type="button" class="btn btn-primary me-auto"
+                                @onclick="ShowAddStatusModal">
+                            <span class="oi oi-plus"></span>
+                        </button>
+                        <InputSelect class="form-select ms-1" @bind-Value="request.StatusId">
+                            <option selected hidden value="">Выбрать статус</option>
+                            @if (statuses is not null)
+                            {
+                                foreach (var status in statuses)
+                                {
+                                    <option value="@status.Id">@status.Title</option>
+                                }
+                            }
+                        </InputSelect>
+                    </div>
+                </div>               
+                <div class="mb-3">
+                    <button type="submit"
+                            class="btn btn-primary">
+                        Изменить
+                    </button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+@code {
+    private AddEquipmentRecordRequest request = new();
+    private AddStatusRequest statusRequest = new();
+    private EquipmentResponse? equipment;
+
+    private IEnumerable<EmployeeResponse>? employees;
+    private ObservableCollection<StatusResponse>? statuses;
+
+    [CascadingParameter]
+    private IModalService Modal { get; set; } = null!;
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "id")]
+    public Guid EquipmentId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (EquipmentId == default)
+            Navigation.NavigateTo(PagePaths.Equipment.List);
+        await LoadDataAsync();
+        request.EquipmentId = EquipmentId;
+        if (statuses is not null)
+            statuses.CollectionChanged += (s, e) => StateHasChanged();
+    }
+
+
+
+    private async Task OnValidInputAsync()
+    {
+        await RecordService.AddAsync(request);
+        Navigation.NavigateTo(PagePaths.Equipment.List);
+    }
+
+    private async Task ShowAddStatusModal()
+    {
+        var modal = Modal.Show<AddStatusModal>("Добавление статуса");
+        var result = await modal.Result;
+
+        if (result.Confirmed)
+        {
+            var newStatus = await StatusService.AddAsync((AddStatusRequest)result.Data!);
+            statuses?.Add(newStatus);
+        }
+    }
+
+
+    private async Task LoadDataAsync()
+    {
+        employees = await EmployeeService.GetAllAsync();
+        employees = employees?.Where(x => x.Status != EmployeeStatusResponse.Fired);
+        var statusResponse = await StatusService.GetAll();
+        if (statusResponse is not null)
+            statuses = new ObservableCollection<StatusResponse>(statusResponse);
+        equipment = await EquipmentService.GetByIdAsync(EquipmentId);
+    }
+}

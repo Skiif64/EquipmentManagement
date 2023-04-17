@@ -1,0 +1,81 @@
+﻿@attribute [Route(PagePaths.Auth.Register)]
+@using EquimentManagement.Contracts.Requests;
+@using EquipmentManagement.UI.Abstractions;
+@using EquipmentManagement.UI.Shared.Alert;
+@inject IUserService UserService;
+@inject NavigationManager Navigation;
+@attribute [Authorize(Roles = "Admin")]
+<div class="container p-2">
+    <div class="row">
+        <div class="col-lg-2 col-md-1"></div>
+        <div class="col-lg-6 col-md-8 col-sm-12">
+            <div class="d-flex justify-content-center">
+                <div class="p-1">
+                    <Alert @ref="Alert" Class="alert-danger">
+                        <span class="text-center">@errorMessage</span>
+                    </Alert>
+                    <h3 class="text-center">Регистрация пользователя</h3>
+                    <div class="p-2 border-2 border-dark rounded-1 shadow">
+                        <EditForm Model="@request"
+                                  OnValidSubmit="@OnRegisterSuccessAsync">
+                            <DataAnnotationsValidator />
+                            <ValidationSummary />
+                            <div class="mb-3">
+                                <label class="form-label">Логин</label>
+                                <InputText @bind-Value="@request.Login"
+                                           class="form-control"></InputText>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Пароль</label>
+                                <InputText @bind-Value="@request.Password"
+                                           type="password"
+                                           class="form-control"></InputText>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Повторите пароль</label>
+                                <InputText @bind-Value="@request.ConfirmPassword"
+                                           type="password"
+                                           class="form-control"></InputText>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Роль</label>
+                                <InputSelect @bind-Value="@request.Role"
+                                             class="form-select">
+                                             
+                                    <option selected value="User">Пользователь</option>
+                                    <option value="Admin">Администратор</option>
+                                </InputSelect>
+                            </div>
+                            <div class="mb-3">
+                                <button type="submit"
+                                        class="btn btn-primary">
+                                    Зарегистрировать
+                                </button>
+                            </div>
+                        </EditForm>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-3"></div>
+    </div>
+</div>
+@code {
+    private RegisterRequest request = new();
+    private Alert? Alert { get; set; }
+    private string? errorMessage;
+    private async Task OnRegisterSuccessAsync()
+    {
+        Alert?.Hide();
+        var result = await UserService.RegisterAsync(request, default);
+        if (result.IsSuccess)
+        {
+            Navigation.NavigateTo(PagePaths.Home);
+        }
+        else
+        {
+            errorMessage = result.Errors!.First().Value;
+            Alert?.Show();
+        }
+    }
+}

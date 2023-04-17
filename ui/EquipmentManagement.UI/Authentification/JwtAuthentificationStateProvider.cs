@@ -8,12 +8,25 @@ using System.Security.Principal;
 namespace EquipmentManagement.UI.Authentification;
 
 public class JwtAuthentificationStateProvider : AuthenticationStateProvider
-{   
-    public override Task<AuthenticationState> GetAuthenticationStateAsync()
+{
+    private readonly ITokenStorage _storage;
+
+    public JwtAuthentificationStateProvider(ITokenStorage storage)
     {
-        var identity = new ClaimsIdentity();
-        var state = Task.FromResult(new AuthenticationState(new ClaimsPrincipal(identity)));        
-        return state;
+        _storage = storage;
+    }
+
+    public override async Task<AuthenticationState> GetAuthenticationStateAsync()
+    {
+        var token = await _storage.GetAccessTokenAsync();
+        if(!string.IsNullOrWhiteSpace(token))
+        {
+            return await LoginUser(token);
+        }
+        else
+        {
+            return await LogoutUser();
+        }        
     }
 
     public Task<AuthenticationState> LoginUser(string token)
@@ -33,7 +46,8 @@ public class JwtAuthentificationStateProvider : AuthenticationStateProvider
 
     public Task<AuthenticationState> LogoutUser()
     {
-        var state = GetAuthenticationStateAsync();
+        var identity = new ClaimsIdentity();
+        var state = Task.FromResult(new AuthenticationState(new ClaimsPrincipal(identity)));
         NotifyAuthenticationStateChanged(state);
         return state;
     }

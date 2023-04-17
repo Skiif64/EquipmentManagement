@@ -27,6 +27,8 @@ public static class DependencyInjection
                 ValidateIssuerSigningKey = true,
                 ValidIssuer = jwtOptions.Issuer,
                 ValidAudience = jwtOptions.Audience,
+                LifetimeValidator = (from, to, token, parameters)
+                => to > DateTime.UtcNow,
                 IssuerSigningKey = new SymmetricSecurityKey(
                     Encoding.UTF8.GetBytes(jwtOptions.SecretKey))
             });

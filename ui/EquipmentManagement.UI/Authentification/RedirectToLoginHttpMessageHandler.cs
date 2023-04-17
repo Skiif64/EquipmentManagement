@@ -18,8 +18,7 @@ public class RedirectToLoginHttpMessageHandler : DelegatingHandler
         var response = await base.SendAsync(request, cancellationToken);
         if (response.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden)
         {
-            _navigationManager.NavigateTo(PagePaths.Auth.Login);
-            response.EnsureSuccessStatusCode();
+            _navigationManager.NavigateTo(PagePaths.Auth.Login);            
         }
         return response;        
     }

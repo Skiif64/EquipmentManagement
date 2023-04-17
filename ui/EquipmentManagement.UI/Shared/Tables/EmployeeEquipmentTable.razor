@@ -3,12 +3,6 @@
 @using EquipmentManagement.UI.Abstractions;
 @inject IEquipmentService EquipmentService;
 @attribute [Authorize]
-<div>
-    <button class="btn btn-primary"
-            @onclick="async () => await AttachRequested.InvokeAsync()">
-        <span class="oi oi-plus"></span> Назначить
-    </button>
-</div>
 @if (equipments is not null)
 {
     <table class="table">
@@ -73,9 +67,7 @@ else
     public Guid EmployeeId { get; set; }
     [Parameter]
     public EventCallback<EquipmentResponse> DetachRequested { get; set; }
-    [Parameter]
-    public EventCallback AttachRequested { get; set; }
-
+    
     protected override async Task OnInitializedAsync()
     {
         await LoadDataAsync();

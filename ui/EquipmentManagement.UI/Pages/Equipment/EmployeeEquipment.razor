@@ -13,10 +13,16 @@
 @if (employee is not null)
 {
     <h4>Оборудование сотрудника @employee.Lastname @employee.Firstname @employee.Patronymic</h4>
+    <div>
+        <button class="btn btn-primary"
+            @onclick="OnAttachRequested"
+        disabled="@(employee.Status is EmployeeStatusResponse.Fired? true : false)">        
+            <span class="oi oi-plus"></span> Назначить
+        </button>
+    </div>
 }
 <EmployeeEquipmentTable @ref="table"
-                        EmployeeId="@EmployeeId"
-                        AttachRequested="OnAttachRequested"
+                        EmployeeId="@EmployeeId"                        
                         DetachRequested="OnDetachRequested" />
 
 @code {

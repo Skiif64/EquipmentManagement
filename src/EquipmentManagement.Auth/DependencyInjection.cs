@@ -27,6 +27,7 @@ public static class DependencyInjection
                 ValidateIssuerSigningKey = true,
                 ValidIssuer = jwtOptions.Issuer,
                 ValidAudience = jwtOptions.Audience,
+                ClockSkew = TimeSpan.FromMinutes(jwtOptions.TokenLifetimeMinutes),
                 LifetimeValidator = (from, to, token, parameters)
                 => to > DateTime.UtcNow,
                 IssuerSigningKey = new SymmetricSecurityKey(

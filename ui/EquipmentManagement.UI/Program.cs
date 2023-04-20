@@ -24,8 +24,8 @@ builder.Services.AddScoped(sp =>
 builder.Services.AddHttpClient("Auth", cfg =>
 cfg.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
 
-builder.Services.AddSingleton<JwtAuthentificationStateProvider>();
-builder.Services.AddSingleton<AuthenticationStateProvider>(sp =>
+builder.Services.AddScoped<JwtAuthentificationStateProvider>();
+builder.Services.AddScoped<AuthenticationStateProvider>(sp =>
     sp.GetRequiredService<JwtAuthentificationStateProvider>());
 builder.Services.AddScoped<IEquipmentService, EquipmentService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();

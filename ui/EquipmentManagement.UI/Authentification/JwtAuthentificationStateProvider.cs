@@ -2,24 +2,24 @@
 using EquipmentManagement.UI.Utils;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.Http.Headers;
 using System.Security.Claims;
+using System.Security.Principal;
 
 namespace EquipmentManagement.UI.Authentification;
 
 public class JwtAuthentificationStateProvider : AuthenticationStateProvider
 {
-    private readonly IServiceProvider _serviceProvider;    
+    private readonly ITokenStorage _storage;    
 
-    public JwtAuthentificationStateProvider(IServiceProvider provider)
+    public JwtAuthentificationStateProvider(ITokenStorage storage, HttpClient client)
     {
-        _serviceProvider = provider;       
+        _storage = storage;       
     }
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
-        await using var scope = _serviceProvider.CreateAsyncScope();
-        var storage = scope.ServiceProvider.GetRequiredService<ITokenStorage>();
-        var token = await storage.GetAccessTokenAsync();
+        var token = await _storage.GetAccessTokenAsync();
         if(!string.IsNullOrWhiteSpace(token))
         {
             return await LoginUser(token);

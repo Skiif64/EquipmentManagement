@@ -39,10 +39,7 @@ public class JwtTokenRefresher : IJwtTokenRefresher
         }
         else if (response.StatusCode is HttpStatusCode.BadRequest)
         {
-            _logger.LogInformation("Exception Occured. Deleting tokens"); //TODO: remove
-            await _storage.RemoveAccessTokenAsync(cancellationToken);
-            await _storage.RemoveRefreshTokenAsync(cancellationToken);
-            await _provider.LogoutUser();
+            _logger.LogInformation("Exception Occured. Deleting tokens"); //TODO: remove            
             return false;
         }
         else

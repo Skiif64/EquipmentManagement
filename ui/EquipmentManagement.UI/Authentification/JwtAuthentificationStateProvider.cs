@@ -8,14 +8,16 @@ using System.Security.Principal;
 
 namespace EquipmentManagement.UI.Authentification;
 
-public class JwtAuthentificationStateProvider : AuthenticationStateProvider
+public class JwtAuthentificationStateProvider : AuthenticationStateProvider, IAuthenticationStateNotifier
 {
     private readonly ITokenStorage _storage;    
 
-    public JwtAuthentificationStateProvider(ITokenStorage storage, HttpClient client)
+    public JwtAuthentificationStateProvider(ITokenStorage storage)
     {
         _storage = storage;       
     }
+
+    public void Notify() => NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {

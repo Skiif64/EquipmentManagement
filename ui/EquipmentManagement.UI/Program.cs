@@ -27,6 +27,8 @@ cfg.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
 builder.Services.AddScoped<JwtAuthentificationStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider>(sp =>
     sp.GetRequiredService<JwtAuthentificationStateProvider>());
+builder.Services.AddScoped<IAuthenticationStateNotifier>(sp =>
+    sp.GetRequiredService<JwtAuthentificationStateProvider>());
 builder.Services.AddScoped<IEquipmentService, EquipmentService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IStatusService, StatusService>();

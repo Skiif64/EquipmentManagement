@@ -9,14 +9,14 @@ namespace EquipmentManagement.UI.Authentification;
 public class RedirectToLoginHttpMessageHandler : DelegatingHandler
 {
     private readonly NavigationManager _navigationManager;
-    private readonly JwtAuthentificationStateProvider _authenticationStateProvider;
+    private readonly IAuthenticationStateNotifier _notifier;
     private readonly ITokenStorage _storage;
 
-    public RedirectToLoginHttpMessageHandler(NavigationManager navigationManager, ITokenStorage storage, JwtAuthentificationStateProvider authenticationStateProvider)
+    public RedirectToLoginHttpMessageHandler(NavigationManager navigationManager, ITokenStorage storage, IAuthenticationStateNotifier notifier)
     {
         _navigationManager = navigationManager;
         _storage = storage;
-        _authenticationStateProvider = authenticationStateProvider;
+        _notifier = notifier;
     }
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
@@ -27,7 +27,7 @@ public class RedirectToLoginHttpMessageHandler : DelegatingHandler
             _navigationManager.NavigateTo(PagePaths.Auth.Login);
             await _storage.RemoveRefreshTokenAsync(cancellationToken);
             await _storage.RemoveAccessTokenAsync(cancellationToken);
-            await _authenticationStateProvider.LogoutUser();
+            _notifier.Notify();
         }
         return response;        
     }

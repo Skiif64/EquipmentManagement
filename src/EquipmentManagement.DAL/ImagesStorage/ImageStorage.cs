@@ -24,7 +24,7 @@ public class ImageStorage : IImageStorage
 
     public async Task<string> SaveImageAsync(IFormFile file, CancellationToken cancellationToken)
     {
-        var imageExtension = Path.GetExtension(file.FileName);
+        var imageExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
         if (!SupportedFileExtensions.Any(x => x == imageExtension))
             throw new ArgumentException("Invalid FileType");
         var imageName = Path.GetRandomFileName() + imageExtension;

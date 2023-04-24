@@ -75,6 +75,7 @@
     </div>
 </div>
 @code {
+    private static readonly string[] AllowedExtensions = new[] { ".png", ".jpeg", ".jpg" };
     private ObservableCollection<EquipmentTypeResponse>? types;
     private AddEquipmentRequest request = new();
     private ObservableCollection<UploadedFile> uploadedFiles = new();
@@ -125,11 +126,27 @@
         var files = e.GetMultipleFiles();
         foreach (var file in files)
         {
+            if(!AllowedExtensions.Any(x 
+                => Path.GetExtension(file.Name).ToLowerInvariant() == x))
+            {
+                await ShowErrorModal();
+                return;
+            }
             uploadedFiles.Add(new UploadedFile(file));
             using var ms = new MemoryStream();
             await file.OpenReadStream().CopyToAsync(ms);
             var source = $"data:{file.ContentType};base64,{Convert.ToBase64String(ms.ToArray())}";
             sources.Add(source);
         }
+    }
+
+    private async Task ShowErrorModal()
+    {
+
+        var parameters = new ModalParameters()
+        .Add(nameof(ErrorModal.ErrorMessage), "Разрешены изображения только с расширениями: " 
+        + string.Join(", ", AllowedExtensions));
+        var modal = Modal.Show<ErrorModal>("Неверный формат изображения");
+        var result = await modal.Result;
     }
 }

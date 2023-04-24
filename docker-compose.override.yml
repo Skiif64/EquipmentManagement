@@ -8,5 +8,5 @@ services:
       - 80:80  
   adminer:
     ports:
-      - 8080:8080
+      - 8082:8080
 

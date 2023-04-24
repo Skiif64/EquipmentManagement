@@ -142,11 +142,10 @@
 
     private async Task ShowErrorModal()
     {
-
         var parameters = new ModalParameters()
         .Add(nameof(ErrorModal.ErrorMessage), "Разрешены изображения только с расширениями: " 
         + string.Join(", ", AllowedExtensions));
-        var modal = Modal.Show<ErrorModal>("Неверный формат изображения");
+        var modal = Modal.Show<ErrorModal>("Неверный формат изображения", parameters);
         var result = await modal.Result;
     }
 }

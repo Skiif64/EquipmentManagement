@@ -18,6 +18,8 @@ public class GetEquipmentByIdQueryHandler : IQueryHandler<GetEquipmentByIdQuery,
     {
         return await _context
             .Set<Equipment>()
+            .Include(x => x.Type)
+            .Include(x => x.Images)
             .SingleOrDefaultAsync(x => x.Id == request.EquipmentId)            
             ?? throw new NotFoundException("Equipment");
     }

@@ -19,7 +19,8 @@
     <EquipmentTable @ref="Table"
                     HistoryRequested="OnHistoryRequested"
                     EditRequested="OnEditRequested"                   
-                    DetailsRequested="OnDetailsRequestedAsync" />
+                    DetailsRequested="OnDetailsRequestedAsync"
+                    EditEquipmentRequested="OnEditEquipmentRequested" />
 </div>
   
 @code {
@@ -49,5 +50,10 @@
         .Add(nameof(EquipmentModal.Equipment), equipment);
         var modal = Modal.Show<EquipmentModal>("Детали", parameters, options);
         var result = await modal.Result;
+    }
+
+    private void OnEditEquipmentRequested(EquipmentWithStatusResponse equipment)
+    {
+        Navigation.NavigateTo($"{PagePaths.Equipment.Edit}/{equipment.Id}");
     }
 }

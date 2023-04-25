@@ -5,6 +5,7 @@ namespace EquipmentManagement.Domain.Models;
 public class Equipment : BaseModel
 {
     private EquipmentRecord? _lastRecord;
+    public Guid TypeId { get; set; }
     public EquipmentType Type { get; set; } = null!;
 	public string Article { get; set; } = string.Empty;
     public string SerialNumber { get; set; } = string.Empty;

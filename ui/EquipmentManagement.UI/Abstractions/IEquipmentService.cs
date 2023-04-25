@@ -10,5 +10,6 @@ public interface IEquipmentService
     Task<EquipmentResponse?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
     Task<IEnumerable<EquipmentResponse>> GetFreeAsync(CancellationToken cancellationToken = default);
     Task AddAsync(AddEquipmentRequest request, CancellationToken cancellationToken = default);
+    Task UpdateAsync(UpdateEquipmentRequest request, CancellationToken cancellationToken = default);
     
 }

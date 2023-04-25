@@ -21,19 +21,16 @@ internal class UpdateEquipmentCommandHandler : ICommandHandler<UpdateEquipmentCo
     {//TODO: use LastModified
         var equipment = await _context
             .Set<Equipment>()
-            .Where(x => x.Id == request.EquipmentId)            
+            .Where(x => x.Id == request.EquipmentId)
             .Include(x => x.Images)
+            .Include(x => x.Records)            
             .SingleOrDefaultAsync(x => x.Id == request.EquipmentId, cancellationToken)
             ?? throw new NotFoundException("Equipment");
 
         var type = await _context
             .Set<EquipmentType>()
             .FindAsync(new object[] { request.TypeId }, cancellationToken)
-            ?? throw new NotFoundException("EquipmentType");
-
-        equipment.Article = request.Article;
-        equipment.SerialNumber = request.SerialNumber;
-        equipment.Type = type;        
+            ?? throw new NotFoundException("EquipmentType");        
 
         var existingImages = _context
             .Set<Image>()
@@ -43,38 +40,44 @@ internal class UpdateEquipmentCommandHandler : ICommandHandler<UpdateEquipmentCo
         var imagesToDelete = existingImages
             .Where(x => !request.ImageNames!.Contains(x.FullImagePath));
 
-        _context
-            .Set<Image>()
-            .RemoveRange(imagesToDelete);
-
         var newImages = request.ImageNames!
             .Where(x => existingImages.All(i => i.FullImagePath != x));
-
-        var newImagesEntities = newImages.Select(img 
+        
+        if (imagesToDelete.Count() != 0)
+        {
+            foreach (var image in imagesToDelete)
+            {
+                equipment.Images.Remove(image);
+            }
+            _context
+                .Set<Image>()
+                .RemoveRange(imagesToDelete);
+        }
+        if (newImages.Count() != 0)
+        {
+            var newImagesEntities = newImages.Select(img
             => new Image
-        {
-            Equipment = equipment,
-            EquipmentId = request.EquipmentId,
-            FullImagePath = img
-        });
-
-        foreach(var image in imagesToDelete)
-        {
-            equipment.Images.Remove(image);
+            {
+                Equipment = equipment,
+                EquipmentId = request.EquipmentId,
+                FullImagePath = img
+            });
+            //foreach (var image in newImagesEntities)
+            //{
+                //equipment.Images.Add(image);
+            //}
+            await _context
+                .Set<Image>()
+                .AddRangeAsync(newImagesEntities, cancellationToken);
         }
-        foreach(var image in newImagesEntities)
-        {
-            equipment.Images.Add(image);
-        }
-
-        await _context
-            .Set<Image>()
-            .AddRangeAsync(newImagesEntities, cancellationToken);
 
         _context
             .Set<Equipment>()
-            .Update(equipment);        
-
+            .Update(equipment);
+        
+        equipment.Article = request.Article;
+        equipment.SerialNumber = request.SerialNumber;
+        equipment.Type = type;
         await _context.SaveChangesAsync(cancellationToken);
         return equipment.Id;
     }

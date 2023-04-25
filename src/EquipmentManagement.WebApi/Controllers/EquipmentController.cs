@@ -10,6 +10,7 @@ using EquipmentManagement.Application.Equipments.GetAll;
 using EquipmentManagement.Application.Equipments.GetAllWithStatus;
 using EquipmentManagement.Application.Equipments.GetByEmployeeId;
 using EquipmentManagement.Application.Equipments.GetFree;
+using EquipmentManagement.Application.Equipments.Update;
 using EquipmentManagement.Application.Statuses.GetOrCreate;
 using EquipmentManagement.Auth;
 using MediatR;
@@ -98,5 +99,13 @@ public class EquipmentController : ControllerBase
         if (equipments is not null && equipments.Any())
             response = _mapper.Map<IEnumerable<EquipmentResponse>>(equipments);
         return Ok(response);
+    }
+
+    [HttpPost("update")]
+    public async Task<IActionResult> UpdateAsync(UpdateEquipmentRequest request, CancellationToken cancellationToken)
+    {
+        var command = _mapper.Map<UpdateEquipmentCommand>(request);
+        await _sender.Send(command, cancellationToken);
+        return Ok();
     }
 }

@@ -45,4 +45,10 @@ public class EquipmentService : IEquipmentService
         var equipments = await _client.GetFromJsonAsync<IEnumerable<EquipmentResponse>>("/api/equipment/free", cancellationToken);
         return equipments ?? Enumerable.Empty<EquipmentResponse>();
     }
+
+    public async Task UpdateAsync(UpdateEquipmentRequest request, CancellationToken cancellationToken = default)
+    {
+        var response = await _client.PostAsJsonAsync("/api/equipment/update", request, cancellationToken);
+        response.EnsureSuccessStatusCode();
+    }
 }

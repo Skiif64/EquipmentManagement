@@ -35,4 +35,13 @@ public class ImageStorage : IImageStorage
         return imageName;
     }
 
+    public Task RemoveImagesAsync(IEnumerable<string> imageNames, CancellationToken cancellationToken)
+    {
+        foreach(var image in imageNames)
+        {
+            var path = Path.Combine(_storagePath, image);
+            File.Delete(path);
+        }
+        return Task.CompletedTask;
+    }
 }

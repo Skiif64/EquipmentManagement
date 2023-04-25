@@ -67,13 +67,13 @@ internal class UpdateEquipmentCommandHandler : ICommandHandler<UpdateEquipmentCo
             equipment.Images.Add(image);
         }
 
-        _context
-            .Set<Equipment>()
-            .Update(equipment);
-
         await _context
             .Set<Image>()
             .AddRangeAsync(newImagesEntities, cancellationToken);
+
+        _context
+            .Set<Equipment>()
+            .Update(equipment);        
 
         await _context.SaveChangesAsync(cancellationToken);
         return equipment.Id;

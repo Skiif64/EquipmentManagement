@@ -26,7 +26,7 @@ internal class UpdateEquipmentCommandHandler : ICommandHandler<UpdateEquipmentCo
             .Include(x => x.Records)            
             .SingleOrDefaultAsync(x => x.Id == request.EquipmentId, cancellationToken)
             ?? throw new NotFoundException("Equipment");
-
+        
         var type = await _context
             .Set<EquipmentType>()
             .FindAsync(new object[] { request.TypeId }, cancellationToken)
@@ -74,6 +74,9 @@ internal class UpdateEquipmentCommandHandler : ICommandHandler<UpdateEquipmentCo
         equipment.Type = type;
         equipment.Description = request.Description;
         await _context.SaveChangesAsync(cancellationToken);
+        await _journal.WriteAsync(AppLogEvents.Update,
+            $"Изменено оборудование: {equipment.Article} {equipment.SerialNumber}",
+            cancellationToken);
         return equipment.Id;
     }
 }

@@ -38,10 +38,8 @@ internal class UpdateEquipmentCommandHandler : ICommandHandler<UpdateEquipmentCo
             .AsEnumerable();
 
         var imagesToDelete = existingImages
-            .Where(x => !request.ImageNames!.Contains(x.FullImagePath));
-
-        var newImages = request.ImageNames!
-            .Where(x => existingImages.All(i => i.FullImagePath != x));
+            .Where(x => request.ImageToRemove.Contains(x.FullImagePath));
+        
         
         if (imagesToDelete.Count() != 0)
         {
@@ -53,19 +51,15 @@ internal class UpdateEquipmentCommandHandler : ICommandHandler<UpdateEquipmentCo
                 .Set<Image>()
                 .RemoveRange(imagesToDelete);
         }
-        if (newImages.Count() != 0)
+        if (request.NewImages.Count() != 0)
         {
-            var newImagesEntities = newImages.Select(img
+            var newImagesEntities = request.NewImages.Select(img
             => new Image
             {
                 Equipment = equipment,
                 EquipmentId = request.EquipmentId,
                 FullImagePath = img
-            });
-            //foreach (var image in newImagesEntities)
-            //{
-                //equipment.Images.Add(image);
-            //}
+            });            
             await _context
                 .Set<Image>()
                 .AddRangeAsync(newImagesEntities, cancellationToken);

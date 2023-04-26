@@ -10,7 +10,8 @@ public class UpdateEquipmentCommand : ICommand<Guid>
     public string? Description { get; set; }
     public string Author { get; set; } = string.Empty;
     public DateTimeOffset LastModified { get; set; }
-    public IEnumerable<string>? ImageNames { get; set; }
+    public IEnumerable<string> NewImages { get; set; } = Enumerable.Empty<string>();
+    public IEnumerable<string> ImageToRemove { get; set; } = Enumerable.Empty<string>();
 
     public UpdateEquipmentCommand()
     {

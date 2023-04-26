@@ -62,7 +62,7 @@
                         <div class="p-2 d-flex justify-content-start w-100 bg-light">
                             @foreach (var source in sources)
                             {
-                                <ImageThumb Source="@source" />
+                                <ImageThumb Source="@source" Alt="Фото" />
                             }
                         </div>
                         <InputFile multiple OnChange="LoadFileAsync"></InputFile>
@@ -111,9 +111,8 @@
         request.Author = equipment.Author;
         request.Article = equipment.Article;
         request.SerialNumber = equipment.SerialNumber;
-        request.Description = equipment.Description;
-        request.ImageNames = equipment.ImageNames;
-        sources.AddRange(request.ImageNames.Select(img
+        request.Description = equipment.Description;        
+        sources.AddRange(equipment.ImageNames.Select(img
             => ImageApiPath + "/" + img));
     }
 
@@ -130,7 +129,7 @@
         if (uploadedFiles.Count > 0)
         {
             var imageNames = await ImageService.AddImagesAsync(uploadedFiles);
-            request.ImageNames = imageNames;
+            request.NewImages = imageNames;
         }
         await EquipmentService.UpdateAsync(request);
 
@@ -182,7 +181,7 @@
     {
         if (imageName.StartsWith("data:"))
             sources.Remove(imageName);
-
         imagesToRemove.Add(imageName);
+        request.ImageToRemove = imagesToRemove;
     }
 }

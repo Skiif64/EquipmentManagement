@@ -13,5 +13,6 @@ public class UpdateEquipmentRequest
     public string SerialNumber { get; set; } = string.Empty;
     public string? Description { get; set; }
     public string Author { get; set; } = string.Empty;
-    public IEnumerable<string> ImageNames { get; set; } = Enumerable.Empty<string>();
+    public IEnumerable<string> NewImages { get; set; } = Enumerable.Empty<string>();
+    public IEnumerable<string> ImageToRemove { get; set; } = Enumerable.Empty<string>();
 }

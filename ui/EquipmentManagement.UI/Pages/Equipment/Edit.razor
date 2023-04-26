@@ -114,6 +114,7 @@
         request.Description = equipment.Description;        
         sources.AddRange(equipment.ImageNames.Select(img
             => ImageApiPath + "/" + img));
+            StateHasChanged();
     }
 
     private async Task OnValidSubmitAsync()

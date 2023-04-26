@@ -72,6 +72,7 @@ internal class UpdateEquipmentCommandHandler : ICommandHandler<UpdateEquipmentCo
         equipment.Article = request.Article;
         equipment.SerialNumber = request.SerialNumber;
         equipment.Type = type;
+        equipment.Description = request.Description;
         await _context.SaveChangesAsync(cancellationToken);
         return equipment.Id;
     }

@@ -13,15 +13,15 @@
 ## Конфигурация 
 Конфигурация содержиться в файле .env. Для примера существует .env.example. Структура .env:
 ``` BASH
-JWT_ISSUER=EquipmentManagement.API - издатель токена
-JWT_AUDIENCE=EquipmentManagement.WASM - аудитория токена
-JWT_SECRETKEY=Super-secret-key - секретный ключ подписи токена
-JWT_LIFETIME=10 - время жизни токена (в минутах)
-ADMIN_USERNAME=Admin - логин админа по умолчанию
-ADMIN_PASSWORD=default - пароль админа по умолчанию
-APP_DATA="Host=db;Username=postgres;Password=example;Database=ApplicationDb" - строка подключения к бд (postgres) для хранения данных приложения.
-AUTH_DATA="Host=db;Username=postgres;Password=example;Database=UserDb" - строка подключения к бд (postgres) для хранения данных польхователей.
-PG_PASSWORD=example - пароль бд (postgres). Важно, чтобы пароль в строках подключений и данной переменной окружения были одинаковые
+JWT_ISSUER=EquipmentManagement.API # издатель токена
+JWT_AUDIENCE=EquipmentManagement.WASM # аудитория токена
+JWT_SECRETKEY=Super-secret-key # секретный ключ подписи токена
+JWT_LIFETIME=10 # время жизни токена (в минутах)
+ADMIN_USERNAME=Admin # логин админа по умолчанию
+ADMIN_PASSWORD=default # пароль админа по умолчанию
+APP_DATA="Host=db;Username=postgres;Password=example;Database=ApplicationDb" # строка подключения к бд (postgres) для хранения данных приложения.
+AUTH_DATA="Host=db;Username=postgres;Password=example;Database=UserDb" # строка подключения к бд (postgres) для хранения данных польхователей.
+PG_PASSWORD=example # пароль бд (postgres). Важно, чтобы пароль в строках подключений и данной переменной окружения были одинаковые
 ```
 
 ## Структура проекта

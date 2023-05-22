@@ -5,7 +5,7 @@
 @attribute [Authorize]
 @if (equipments is not null)
 {
-    <table class="table">
+    <table class="table table-hover">
         <thead>
             <tr>
                 <th>
@@ -64,6 +64,10 @@
                                 @onclick="async() => await EditRequested.InvokeAsync(equipment)">
                                     <span class="oi oi-pencil"></span> Изменить статус
                                 </button>
+                                <button class="btn btn-primary"
+                                @onclick="async() => await EditEquipmentRequested.InvokeAsync(equipment)">
+                                    <span class="oi oi-pencil"></span> Изменить
+                                </button>
                             </Authorized>
                         </AuthorizeView>
                         <button class="btn btn-primary"
@@ -93,6 +97,8 @@ else
     public EventCallback<EquipmentWithStatusResponse> HistoryRequested { get; set; } = default!;
     [Parameter]
     public EventCallback<EquipmentWithStatusResponse> DetailsRequested { get; set; } = default!;
+    [Parameter]
+    public EventCallback<EquipmentWithStatusResponse> EditEquipmentRequested { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {

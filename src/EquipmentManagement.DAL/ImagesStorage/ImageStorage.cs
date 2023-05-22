@@ -24,7 +24,7 @@ public class ImageStorage : IImageStorage
 
     public async Task<string> SaveImageAsync(IFormFile file, CancellationToken cancellationToken)
     {
-        var imageExtension = Path.GetExtension(file.FileName);
+        var imageExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
         if (!SupportedFileExtensions.Any(x => x == imageExtension))
             throw new ArgumentException("Invalid FileType");
         var imageName = Path.GetRandomFileName() + imageExtension;
@@ -35,4 +35,13 @@ public class ImageStorage : IImageStorage
         return imageName;
     }
 
+    public Task RemoveImagesAsync(IEnumerable<string> imageNames, CancellationToken cancellationToken)
+    {
+        foreach(var image in imageNames)
+        {
+            var path = Path.Combine(_storagePath, image);
+            File.Delete(path);
+        }
+        return Task.CompletedTask;
+    }
 }

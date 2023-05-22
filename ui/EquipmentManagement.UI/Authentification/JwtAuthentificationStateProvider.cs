@@ -8,16 +8,16 @@ using System.Security.Principal;
 
 namespace EquipmentManagement.UI.Authentification;
 
-public class JwtAuthentificationStateProvider : AuthenticationStateProvider
+public class JwtAuthentificationStateProvider : AuthenticationStateProvider, IAuthenticationStateNotifier
 {
-    private readonly ITokenStorage _storage;
-    private readonly HttpClient _client;
+    private readonly ITokenStorage _storage;    
 
-    public JwtAuthentificationStateProvider(ITokenStorage storage, HttpClient client)
+    public JwtAuthentificationStateProvider(ITokenStorage storage)
     {
-        _storage = storage;
-        _client = client;
+        _storage = storage;       
     }
+
+    public void Notify() => NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
@@ -42,8 +42,7 @@ public class JwtAuthentificationStateProvider : AuthenticationStateProvider
             var identity = new ClaimsIdentity(parsedToken.Claims, "jwt",
                 JwtRegisteredClaimNames.Name,
                 ClaimTypes.Role);
-            var state = Task.FromResult(new AuthenticationState(new ClaimsPrincipal(identity)));
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var state = Task.FromResult(new AuthenticationState(new ClaimsPrincipal(identity)));        
             NotifyAuthenticationStateChanged(state);
             return state; 
     }

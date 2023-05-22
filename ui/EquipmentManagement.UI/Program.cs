@@ -14,8 +14,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddHttpClient("Api", client
     => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
-    .AddHttpMessageHandler<RedirectToLoginHttpMessageHandler>()
-    .AddHttpMessageHandler<RefreshTokenHttpMessageHandler>();
+    .AddHttpMessageHandler<AuthenticationHttpMessageHandler>();
     
 builder.Services.AddScoped(sp =>
     sp.GetRequiredService<IHttpClientFactory>().CreateClient("Api"));
@@ -25,6 +24,8 @@ cfg.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
 
 builder.Services.AddScoped<JwtAuthentificationStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider>(sp =>
+    sp.GetRequiredService<JwtAuthentificationStateProvider>());
+builder.Services.AddScoped<IAuthenticationStateNotifier>(sp =>
     sp.GetRequiredService<JwtAuthentificationStateProvider>());
 builder.Services.AddScoped<IEquipmentService, EquipmentService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();

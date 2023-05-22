@@ -8,7 +8,9 @@ using EquipmentManagement.Application.Employees.Update;
 using EquipmentManagement.Application.EquipmentRecords.Add;
 using EquipmentManagement.Application.EquipmentRecords.Update;
 using EquipmentManagement.Application.Equipments.Add;
+using EquipmentManagement.Application.Equipments.Update;
 using EquipmentManagement.Application.EquipmentTypes.Add;
+using EquipmentManagement.Application.Images.RemoveByNames;
 using EquipmentManagement.Application.Models;
 using EquipmentManagement.Application.Statuses.Add;
 using EquipmentManagement.Domain.Models;
@@ -26,6 +28,8 @@ public class WebApiMappingProfile : Profile
         CreateMap<UpdateEquipmentRecordRequest, UpdateEquipmentRecordCommand>();
         CreateMap<AddEquipmentTypeRequest, AddEquipmentTypeCommand>();
         CreateMap<UpdateEmployeeRequest, UpdateEmployeeCommand>();
+        CreateMap<DeleteImagesRequest, RemoveImagesCommand>();
+        CreateMap<UpdateEquipmentRequest, UpdateEquipmentCommand>();
 
         CreateMap<Employee, EmployeeResponse>();
         CreateMap<Equipment, EquipmentResponse>()

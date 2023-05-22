@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   webapi:
-    image: ${DOCKER_REGISTRY-}equipmentmanagementwebapi
+    image: equipment-management:1.0.0
     build:
       context: .
       dockerfile: src/EquipmentManagement.WebApi/Dockerfile
@@ -13,11 +13,12 @@ services:
       - images:/app/images/
     environment:
       ASPNETCORE_ENVIRONMENT: Development
+      
   db:
     image: postgres
-    restart: always
+    restart: on-failure
     environment:
-      POSTGRES_PASSWORD: example
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
       PGDATA: /var/lib/postgresql/data
     volumes:
     - data:/var/lib/postgresql/data

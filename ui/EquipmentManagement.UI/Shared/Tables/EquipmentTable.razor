@@ -2,9 +2,34 @@
 @using EquimentManagement.Contracts.Responses;
 @using EquipmentManagement.UI.Abstractions;
 @inject IEquipmentService EquipmentService;
+@inject IEquipmentTypeService EquipmentTypeService;
 @attribute [Authorize]
 @if (equipments is not null)
 {
+    <div class="input-group rounded">
+        <div class="d-flex flex-row">
+            <span class="input-group-text border-0" id="search-addon">
+                <i class="oi oi-magnifying-glass"></i>
+            </span>
+            <input type="search" class="form-control rounded" placeholder="Поиск" aria-label="Search" aria-describedby="search-addon"
+            @oninput="OnSearchBarInput" />
+        </div>
+        <div class="d-flex flex-row">
+            <span class="input-group-text border-0">
+                <i class="oi oi-list"></i>
+            </span>
+            <InputSelect type="search" class="form-control rounded" @bind-Value="searchType">
+                <option value="" selected hidden>Фильтр по типу</option>
+                @if (equipmentTypes is not null)
+                {
+                    foreach (var type in equipmentTypes)
+                    {
+                        <option value="@type.Name">@type.Name</option>
+                    }
+                }
+            </InputSelect>
+        </div>
+    </div>
     <table class="table table-hover">
         <thead>
             <tr>
@@ -30,7 +55,7 @@
         </thead>
         <tbody>
 
-            @foreach (var equipment in equipments)
+            @foreach (var equipment in equipments.Where(EquipmentTypeSearchSelector).Where(EquipmentSearchSelector))
             {
                 <tr>
                     <td>
@@ -59,7 +84,7 @@
                             <span class="oi oi-info"></span> Детали
                         </button>
                         <AuthorizeView Roles="Admin">
-                            <Authorized>                                
+                            <Authorized>
                                 <button class="btn btn-primary"
                                 @onclick="async() => await EditRequested.InvokeAsync(equipment)">
                                     <span class="oi oi-pencil"></span> Изменить статус
@@ -90,7 +115,10 @@ else
 }
 
 @code {
-    private ObservableCollection<EquipmentWithStatusResponse>? equipments;    
+    private string? searchQuery;
+    private string? searchType;
+    private ObservableCollection<EquipmentWithStatusResponse>? equipments;
+    private IEnumerable<EquipmentTypeResponse>? equipmentTypes;
     [Parameter]
     public EventCallback<EquipmentWithStatusResponse> EditRequested { get; set; } = default!;
     [Parameter]
@@ -103,6 +131,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         await LoadEquipments();
+        await LoadEquipmentTypes();
     }
 
     public void DeleteEquipment(EquipmentWithStatusResponse equipment)
@@ -118,5 +147,44 @@ else
             equipments = new ObservableCollection<EquipmentWithStatusResponse>(response);
             equipments.CollectionChanged += (s, e) => StateHasChanged();
         }
+    }
+
+    private async Task LoadEquipmentTypes()
+    {
+        var response = await EquipmentTypeService.GetAllAsync();
+        if (response is not null)
+        {
+            equipmentTypes = response;
+        }
+    }
+
+    private void OnSearchBarInput(ChangeEventArgs e)
+    {
+        searchQuery = e.Value?.ToString();
+    }
+
+    private bool EquipmentTypeSearchSelector(EquipmentWithStatusResponse equipment)
+    {
+        if (string.IsNullOrWhiteSpace(searchType))
+            return true;
+
+        return equipment.Type == searchType;
+    }
+
+    private bool EquipmentSearchSelector(EquipmentWithStatusResponse equipment)
+    {
+        var query = searchQuery ?? string.Empty;
+        const StringComparison comparsion = StringComparison.InvariantCultureIgnoreCase;
+
+        if (equipment.Article.Contains(query, comparsion))
+            return true;
+        if (equipment.SerialNumber.Contains(query, comparsion))
+            return true;
+        if (equipment.EmployeeFullname?.Contains(query, comparsion) ?? false)
+            return true;
+        if (equipment.Description?.Contains(query, comparsion) ?? false)
+            return true;
+
+        return false;
     }
 }

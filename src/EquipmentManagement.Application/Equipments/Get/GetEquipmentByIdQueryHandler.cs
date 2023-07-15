@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EquipmentManagement.Application.Equipments.Get;
 
-public class GetEquipmentByIdQueryHandler : IQueryHandler<GetEquipmentByIdQuery, EquipmentWithStatus>
+public class GetEquipmentByIdQueryHandler : IQueryHandler<GetEquipmentByIdQuery, EquipmentWithStatus?>
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
@@ -18,14 +18,14 @@ public class GetEquipmentByIdQueryHandler : IQueryHandler<GetEquipmentByIdQuery,
         _mapper = mapper;
     }
 
-    public async Task<EquipmentWithStatus> Handle(GetEquipmentByIdQuery request, CancellationToken cancellationToken)
+    public async Task<EquipmentWithStatus?> Handle(GetEquipmentByIdQuery request, CancellationToken cancellationToken)
     {
         var equipment = await _context
             .Set<Equipment>()
             .Include(x => x.Type)
             .Include(x => x.Images)
-            .SingleOrDefaultAsync(x => x.Id == request.EquipmentId)            
-            ?? throw new NotFoundException("Equipment");
+            .SingleOrDefaultAsync(x => x.Id == request.EquipmentId);
+
         return _mapper.Map<EquipmentWithStatus>(equipment);
     }
 }

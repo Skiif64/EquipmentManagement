@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EquipmentManagement.Application.Employees.GetAll;
 
-public class GetAllEmployeeQueryHandler : IQueryHandler<GetAllEmployeeQuery, IEnumerable<Employee>?>
+public class GetAllEmployeeQueryHandler : IQueryHandler<GetAllEmployeeQuery, IEnumerable<Employee>>
 {
     private readonly IApplicationDbContext _context;
 
@@ -13,7 +13,7 @@ public class GetAllEmployeeQueryHandler : IQueryHandler<GetAllEmployeeQuery, IEn
         _context = context;
     }
 
-    public Task<IEnumerable<Employee>?> Handle(GetAllEmployeeQuery request, CancellationToken cancellationToken)
+    public Task<IEnumerable<Employee>> Handle(GetAllEmployeeQuery request, CancellationToken cancellationToken)
     {
         var set = _context
             .Set<Employee>()
@@ -21,6 +21,6 @@ public class GetAllEmployeeQueryHandler : IQueryHandler<GetAllEmployeeQuery, IEn
             .ThenBy(x => x.Lastname)
             .ThenBy(x => x.Firstname)            
             ;
-        return Task.FromResult(set?.AsEnumerable());
+        return Task.FromResult(set.AsEnumerable());
     }
 }

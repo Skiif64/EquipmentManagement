@@ -7,8 +7,7 @@
 @inject IEquipmentTypeService EquipmentTypeService;
 @inject IStatusService statusService;
 @attribute [Authorize]
-@if (PagedList is not null)
-{
+
     <div class="input-group rounded">
         <div class="d-flex flex-row mt-3">
             <span class="input-group-text border-0" id="search-addon">
@@ -51,6 +50,8 @@
             </div>
         </EditForm>
     </div>
+@if (PagedList is not null)
+{
     <table class="table table-hover">
         <thead>
             <tr>
@@ -155,7 +156,7 @@ else
     private const int PageSize = 6;
 
     private string? searchQuery;
-    private SearchEquipmentModel? searchModel;
+    private SearchEquipmentModel searchModel = new();
 
     private IEnumerable<EquipmentTypeResponse>? equipmentTypes;
     private IEnumerable<StatusResponse>? statuses;
@@ -173,8 +174,7 @@ else
     {
         await OnPageLoad();
         await LoadEquipmentTypes();
-        await LoadStatuses();
-        searchModel = new SearchEquipmentModel();
+        await LoadStatuses();        
     }
 
     public void DeleteEquipment(EquipmentResponse equipment)
@@ -184,6 +184,7 @@ else
 
     protected override async Task OnPageLoad(int page = 1)
     {
+        PagedList = null;
         PagedList = await EquipmentService.GetAsync(page, PageSize);        
     }
 

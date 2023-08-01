@@ -1,6 +1,7 @@
 ﻿using EquimentManagement.Contracts.Requests;
 using EquimentManagement.Contracts.Responses;
 using EquipmentManagement.UI.Abstractions;
+using EquipmentManagement.UI.Models;
 using System.Net.Http.Json;
 
 namespace EquipmentManagement.UI.Services;
@@ -20,35 +21,97 @@ public class EquipmentService : IEquipmentService
         await _client.PostAsJsonAsync("/api/equipment/add/", request, cancellationToken);
     }
 
-    public async Task<IEnumerable<EquipmentWithStatusResponse>?> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<EquipmentViewModel>?> GetAsync(int page = 1, int pageSize = 10, CancellationToken cancellationToken = default)
     {
         
-        var equipments = await _client.GetFromJsonAsync<IEnumerable<EquipmentWithStatusResponse>>("/api/equipment/", cancellationToken);
-        
-        return equipments;
+        var equipments = await _client.GetFromJsonAsync<IEnumerable<EquipmentResponse>>(
+            $"/api/equipment/?page={page}&pageSize={pageSize}", cancellationToken);        
+        var models = equipments?.Select(equipment => new EquipmentViewModel
+        {
+            Id = equipment.Id,
+            Article = equipment.Article,
+            Author = equipment.Author,
+            CreatedAt = equipment.CreatedAt,
+            CurrentStatusTitle = null,
+            Description = equipment.Description,
+            EmployeeFullname = "",
+            ImageNames = equipment.ImageNames,
+            SerialNumber = equipment.SerialNumber,
+            Type = equipment.Type,
+            TypeId = equipment.TypeId,
+        });
+        return models;
     }
 
-    public async Task<IEnumerable<EquipmentResponse>?> GetByEmployeeIdAsync(Guid employeeId, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<EquipmentViewModel>?> GetByEmployeeIdAsync(Guid employeeId, CancellationToken cancellationToken = default)
     {
-        var equipments = await _client.GetFromJsonAsync<IEnumerable<EquipmentResponse>>($"/api/equipment/employee/{employeeId}", cancellationToken);
-        return equipments;
+        var equipments = await _client.GetFromJsonAsync<IEnumerable<EquipmentResponse>>(
+            $"/api/equipment/employee/{employeeId}", cancellationToken);
+        var models = equipments?.Select(equipment => new EquipmentViewModel
+        {
+            Id = equipment.Id,
+            Article = equipment.Article,
+            Author = equipment.Author,
+            CreatedAt = equipment.CreatedAt,
+            CurrentStatusTitle = null,
+            Description = equipment.Description,
+            EmployeeFullname = "",
+            ImageNames = equipment.ImageNames,
+            SerialNumber = equipment.SerialNumber,
+            Type = equipment.Type,
+            TypeId = equipment.TypeId,
+        });
+        return models;
     }
 
-    public async Task<EquipmentResponse?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<EquipmentViewModel?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var equipment = await _client.GetFromJsonAsync<EquipmentResponse>($"/api/equipment/{id}", cancellationToken);
-        return equipment;
+        var equipment = await _client.GetFromJsonAsync<EquipmentResponse>(
+            $"/api/equipment/{id}", cancellationToken);
+        if (equipment is null)
+            return null;
+        var model = new EquipmentViewModel
+        {
+            Id = equipment.Id,
+            Article = equipment.Article,
+            Author = equipment.Author,
+            CreatedAt = equipment.CreatedAt,
+            CurrentStatusTitle = null,
+            Description = equipment.Description,
+            EmployeeFullname = "",
+            ImageNames = equipment.ImageNames,
+            SerialNumber = equipment.SerialNumber,
+            Type = equipment.Type,
+            TypeId = equipment.TypeId,
+        };
+        return model;
     }
 
-    public async Task<IEnumerable<EquipmentResponse>> GetFreeAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<EquipmentViewModel>> GetFreeAsync(CancellationToken cancellationToken = default)
     {
-        var equipments = await _client.GetFromJsonAsync<IEnumerable<EquipmentResponse>>("/api/equipment/free", cancellationToken);
-        return equipments ?? Enumerable.Empty<EquipmentResponse>();
+        var equipments = await _client.GetFromJsonAsync<IEnumerable<EquipmentResponse>>(
+            "/api/equipment/free", cancellationToken);
+        var models = equipments?.Select(equipment => new EquipmentViewModel
+        {
+            Id = equipment.Id,
+            Article = equipment.Article,
+            Author = equipment.Author,
+            CreatedAt = equipment.CreatedAt,
+            CurrentStatusTitle = null,
+            Description = equipment.Description,
+            EmployeeFullname = "",
+            ImageNames = equipment.ImageNames,
+            SerialNumber = equipment.SerialNumber,
+            Type = equipment.Type,
+            TypeId = equipment.TypeId,
+        });
+        return models ?? Enumerable.Empty<EquipmentViewModel>();
     }
 
     public async Task UpdateAsync(UpdateEquipmentRequest request, CancellationToken cancellationToken = default)
     {
-        var response = await _client.PostAsJsonAsync("/api/equipment/update", request, cancellationToken);
+        var response = await _client.PostAsJsonAsync(
+            "/api/equipment/update", request, cancellationToken);
         response.EnsureSuccessStatusCode();
     }
 }

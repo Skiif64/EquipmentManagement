@@ -32,17 +32,17 @@ public class EquipmentController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<EquipmentWithStatusResponse>>> GetAsync(int? page, int? pageSize, string? order, CancellationToken cancellationToken)
+    public async Task<ActionResult<IEnumerable<EquipmentResponse>>> GetAsync(int? page, int? pageSize, string? order, CancellationToken cancellationToken)
     {
         var equipments = await _sender.Send(new GetAllEquipmentWithStatusQuery(page, pageSize, order), cancellationToken);
-        var response = _mapper.Map<PagedListResponse<EquipmentWithStatusResponse>>(equipments);
+        var response = _mapper.Map<PagedListResponse<EquipmentResponse>>(equipments);
         return Ok(response);
     }
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<EquipmentWithStatusResponse>> GetById(Guid id, CancellationToken cancellationToken)
+    public async Task<ActionResult<EquipmentResponse>> GetById(Guid id, CancellationToken cancellationToken)
     {
         var equipment = await _sender.Send(new GetEquipmentByIdQuery(id), cancellationToken);
-        var response = _mapper.Map<EquipmentWithStatusResponse>(equipment);
+        var response = _mapper.Map<EquipmentResponse>(equipment);
         return Ok(response);
     }
 

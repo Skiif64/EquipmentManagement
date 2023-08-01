@@ -1,6 +1,7 @@
 ﻿@using System.Collections.ObjectModel;
 @using EquimentManagement.Contracts.Responses;
 @using EquipmentManagement.UI.Abstractions;
+@using EquipmentManagement.UI.Models;
 @inject IEquipmentService EquipmentService;
 @inject IEquipmentTypeService EquipmentTypeService;
 @inject IStatusService statusService;
@@ -94,7 +95,7 @@
                                   readonly="readonly">@equipment.Description</textarea>
                     </td>
                     <td>
-                        <strong>@equipment.StatusTitle</strong>
+                        <strong>@equipment.CurrentStatusTitle</strong>
                         @if (equipment.EmployeeFullname is not null)
                         {
                             <span> (@equipment.EmployeeFullname)</span>
@@ -140,17 +141,17 @@ else
     private string? searchQuery;
     private SearchEquipmentModel? searchModel;
 
-    private ObservableCollection<EquipmentWithStatusResponse>? equipments;
+    private ObservableCollection<EquipmentViewModel>? equipments;
     private IEnumerable<EquipmentTypeResponse>? equipmentTypes;
     private IEnumerable<StatusResponse>? statuses;
     [Parameter]
-    public EventCallback<EquipmentWithStatusResponse> EditRequested { get; set; } = default!;
+    public EventCallback<EquipmentViewModel> EditRequested { get; set; } = default!;
     [Parameter]
-    public EventCallback<EquipmentWithStatusResponse> HistoryRequested { get; set; } = default!;
+    public EventCallback<EquipmentViewModel> HistoryRequested { get; set; } = default!;
     [Parameter]
-    public EventCallback<EquipmentWithStatusResponse> DetailsRequested { get; set; } = default!;
+    public EventCallback<EquipmentViewModel> DetailsRequested { get; set; } = default!;
     [Parameter]
-    public EventCallback<EquipmentWithStatusResponse> EditEquipmentRequested { get; set; } = default!;
+    public EventCallback<EquipmentViewModel> EditEquipmentRequested { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {
@@ -160,17 +161,17 @@ else
         searchModel = new SearchEquipmentModel();
     }
 
-    public void DeleteEquipment(EquipmentWithStatusResponse equipment)
+    public void DeleteEquipment(EquipmentViewModel equipment)
     {
         equipments?.Remove(equipment);
     }
 
     private async Task LoadEquipments()
     {
-        var response = await EquipmentService.GetAllAsync();
+        var response = await EquipmentService.GetAsync();
         if (response is not null)
         {
-            equipments = new ObservableCollection<EquipmentWithStatusResponse>(response);
+            equipments = new ObservableCollection<EquipmentViewModel>(response);
             equipments.CollectionChanged += (s, e) => StateHasChanged();
         }
     }
@@ -198,7 +199,7 @@ else
         searchQuery = e.Value?.ToString();
     }
 
-    private bool EquipmentTypeSearchSelector(EquipmentWithStatusResponse equipment)
+    private bool EquipmentTypeSearchSelector(EquipmentResponse equipment)
     {
         if (string.IsNullOrWhiteSpace(searchModel!.TypeName))
             return true;
@@ -206,22 +207,22 @@ else
         return equipment.Type == searchModel!.TypeName;
     }
 
-    private bool EquipmentStatusSearchSelector(EquipmentWithStatusResponse equipment)
+    private bool EquipmentStatusSearchSelector(EquipmentViewModel equipment)
     {
         if (string.IsNullOrWhiteSpace(searchModel!.StatusTitle))
             return true;        
 
-        return equipment.StatusTitle == searchModel!.StatusTitle;
+        return equipment.CurrentStatusTitle == searchModel!.StatusTitle;
     }
 
-    private bool EquipmentSearchSelector(EquipmentWithStatusResponse equipment)
+    private bool EquipmentSearchSelector(EquipmentViewModel equipment)
     {
         var query = searchQuery ?? string.Empty;
         const StringComparison comparsion = StringComparison.InvariantCultureIgnoreCase;
 
         if (equipment.Type.Contains(query, comparsion))
             return true;
-        if (equipment.StatusTitle?.Contains(query, comparsion) ?? false)
+        if (equipment.CurrentStatusTitle?.Contains(query, comparsion) ?? false)
             return true;
         if (equipment.Article.Contains(query, comparsion))
             return true;

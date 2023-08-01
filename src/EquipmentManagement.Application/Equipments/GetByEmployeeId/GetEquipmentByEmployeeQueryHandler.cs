@@ -22,8 +22,10 @@ public class GetEquipmentByEmployeeQueryHandler : IQueryHandler<GetEquipmentsByE
             .Include(x => x.Equipment)
             .ThenInclude(x => x.Images)
             .Where(record => record.EmployeeId == request.EmployeeId)
+            .AsEnumerable()
+            .DistinctBy(x => x.EquipmentId)            
             .Select(x => x.Equipment);
                
-        return Task.FromResult(equipments.AsEnumerable());
+        return Task.FromResult(equipments);
     }
 }

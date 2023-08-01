@@ -18,6 +18,27 @@ public class PagedList<T>
         IsLastPage = isLastPage;
     }
 
+    public static PagedList<T> Create(IQueryable<T> queryable, int page, int pageSize)
+    {
+        List<T> items;
+        if (page > 1)
+        {
+            items = queryable
+            .Skip(page - 1 * pageSize)
+            .Take(pageSize)
+            .ToList();
+        }
+        else
+        {
+            items = queryable
+            .Take(pageSize)
+            .ToList();
+        }
+
+        bool isLastPage = items.Count < pageSize;
+        return new PagedList<T>(items, page, pageSize, isLastPage);
+    }
+
     public async static Task<PagedList<T>> CreateAsync(IQueryable<T> queryable, int page, int pageSize)
     {
         List<T> items;

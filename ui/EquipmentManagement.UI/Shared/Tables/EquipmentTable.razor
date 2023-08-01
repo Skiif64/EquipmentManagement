@@ -8,48 +8,48 @@
 @inject IStatusService statusService;
 @attribute [Authorize]
 
-    <div class="input-group rounded">
-        <div class="d-flex flex-row mt-3">
-            <span class="input-group-text border-0" id="search-addon">
-                <i class="oi oi-magnifying-glass"></i>
-            </span>
-            <input type="search" class="form-control rounded" placeholder="Поиск" aria-label="Search" aria-describedby="search-addon"
-            @oninput="OnSearchBarInput" />
-        </div>
-        <div class="d-block w-100 mt-3 border-top border-1">
-        </div>
-        <EditForm Model="@searchModel">
-            <div class="d-flex flex-row mt-3">
-                <span>Фильтры</span>
-                <span class="input-group-text border-0 mx-3">
-                    Тип
-                </span>
-                <InputSelect type="search" class="form-control rounded m-width-200" @bind-Value="searchModel!.TypeName">
-                    <option value="" selected>Нет</option>
-                    @if (equipmentTypes is not null)
-                    {
-                        foreach (var type in equipmentTypes)
-                        {
-                            <option value="@type.Name">@type.Name</option>
-                        }
-                    }
-                </InputSelect>
-                <span class="input-group-text border-0 mx-3">
-                    Статус
-                </span>
-                <InputSelect type="search" class="form-control rounded m-width-200" @bind-Value="searchModel!.StatusTitle">
-                    <option value="" selected>Нет</option>
-                    @if (statuses is not null)
-                    {
-                        foreach (var status in statuses)
-                        {
-                            <option value="@status.Title">@status.Title</option>
-                        }
-                    }
-                </InputSelect>
-            </div>
-        </EditForm>
+<div class="input-group rounded">
+    <div class="d-flex flex-row mt-3">
+        <span class="input-group-text border-0" id="search-addon">
+            <i class="oi oi-magnifying-glass"></i>
+        </span>
+        <input type="search" class="form-control rounded" placeholder="Поиск" aria-label="Search" aria-describedby="search-addon"
+               @oninput="OnSearchBarInput" />
     </div>
+    <div class="d-block w-100 mt-3 border-top border-1">
+    </div>
+    <EditForm Model="@searchModel">
+        <div class="d-flex flex-row mt-3">
+            <span>Фильтры</span>
+            <span class="input-group-text border-0 mx-3">
+                Тип
+            </span>
+            <InputSelect type="search" class="form-control rounded m-width-200" @bind-Value="searchModel!.TypeName">
+                <option value="" selected>Нет</option>
+                @if (equipmentTypes is not null)
+                {
+                    foreach (var type in equipmentTypes)
+                    {
+                        <option value="@type.Name">@type.Name</option>
+                    }
+                }
+            </InputSelect>
+            <span class="input-group-text border-0 mx-3">
+                Статус
+            </span>
+            <InputSelect type="search" class="form-control rounded m-width-200" @bind-Value="searchModel!.StatusTitle">
+                <option value="" selected>Нет</option>
+                @if (statuses is not null)
+                {
+                    foreach (var status in statuses)
+                    {
+                        <option value="@status.Title">@status.Title</option>
+                    }
+                }
+            </InputSelect>
+        </div>
+    </EditForm>
+</div>
 @if (PagedList is not null)
 {
     <table class="table table-hover">
@@ -133,7 +133,7 @@
         <ul class="pagination justify-content-center">
             <li class="page-item @(PagedList?.Page == 1? "disabled" : "")">
                 <a class="page-link" tabindex="-1" @onclick=OnPreviousPageClicked>Назад</a>
-            </li>            
+            </li>
             <li class="page-item"><a class="page-link">@PagedList?.Page</a></li>
             <li class="page-item">
                 <a class="page-link @((PagedList?.IsLastPage ?? false)? "disabled" : "")"
@@ -167,25 +167,20 @@ else
     [Parameter]
     public EventCallback<EquipmentResponse> DetailsRequested { get; set; } = default!;
     [Parameter]
-    public EventCallback<EquipmentResponse> EditEquipmentRequested { get; set; } = default!;  
+    public EventCallback<EquipmentResponse> EditEquipmentRequested { get; set; } = default!;
 
 
     protected override async Task OnInitializedAsync()
     {
         await OnPageLoad();
         await LoadEquipmentTypes();
-        await LoadStatuses();        
-    }
-
-    public void DeleteEquipment(EquipmentResponse equipment)
-    {
-        //equipments?.Remove(equipment);
+        await LoadStatuses();
     }
 
     protected override async Task OnPageLoad(int page = 1)
     {
         PagedList = null;
-        PagedList = await EquipmentService.GetAsync(page, PageSize);        
+        PagedList = await EquipmentService.GetAsync(page, PageSize);
     }
 
     private async Task LoadEquipmentTypes()

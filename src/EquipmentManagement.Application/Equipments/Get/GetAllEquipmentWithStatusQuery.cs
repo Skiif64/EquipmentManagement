@@ -3,7 +3,7 @@ using EquipmentManagement.Domain.Models;
 
 namespace EquipmentManagement.Application.Equipments.Get;
 
-public class GetAllEquipmentWithStatusQuery : IQuery<PagedList<Equipment>>
+public class GetAllEquipmentWithStatusQuery : IQuery<PagedList<EquipmentDto>>
 {
     public int? Page { get; }
     public int? PageSize { get; }

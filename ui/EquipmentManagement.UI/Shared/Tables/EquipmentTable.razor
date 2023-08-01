@@ -50,7 +50,7 @@
             </div>            
         </EditForm>
     </div>
-    <table class="table table-hover">
+    <table class="table table-hover h-100">
         <thead>
             <tr>
                 <th>
@@ -75,7 +75,7 @@
         </thead>
         <tbody>
 
-            @foreach (var equipment in equipments
+            @foreach (var equipment in equipments.Items
             .Where(EquipmentTypeSearchSelector)
             .Where(EquipmentStatusSearchSelector)
             .Where(EquipmentSearchSelector))
@@ -127,6 +127,18 @@
             }
         </tbody>
     </table>
+    <nav aria-label="page navigation">
+        <ul class="pagination justify-content-center">
+            <li class="page-item @(equipments.Page == 1? "disabled" : "")">
+                <a class="page-link" tabindex="-1" @onclick=OnPreviousPageClicked >Назад</a>
+            </li>            
+            <li class="page-item"><a class="page-link">@equipments?.Page</a></li>            
+            <li class="page-item">
+                <a class="page-link @((equipments?.IsLastPage ?? false)? "disabled" : "")" 
+                @onclick=OnNextPageClicked>Дальше</a>
+            </li>
+        </ul>
+    </nav>
 }
 else
 {
@@ -138,10 +150,12 @@ else
 }
 
 @code {
+    private const int PageSize = 6;
+
     private string? searchQuery;
     private SearchEquipmentModel? searchModel;
 
-    private ObservableCollection<EquipmentResponse>? equipments;
+    private PagedListResponse<EquipmentResponse>? equipments;
     private IEnumerable<EquipmentTypeResponse>? equipmentTypes;
     private IEnumerable<StatusResponse>? statuses;
     [Parameter]
@@ -161,18 +175,17 @@ else
         searchModel = new SearchEquipmentModel();
     }
 
-    public void DeleteEquipment(EquipmentViewModel equipment)
+    public void DeleteEquipment(EquipmentResponse equipment)
     {
-        equipments?.Remove(equipment);
+        //equipments?.Remove(equipment);
     }
 
-    private async Task LoadEquipments()
+    private async Task LoadEquipments(int page = 1)
     {
-        var response = await EquipmentService.GetAsync();
+        var response = await EquipmentService.GetAsync(page, PageSize);
         if (response is not null)
         {
-            equipments = new ObservableCollection<EquipmentResponse>(response.Items);
-            equipments.CollectionChanged += (s, e) => StateHasChanged();
+            equipments = response;            
         }
     }
 
@@ -192,6 +205,23 @@ else
         {
             statuses = response;
         }
+    }
+
+    private async Task OnPreviousPageClicked()
+    {
+        if (equipments?.Page < 1)
+            return;
+        await LoadEquipments(equipments?.Page - 1 ?? 1);
+        StateHasChanged();
+    }
+
+    private async Task OnNextPageClicked()
+    {
+        if (equipments?.IsLastPage ?? true)
+            return;
+
+        await LoadEquipments(equipments?.Page + 1 ?? 1);
+        StateHasChanged();
     }
 
     private void OnSearchBarInput(ChangeEventArgs e)

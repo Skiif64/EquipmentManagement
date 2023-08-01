@@ -8,6 +8,6 @@ internal class EquipmentTypeConfiguration : IEntityTypeConfiguration<Equipment>
 {
     public void Configure(EntityTypeBuilder<Equipment> builder)
     {
-        builder.Ignore(prop => prop.LastRecord);
+        
     }
 }

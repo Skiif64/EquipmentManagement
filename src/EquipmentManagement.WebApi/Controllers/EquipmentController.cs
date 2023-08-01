@@ -1,14 +1,11 @@
 ﻿using AutoMapper;
 using EquimentManagement.Contracts.Requests;
 using EquimentManagement.Contracts.Responses;
-using EquipmentManagement.Application;
-using EquipmentManagement.Application.Abstractions;
 using EquipmentManagement.Application.EquipmentRecords.Add;
 using EquipmentManagement.Application.Equipments.Add;
 using EquipmentManagement.Application.Equipments.Get;
-using EquipmentManagement.Application.Equipments.GetAll;
-using EquipmentManagement.Application.Equipments.GetAllWithStatus;
 using EquipmentManagement.Application.Equipments.GetByEmployeeId;
+using EquipmentManagement.Application.Equipments.GetById;
 using EquipmentManagement.Application.Equipments.GetFree;
 using EquipmentManagement.Application.Equipments.Update;
 using EquipmentManagement.Application.Statuses.GetOrCreate;
@@ -35,10 +32,10 @@ public class EquipmentController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<EquipmentWithStatusResponse>>> GetAllAsync(CancellationToken cancellationToken)
+    public async Task<ActionResult<IEnumerable<EquipmentWithStatusResponse>>> GetAsync(int? page, int? pageSize, string? order, CancellationToken cancellationToken)
     {
-        var equipments = await _sender.Send(new GetAllEquipmentWithStatusQuery(), cancellationToken);
-        var response = _mapper.Map<IEnumerable<EquipmentWithStatusResponse>>(equipments);
+        var equipments = await _sender.Send(new GetAllEquipmentWithStatusQuery(page, pageSize, order), cancellationToken);
+        var response = _mapper.Map<PagedListResponse<EquipmentWithStatusResponse>>(equipments);
         return Ok(response);
     }
     [HttpGet("{id:guid}")]

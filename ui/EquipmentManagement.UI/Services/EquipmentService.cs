@@ -21,10 +21,11 @@ public class EquipmentService : IEquipmentService
         await _client.PostAsJsonAsync("/api/equipment/add/", request, cancellationToken);
     }
 
-    public async Task<PagedListResponse<EquipmentResponse>?> GetAsync(int page = 1, int pageSize = 10, CancellationToken cancellationToken = default)
+    public async Task<PagedListResponse<EquipmentResponse>?> GetAsync(
+        int page = 1, int pageSize = 10, string? criteria = null, CancellationToken cancellationToken = default)
     {        
         var equipments = await _client.GetFromJsonAsync<PagedListResponse<EquipmentResponse>>(
-            $"/api/equipment/?page={page}&pageSize={pageSize}", cancellationToken);        
+            $"/api/equipment/?page={page}&pageSize={pageSize}&criteria={criteria}", cancellationToken);        
         
         return equipments;
     }

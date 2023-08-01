@@ -79,8 +79,7 @@
 
             @foreach (var equipment in PagedList.Items
            .Where(EquipmentTypeSearchSelector)
-           .Where(EquipmentStatusSearchSelector)
-           .Where(EquipmentSearchSelector))
+           .Where(EquipmentStatusSearchSelector))
             {
                 <tr>
                     <td>
@@ -180,7 +179,7 @@ else
     protected override async Task OnPageLoad(int page = 1)
     {
         PagedList = null;
-        PagedList = await EquipmentService.GetAsync(page, PageSize);
+        PagedList = await EquipmentService.GetAsync(page, PageSize, searchQuery);
     }
 
     private async Task LoadEquipmentTypes()
@@ -201,9 +200,10 @@ else
         }
     }
 
-    private void OnSearchBarInput(ChangeEventArgs e)
+    private async Task OnSearchBarInput(ChangeEventArgs e)
     {
         searchQuery = e.Value?.ToString();
+        await OnPageLoad(PagedList?.Page ?? 1);
     }
 
     private bool EquipmentTypeSearchSelector(EquipmentResponse equipment)
@@ -220,28 +220,7 @@ else
             return true;
 
         return equipment.CurrentStatusTitle == searchModel!.StatusTitle;
-    }
-
-    private bool EquipmentSearchSelector(EquipmentResponse equipment)
-    {
-        var query = searchQuery ?? string.Empty;
-        const StringComparison comparsion = StringComparison.InvariantCultureIgnoreCase;
-
-        if (equipment.Type.Contains(query, comparsion))
-            return true;
-        if (equipment.CurrentStatusTitle?.Contains(query, comparsion) ?? false)
-            return true;
-        if (equipment.Article.Contains(query, comparsion))
-            return true;
-        if (equipment.SerialNumber.Contains(query, comparsion))
-            return true;
-        if (equipment.EmployeeFullname?.Contains(query, comparsion) ?? false)
-            return true;
-        if (equipment.Description?.Contains(query, comparsion) ?? false)
-            return true;
-
-        return false;
-    }
+    }    
 
     private class SearchEquipmentModel
     {

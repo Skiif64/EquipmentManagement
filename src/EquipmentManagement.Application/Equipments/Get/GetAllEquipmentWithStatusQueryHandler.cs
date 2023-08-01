@@ -30,14 +30,13 @@ public class GetAllEquipmentWithStatusQueryHandler
             .Include(x => x.Type);
 
         var records = _context
-            .Set<EquipmentRecord>()
-            //.Include(x => x.Equipment)
+            .Set<EquipmentRecord>()            
             .Where(x => equipments.Contains(x.Equipment))
             .OrderByDescending(x => x.Modified)
             .Include(x => x.Status)
             .Include(x => x.Employee)
-            .AsEnumerable()
-            .DistinctBy(x => x.Id)
+            .AsEnumerable()            
+            .DistinctBy(x => x.Id)            
             .Zip(equipments, (record, equipment) => new EquipmentDto
             {
                 Id = equipment.Id,
@@ -51,11 +50,37 @@ public class GetAllEquipmentWithStatusQueryHandler
                 SerialNumber = equipment.SerialNumber,
                 Type = equipment.Type,
                 TypeId = equipment.TypeId,
-            })            
+            })
+            .Where(record => SearchSelector(record, request.SearchCriteria))
+            .AsQueryable()
             ?? throw new NotFoundException("Records");
+
+        
+            
 
         int page = request.Page ?? Page;
         int pageSize = request.PageSize ?? PageSize;
-        return PagedList<EquipmentDto>.Create(records.AsQueryable(), page, pageSize);
+        return PagedList<EquipmentDto>.Create(records, page, pageSize);
+    }
+
+    private bool SearchSelector(EquipmentDto item, string? criteria)
+    {        
+        var query = criteria ?? string.Empty;
+        const StringComparison comparsion = StringComparison.InvariantCultureIgnoreCase;
+
+        if (item.Type.Name.Contains(query, comparsion))
+            return true;
+        if (item.CurrentStatus?.Title.Contains(query, comparsion) ?? false)
+            return true;
+        if (item.Article.Contains(query, comparsion))
+            return true;
+        if (item.SerialNumber.Contains(query, comparsion))
+            return true;
+        if (item.CurrentEmployee?.Fullname.Contains(query, comparsion) ?? false)
+            return true;
+        if (item.Description?.Contains(query, comparsion) ?? false)
+            return true;
+
+        return false;
     }
 }

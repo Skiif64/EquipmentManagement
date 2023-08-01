@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EquipmentManagement.Application.Equipments.GetByEmployeeId;
 
-public class GetEquipmentByEmployeeQueryHandler : IQueryHandler<GetEquipmentsByEmployeeIdQuery, IEnumerable<Equipment>?>
+public class GetEquipmentByEmployeeQueryHandler : IQueryHandler<GetEquipmentsByEmployeeIdQuery, IEnumerable<Equipment>>
 {
     private readonly IApplicationDbContext _context;    
 
@@ -13,16 +13,17 @@ public class GetEquipmentByEmployeeQueryHandler : IQueryHandler<GetEquipmentsByE
     {
         _context = context;        
     }
-    public Task<IEnumerable<Equipment>?> Handle(GetEquipmentsByEmployeeIdQuery request, CancellationToken cancellationToken)
+    public Task<IEnumerable<Equipment>> Handle(GetEquipmentsByEmployeeIdQuery request, CancellationToken cancellationToken)
     {
         var equipments = _context
-            .Set<Equipment>()
-            .Include(x => x.Records)
-            .Include(x => x.Type)
-            .AsEnumerable()
-            .Where(x =>x.LastRecord != null && x.LastRecord.EmployeeId == request.EmployeeId)            
-            ;
+            .Set<EquipmentRecord>()
+            .Include(x => x.Equipment)
+            .ThenInclude(x => x.Type)
+            .Include(x => x.Equipment)
+            .ThenInclude(x => x.Images)
+            .Where(record => record.EmployeeId == request.EmployeeId)
+            .Select(x => x.Equipment);
                
-        return Task.FromResult(equipments?.AsEnumerable());
+        return Task.FromResult(equipments.AsEnumerable());
     }
 }

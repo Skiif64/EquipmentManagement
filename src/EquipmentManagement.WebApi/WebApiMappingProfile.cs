@@ -8,6 +8,7 @@ using EquipmentManagement.Application.Employees.Add;
 using EquipmentManagement.Application.Employees.Update;
 using EquipmentManagement.Application.EquipmentRecords.Add;
 using EquipmentManagement.Application.EquipmentRecords.Update;
+using EquipmentManagement.Application.Equipments;
 using EquipmentManagement.Application.Equipments.Add;
 using EquipmentManagement.Application.Equipments.Update;
 using EquipmentManagement.Application.EquipmentTypes.Add;
@@ -37,7 +38,10 @@ public class WebApiMappingProfile : Profile
         CreateMap<Employee, EmployeeResponse>();
         CreateMap<Equipment, EquipmentResponse>()            
             .ForMember(dest => dest.Type,
-            opt => opt.MapFrom(src => src.Type.Name));        
+            opt => opt.MapFrom(src => src.Type.Name));
+
+        CreateMap<EquipmentDto, EquipmentResponse>()
+            .IncludeBase<Equipment, EquipmentResponse>();
               
         CreateMap<EquipmentRecord, EquipmentRecordResponse>()
             .ForMember(dest => dest.EmployeeFullname,

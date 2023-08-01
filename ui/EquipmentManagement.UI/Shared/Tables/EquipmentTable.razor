@@ -141,17 +141,17 @@ else
     private string? searchQuery;
     private SearchEquipmentModel? searchModel;
 
-    private ObservableCollection<EquipmentViewModel>? equipments;
+    private ObservableCollection<EquipmentResponse>? equipments;
     private IEnumerable<EquipmentTypeResponse>? equipmentTypes;
     private IEnumerable<StatusResponse>? statuses;
     [Parameter]
-    public EventCallback<EquipmentViewModel> EditRequested { get; set; } = default!;
+    public EventCallback<EquipmentResponse> EditRequested { get; set; } = default!;
     [Parameter]
-    public EventCallback<EquipmentViewModel> HistoryRequested { get; set; } = default!;
+    public EventCallback<EquipmentResponse> HistoryRequested { get; set; } = default!;
     [Parameter]
-    public EventCallback<EquipmentViewModel> DetailsRequested { get; set; } = default!;
+    public EventCallback<EquipmentResponse> DetailsRequested { get; set; } = default!;
     [Parameter]
-    public EventCallback<EquipmentViewModel> EditEquipmentRequested { get; set; } = default!;
+    public EventCallback<EquipmentResponse> EditEquipmentRequested { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {
@@ -171,7 +171,7 @@ else
         var response = await EquipmentService.GetAsync();
         if (response is not null)
         {
-            equipments = new ObservableCollection<EquipmentViewModel>(response);
+            equipments = new ObservableCollection<EquipmentResponse>(response.Items);
             equipments.CollectionChanged += (s, e) => StateHasChanged();
         }
     }
@@ -207,7 +207,7 @@ else
         return equipment.Type == searchModel!.TypeName;
     }
 
-    private bool EquipmentStatusSearchSelector(EquipmentViewModel equipment)
+    private bool EquipmentStatusSearchSelector(EquipmentResponse equipment)
     {
         if (string.IsNullOrWhiteSpace(searchModel!.StatusTitle))
             return true;        
@@ -215,7 +215,7 @@ else
         return equipment.CurrentStatusTitle == searchModel!.StatusTitle;
     }
 
-    private bool EquipmentSearchSelector(EquipmentViewModel equipment)
+    private bool EquipmentSearchSelector(EquipmentResponse equipment)
     {
         var query = searchQuery ?? string.Empty;
         const StringComparison comparsion = StringComparison.InvariantCultureIgnoreCase;

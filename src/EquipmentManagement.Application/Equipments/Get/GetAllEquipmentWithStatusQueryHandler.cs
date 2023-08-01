@@ -30,27 +30,30 @@ public class GetAllEquipmentWithStatusQueryHandler
             .Include(x => x.Type);
 
         var records = _context
-            .Set<EquipmentRecord>()            
+            .Set<EquipmentRecord>()
             .Where(x => equipments.Contains(x.Equipment))
             .OrderByDescending(x => x.Modified)
             .Include(x => x.Status)
             .Include(x => x.Employee)
-            .AsEnumerable()            
-            .DistinctBy(x => x.Id)            
-            .Zip(equipments, (record, equipment) => new EquipmentDto
+            .AsEnumerable()
+            .DistinctBy(x => x.EquipmentId)
+            .GroupJoin(equipments, inner => inner.EquipmentId, outer => outer.Id, 
+            (inner, outer) => new EquipmentDto
             {
-                Id = equipment.Id,
-                Article = equipment.Article,
-                Author = equipment.Author,
-                CreatedAt = equipment.CreatedAt,
-                CurrentEmployee = record.Employee,
-                CurrentStatus = record.Status,
-                Description = equipment.Description,
-                Images = equipment.Images,
-                SerialNumber = equipment.SerialNumber,
-                Type = equipment.Type,
-                TypeId = equipment.TypeId,
+                
+                Id = outer.First().Id,
+                Article = outer.First().Article,
+                Author = outer.First().Author,
+                CreatedAt = outer.First().CreatedAt,
+                CurrentEmployee = inner.Employee,
+                CurrentStatus = inner.Status,
+                Description = outer.First().Description,
+                Images = outer.First().Images,
+                SerialNumber = outer.First().SerialNumber,
+                Type = outer.First().Type,
+                TypeId = outer.First().TypeId,
             })
+            //.Zip(equipments, (record, equipment) => 
             .Where(record => SearchSelector(record, request.SearchCriteria))
             .AsQueryable()
             ?? throw new NotFoundException("Records");

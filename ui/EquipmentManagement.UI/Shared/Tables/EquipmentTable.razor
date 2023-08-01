@@ -1,4 +1,5 @@
-﻿@using System.Collections.ObjectModel;
+﻿@inherits PagedTableBase<EquipmentResponse>
+@using System.Collections.ObjectModel;
 @using EquimentManagement.Contracts.Responses;
 @using EquipmentManagement.UI.Abstractions;
 @using EquipmentManagement.UI.Models;
@@ -6,7 +7,7 @@
 @inject IEquipmentTypeService EquipmentTypeService;
 @inject IStatusService statusService;
 @attribute [Authorize]
-@if (equipments is not null)
+@if (PagedList is not null)
 {
     <div class="input-group rounded">
         <div class="d-flex flex-row mt-3">
@@ -16,7 +17,7 @@
             <input type="search" class="form-control rounded" placeholder="Поиск" aria-label="Search" aria-describedby="search-addon"
             @oninput="OnSearchBarInput" />
         </div>
-        <div class="d-block w-100 mt-3 border-top border-1">           
+        <div class="d-block w-100 mt-3 border-top border-1">
         </div>
         <EditForm Model="@searchModel">
             <div class="d-flex flex-row mt-3">
@@ -24,7 +25,7 @@
                 <span class="input-group-text border-0 mx-3">
                     Тип
                 </span>
-                <InputSelect type="search" class="form-control rounded m-width-200" @bind-Value="searchModel!.TypeName">                    
+                <InputSelect type="search" class="form-control rounded m-width-200" @bind-Value="searchModel!.TypeName">
                     <option value="" selected>Нет</option>
                     @if (equipmentTypes is not null)
                     {
@@ -47,10 +48,10 @@
                         }
                     }
                 </InputSelect>
-            </div>            
+            </div>
         </EditForm>
     </div>
-    <table class="table table-hover h-100">
+    <table class="table table-hover">
         <thead>
             <tr>
                 <th>
@@ -75,10 +76,10 @@
         </thead>
         <tbody>
 
-            @foreach (var equipment in equipments.Items
-            .Where(EquipmentTypeSearchSelector)
-            .Where(EquipmentStatusSearchSelector)
-            .Where(EquipmentSearchSelector))
+            @foreach (var equipment in PagedList.Items
+           .Where(EquipmentTypeSearchSelector)
+           .Where(EquipmentStatusSearchSelector)
+           .Where(EquipmentSearchSelector))
             {
                 <tr>
                     <td>
@@ -129,12 +130,12 @@
     </table>
     <nav aria-label="page navigation">
         <ul class="pagination justify-content-center">
-            <li class="page-item @(equipments.Page == 1? "disabled" : "")">
-                <a class="page-link" tabindex="-1" @onclick=OnPreviousPageClicked >Назад</a>
+            <li class="page-item @(PagedList?.Page == 1? "disabled" : "")">
+                <a class="page-link" tabindex="-1" @onclick=OnPreviousPageClicked>Назад</a>
             </li>            
-            <li class="page-item"><a class="page-link">@equipments?.Page</a></li>            
+            <li class="page-item"><a class="page-link">@PagedList?.Page</a></li>
             <li class="page-item">
-                <a class="page-link @((equipments?.IsLastPage ?? false)? "disabled" : "")" 
+                <a class="page-link @((PagedList?.IsLastPage ?? false)? "disabled" : "")"
                 @onclick=OnNextPageClicked>Дальше</a>
             </li>
         </ul>
@@ -149,13 +150,13 @@ else
     </div>
 }
 
+
 @code {
     private const int PageSize = 6;
 
     private string? searchQuery;
     private SearchEquipmentModel? searchModel;
 
-    private PagedListResponse<EquipmentResponse>? equipments;
     private IEnumerable<EquipmentTypeResponse>? equipmentTypes;
     private IEnumerable<StatusResponse>? statuses;
     [Parameter]
@@ -165,11 +166,12 @@ else
     [Parameter]
     public EventCallback<EquipmentResponse> DetailsRequested { get; set; } = default!;
     [Parameter]
-    public EventCallback<EquipmentResponse> EditEquipmentRequested { get; set; } = default!;
+    public EventCallback<EquipmentResponse> EditEquipmentRequested { get; set; } = default!;  
+
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadEquipments();
+        await OnPageLoad();
         await LoadEquipmentTypes();
         await LoadStatuses();
         searchModel = new SearchEquipmentModel();
@@ -180,13 +182,9 @@ else
         //equipments?.Remove(equipment);
     }
 
-    private async Task LoadEquipments(int page = 1)
+    protected override async Task OnPageLoad(int page = 1)
     {
-        var response = await EquipmentService.GetAsync(page, PageSize);
-        if (response is not null)
-        {
-            equipments = response;            
-        }
+        PagedList = await EquipmentService.GetAsync(page, PageSize);        
     }
 
     private async Task LoadEquipmentTypes()
@@ -207,23 +205,6 @@ else
         }
     }
 
-    private async Task OnPreviousPageClicked()
-    {
-        if (equipments?.Page < 1)
-            return;
-        await LoadEquipments(equipments?.Page - 1 ?? 1);
-        StateHasChanged();
-    }
-
-    private async Task OnNextPageClicked()
-    {
-        if (equipments?.IsLastPage ?? true)
-            return;
-
-        await LoadEquipments(equipments?.Page + 1 ?? 1);
-        StateHasChanged();
-    }
-
     private void OnSearchBarInput(ChangeEventArgs e)
     {
         searchQuery = e.Value?.ToString();
@@ -240,7 +221,7 @@ else
     private bool EquipmentStatusSearchSelector(EquipmentResponse equipment)
     {
         if (string.IsNullOrWhiteSpace(searchModel!.StatusTitle))
-            return true;        
+            return true;
 
         return equipment.CurrentStatusTitle == searchModel!.StatusTitle;
     }
@@ -269,6 +250,6 @@ else
     private class SearchEquipmentModel
     {
         public string TypeName { get; set; } = string.Empty;
-        public string StatusTitle { get; set; } = string.Empty;  
+        public string StatusTitle { get; set; } = string.Empty;
     }
 }

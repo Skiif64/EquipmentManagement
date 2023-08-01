@@ -21,19 +21,11 @@ public class PagedList<T>
     public static PagedList<T> Create(IQueryable<T> queryable, int page, int pageSize)
     {
         List<T> items;
-        if (page > 1)
-        {
-            items = queryable
-            .Skip(page - 1 * pageSize)
-            .Take(pageSize)
-            .ToList();
-        }
-        else
-        {
-            items = queryable
-            .Take(pageSize)
-            .ToList();
-        }
+
+        items = queryable
+        .Skip((page - 1) * pageSize)
+        .Take(pageSize)
+        .ToList();
 
         bool isLastPage = items.Count < pageSize;
         return new PagedList<T>(items, page, pageSize, isLastPage);
@@ -42,20 +34,12 @@ public class PagedList<T>
     public async static Task<PagedList<T>> CreateAsync(IQueryable<T> queryable, int page, int pageSize)
     {
         List<T> items;
-        if(page > 1)
-        {
-            items = await queryable
-            .Skip(page - 1 * pageSize)
-            .Take(pageSize)
-            .ToListAsync();            
-        }
-        else
-        {
-            items = await queryable            
-            .Take(pageSize)
-            .ToListAsync();
-        }
-        
+
+        items = await queryable
+        .Skip((page - 1) * pageSize)
+        .Take(pageSize)
+        .ToListAsync();
+
         bool isLastPage = items.Count < pageSize;
         return new PagedList<T>(items, page, pageSize, isLastPage);
     }

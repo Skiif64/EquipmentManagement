@@ -41,7 +41,9 @@ public class WebApiMappingProfile : Profile
             opt => opt.MapFrom(src => src.Type.Name));
 
         CreateMap<EquipmentDto, EquipmentResponse>()
-            .IncludeBase<Equipment, EquipmentResponse>();
+            .IncludeBase<Equipment, EquipmentResponse>()
+            .ForMember(dest => dest.EmployeeFullname, 
+            opt => opt.MapFrom(src => (src.CurrentEmployee != null) ? src.CurrentEmployee.Fullname : default));
               
         CreateMap<EquipmentRecord, EquipmentRecordResponse>()
             .ForMember(dest => dest.EmployeeFullname,

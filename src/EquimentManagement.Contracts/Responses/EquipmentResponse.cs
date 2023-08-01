@@ -10,5 +10,7 @@ public class EquipmentResponse
     public string? Description { get; init; }
     public string Author { get; set; } = string.Empty;
     public DateTimeOffset CreatedAt { get; set; }
+    public string? CurrentStatusTitle { get; init; }
+    public string? EmployeeFullname { get; init; }
     public IEnumerable<string> ImageNames { get; set; } = Enumerable.Empty<string>();
 }

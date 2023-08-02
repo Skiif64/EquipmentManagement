@@ -6,8 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EquipmentManagement.Application.Equipments.Get;
 
-public class GetAllEquipmentWithStatusQueryHandler
-    : IQueryHandler<GetAllEquipmentWithStatusQuery, PagedList<EquipmentDto>>
+public class GetEquipmentDtoQueryHandler
+    : IQueryHandler<GetEquipmentDtoQuery, PagedList<EquipmentDto>>
 {
     private const int Page = 1;
     private const int PageSize = 10;
@@ -15,13 +15,13 @@ public class GetAllEquipmentWithStatusQueryHandler
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
 
-    public GetAllEquipmentWithStatusQueryHandler(IApplicationDbContext context, IMapper mapper)
+    public GetEquipmentDtoQueryHandler(IApplicationDbContext context, IMapper mapper)
     {
         _context = context;
         _mapper = mapper;
     }
 
-    public async Task<PagedList<EquipmentDto>> Handle(GetAllEquipmentWithStatusQuery request,
+    public async Task<PagedList<EquipmentDto>> Handle(GetEquipmentDtoQuery request,
         CancellationToken cancellationToken)
     {
         var equipments = _context

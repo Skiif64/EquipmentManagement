@@ -13,7 +13,7 @@ public class Equipment : BaseModel
     public DateTimeOffset CreatedAt { get; set; }    
     public virtual IList<Image> Images { get; set; } = null!;    
 
-    protected Equipment() : base()
+    public Equipment() : base()
     {
 
     }    

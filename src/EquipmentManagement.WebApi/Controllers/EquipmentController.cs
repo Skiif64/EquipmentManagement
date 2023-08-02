@@ -34,7 +34,7 @@ public class EquipmentController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<EquipmentResponse>>> GetAsync(int? page, int? pageSize, string? order, string? criteria, CancellationToken cancellationToken)
     {
-        var equipments = await _sender.Send(new GetAllEquipmentWithStatusQuery(page, pageSize, order, criteria), cancellationToken);
+        var equipments = await _sender.Send(new GetEquipmentDtoQuery(page, pageSize, order, criteria), cancellationToken);
         var response = _mapper.Map<PagedListResponse<EquipmentResponse>>(equipments);
         return Ok(response);
     }

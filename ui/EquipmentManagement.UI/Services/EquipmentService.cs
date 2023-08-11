@@ -21,6 +21,11 @@ public class EquipmentService : IEquipmentService
         await _client.PostAsJsonAsync("/api/equipment/add/", request, cancellationToken);
     }
 
+    public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        await _client.DeleteAsync($"/api/equipment/{id}", cancellationToken);
+    }
+
     public async Task<PagedListResponse<EquipmentResponse>?> GetAsync(
         int page = 1, int pageSize = 10, string? criteria = null, CancellationToken cancellationToken = default)
     {        

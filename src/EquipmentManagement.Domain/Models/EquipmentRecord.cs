@@ -13,7 +13,7 @@ public class EquipmentRecord : BaseModel
 	public DateTimeOffset Modified { get; set; }
     public string ModifyAuthor { get; set; } = string.Empty;
 
-    protected EquipmentRecord() : base()
+    public EquipmentRecord() : base()
     {
 
     }

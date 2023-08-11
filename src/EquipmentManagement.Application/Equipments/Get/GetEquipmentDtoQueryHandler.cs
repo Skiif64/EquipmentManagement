@@ -6,8 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EquipmentManagement.Application.Equipments.Get;
 
-public class GetAllEquipmentWithStatusQueryHandler
-    : IQueryHandler<GetAllEquipmentWithStatusQuery, PagedList<EquipmentDto>>
+public class GetEquipmentDtoQueryHandler
+    : IQueryHandler<GetEquipmentDtoQuery, PagedList<EquipmentDto>>
 {
     private const int Page = 1;
     private const int PageSize = 10;
@@ -15,50 +15,44 @@ public class GetAllEquipmentWithStatusQueryHandler
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
 
-    public GetAllEquipmentWithStatusQueryHandler(IApplicationDbContext context, IMapper mapper)
+    public GetEquipmentDtoQueryHandler(IApplicationDbContext context, IMapper mapper)
     {
         _context = context;
         _mapper = mapper;
     }
 
-    public async Task<PagedList<EquipmentDto>> Handle(GetAllEquipmentWithStatusQuery request,
+    public async Task<PagedList<EquipmentDto>> Handle(GetEquipmentDtoQuery request,
         CancellationToken cancellationToken)
     {
-        var equipments = _context
-            .Set<Equipment>()
-            .Include(x => x.Images)
-            .Include(x => x.Type);
-
         var records = _context
-            .Set<EquipmentRecord>()
-            .Where(x => equipments.Contains(x.Equipment))
-            .OrderByDescending(x => x.Modified)
+            .Set<EquipmentRecord>()  
+            .AsNoTracking()
             .Include(x => x.Status)
             .Include(x => x.Employee)
+            .Include(x => x.Equipment)
+            .ThenInclude(x => x.Type)
+            .Include(x => x.Equipment)
+            .ThenInclude(x => x.Images)
+            .OrderByDescending(x => x.Modified)
             .AsEnumerable()
-            .DistinctBy(x => x.EquipmentId)
-            .GroupJoin(equipments, inner => inner.EquipmentId, outer => outer.Id, 
-            (inner, outer) => new EquipmentDto
+            .DistinctBy(x => x.EquipmentId)                        
+            .Select(x => new EquipmentDto
             {
-                
-                Id = outer.First().Id,
-                Article = outer.First().Article,
-                Author = outer.First().Author,
-                CreatedAt = outer.First().CreatedAt,
-                CurrentEmployee = inner.Employee,
-                CurrentStatus = inner.Status,
-                Description = outer.First().Description,
-                Images = outer.First().Images,
-                SerialNumber = outer.First().SerialNumber,
-                Type = outer.First().Type,
-                TypeId = outer.First().TypeId,
+                Id = x.Equipment.Id,
+                Article = x.Equipment.Article,
+                Author = x.Equipment.Author,
+                CreatedAt = x.Equipment.CreatedAt,
+                CurrentEmployee = x.Employee,
+                CurrentStatus = x.Status,
+                Description = x.Equipment.Description,
+                Images = x.Equipment.Images,
+                SerialNumber = x.Equipment.SerialNumber,
+                Type = x.Equipment.Type,
+                TypeId = x.Equipment.TypeId,
             })
-            //.Zip(equipments, (record, equipment) => 
             .Where(record => SearchSelector(record, request.SearchCriteria))
             .AsQueryable()
-            ?? throw new NotFoundException("Records");
-
-        
+            ?? throw new NotFoundException("Records");        
             
 
         int page = request.Page ?? Page;

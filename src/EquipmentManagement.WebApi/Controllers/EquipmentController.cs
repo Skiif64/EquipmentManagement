@@ -104,7 +104,7 @@ public class EquipmentController : ControllerBase
     {
         var command = _mapper.Map<UpdateEquipmentCommand>(request);
         await _sender.Send(command, cancellationToken);
-        return Ok();
+        return NoContent();
     }
 
     [HttpDelete("{id:guid}")]
@@ -113,6 +113,6 @@ public class EquipmentController : ControllerBase
         var command = new DeleteEquipmentByIdCommand(id);
 
         await _sender.Send(command, cancellationToken);
-        return Ok();
+        return NoContent();
     }
 }

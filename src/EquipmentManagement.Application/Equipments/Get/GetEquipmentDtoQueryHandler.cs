@@ -25,7 +25,8 @@ public class GetEquipmentDtoQueryHandler
         CancellationToken cancellationToken)
     {
         var records = _context
-            .Set<EquipmentRecord>()            
+            .Set<EquipmentRecord>()  
+            .AsNoTracking()
             .Include(x => x.Status)
             .Include(x => x.Employee)
             .Include(x => x.Equipment)
@@ -34,10 +35,9 @@ public class GetEquipmentDtoQueryHandler
             .ThenInclude(x => x.Images)
             .OrderByDescending(x => x.Modified)
             .AsEnumerable()
-            .DistinctBy(x => x.EquipmentId)
+            .DistinctBy(x => x.EquipmentId)                        
             .Select(x => new EquipmentDto
             {
-
                 Id = x.Equipment.Id,
                 Article = x.Equipment.Article,
                 Author = x.Equipment.Author,

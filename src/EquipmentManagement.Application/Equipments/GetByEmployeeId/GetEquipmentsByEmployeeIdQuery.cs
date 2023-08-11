@@ -3,7 +3,7 @@ using EquipmentManagement.Domain.Models;
 
 namespace EquipmentManagement.Application.Equipments.GetByEmployeeId;
 
-public class GetEquipmentsByEmployeeIdQuery : IQuery<IEnumerable<Equipment>?>
+public class GetEquipmentsByEmployeeIdQuery : IQuery<IEnumerable<Equipment>>
 {
     public Guid EmployeeId { get; set; }
     public GetEquipmentsByEmployeeIdQuery(Guid employeeId)

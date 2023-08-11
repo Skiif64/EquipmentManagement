@@ -16,17 +16,14 @@ internal class GetFreeEquipmentQueryHandler : IQueryHandler<GetFreeEquipmentQuer
     public Task<IEnumerable<Equipment>> Handle(GetFreeEquipmentQuery request, CancellationToken cancellationToken)
     {
         var equipments = _context
-            .Set<Equipment>()
-            .Include(x => x.Type)
-            .Include(x => x.Records)            
-            .ThenInclude(x => x.Employee)
-            .Include(x => x.Records)
-            .ThenInclude(x => x.Status)
-            .AsEnumerable()
-            .Where(x => x.LastRecord != null)
-            .Where(x => x.LastRecord!.Employee == null)
-            .Where(x => x.LastRecord!.Status.Title != DiscardedTitle);
+            .Set<EquipmentRecord>()
+            .Include(x => x.Equipment)
+            .ThenInclude(x => x.Type)
+            .Include(x => x.Equipment)
+            .ThenInclude(x => x.Images)
+            .Where(x => x.EmployeeId == null)
+            .Select(x => x.Equipment);
 
-        return Task.FromResult(equipments);
+        return Task.FromResult(equipments.AsEnumerable());
     }
 }

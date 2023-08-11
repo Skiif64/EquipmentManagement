@@ -1,0 +1,29 @@
+﻿@using EquimentManagement.Contracts.Responses;
+@typeparam TEntity
+
+   
+
+@code {
+
+    protected PagedListResponse<TEntity>? PagedList { get; set; }    
+
+    protected virtual Task OnPageLoad(int page)
+        => Task.CompletedTask;
+
+    protected async Task OnPreviousPageClicked()
+    {
+        if (PagedList?.Page < 1)
+            return;
+        await OnPageLoad(PagedList?.Page - 1 ?? 1);
+        StateHasChanged();
+    }
+
+    protected async Task OnNextPageClicked()
+    {
+        if (PagedList?.IsLastPage ?? true)
+            return;
+
+        await OnPageLoad(PagedList?.Page + 1 ?? 1);
+        StateHasChanged();
+    }
+}

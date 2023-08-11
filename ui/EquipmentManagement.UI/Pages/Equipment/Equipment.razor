@@ -30,17 +30,17 @@
     private IModalService Modal { get; set; } = null!;
 
 
-    private void OnEditRequested(EquipmentWithStatusResponse equipment)
+    private void OnEditRequested(EquipmentResponse equipment)
     {
         Navigation.NavigateTo($"{PagePaths.EquipmentRecord.Add}?id={equipment.Id}");
     }
 
-    private void OnHistoryRequested(EquipmentWithStatusResponse equipment)
+    private void OnHistoryRequested(EquipmentResponse equipment)
     {
         Navigation.NavigateTo($"{PagePaths.EquipmentRecord.History}?id={equipment.Id}");
     }    
 
-    private async Task OnDetailsRequestedAsync(EquipmentWithStatusResponse equipment)
+    private async Task OnDetailsRequestedAsync(EquipmentResponse equipment)
     {
         var options = new ModalOptions
             {
@@ -52,7 +52,7 @@
         var result = await modal.Result;
     }
 
-    private void OnEditEquipmentRequested(EquipmentWithStatusResponse equipment)
+    private void OnEditEquipmentRequested(EquipmentResponse equipment)
     {
         Navigation.NavigateTo($"{PagePaths.Equipment.Edit}/{equipment.Id}");
     }

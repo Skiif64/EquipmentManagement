@@ -1,10 +1,9 @@
 ﻿using EquipmentManagement.Application.Abstractions;
-using EquipmentManagement.Application.Models;
 using EquipmentManagement.Domain.Models;
 
-namespace EquipmentManagement.Application.Equipments.Get;
+namespace EquipmentManagement.Application.Equipments.GetById;
 
-public class GetEquipmentByIdQuery : IQuery<EquipmentWithStatus>
+public class GetEquipmentByIdQuery : IQuery<Equipment>
 {
     public Guid EquipmentId { get; set; }
     public GetEquipmentByIdQuery(Guid id)

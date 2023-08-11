@@ -105,7 +105,7 @@
             </td>
             <td>
                 <button class="btn btn-primary"
-                @onclick="() => OnHistoryRequested(equipment)">
+                @onclick="async () => await OnDetailsRequestedAsync(equipment)">
                     <span class="oi oi-info"></span> Детали
                 </button>
                 <AuthorizeView Roles="Admin">

@@ -1,29 +1,54 @@
 ﻿@using EquimentManagement.Contracts.Responses;
 @typeparam TEntity
 
-   
+<table class="table table-hover">
+    <thead>
+        <tr>
+            @HeaderTemplate
+        </tr>
+    </thead>
+    <tbody>
+        @if (pagedList is null)
+        {
+            <LoadingCircle />
+        }
+        else
+        {
+            @foreach (var entity in pagedList.Items)
+            {
+                <tr>
+                    @RowTemplate?.Invoke(entity)
+                </tr>
+            }
+        }
+    </tbody>
+</table>
 
 @code {
+    private PagedListResponse<TEntity>? pagedList;
 
-    protected PagedListResponse<TEntity>? PagedList { get; set; }    
+    [Parameter]
+    public Func<int, Task<PagedListResponse<TEntity>>> EntitySource { get; set; }
 
-    protected virtual Task OnPageLoad(int page)
-        => Task.CompletedTask;
+    [Parameter]
+    public RenderFragment? HeaderTemplate { get; set; }
+    [Parameter]
+    public RenderFragment<TEntity>? RowTemplate { get; set; }
 
     protected async Task OnPreviousPageClicked()
     {
-        if (PagedList?.Page < 1)
+        if (pagedList?.Page < 1)
             return;
-        await OnPageLoad(PagedList?.Page - 1 ?? 1);
+        pagedList = await EntitySource(pagedList?.Page - 1 ?? 1);
         StateHasChanged();
     }
 
     protected async Task OnNextPageClicked()
     {
-        if (PagedList?.IsLastPage ?? true)
+        if (pagedList?.IsLastPage ?? true)
             return;
 
-        await OnPageLoad(PagedList?.Page + 1 ?? 1);
+        pagedList = await EntitySource(pagedList?.Page + 1 ?? 1);
         StateHasChanged();
     }
 }

@@ -6,9 +6,53 @@
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Collections.ObjectModel;
 @inject NavigationManager Navigation;
+@inject IEquipmentService EquipmentService;
+@inject IEquipmentTypeService EquipmentTypeService;
+@inject IStatusService statusService;
 @attribute [Authorize]
 <h3>Оборудование</h3>
-
+<div class="input-group rounded">
+    <div class="d-flex flex-row mt-3">
+        <span class="input-group-text border-0" id="search-addon">
+            <i class="oi oi-magnifying-glass"></i>
+        </span>
+        <input type="search" class="form-control rounded" placeholder="Поиск" aria-label="Search" aria-describedby="search-addon"
+               @oninput="OnSearchBarInput" />
+    </div>
+    <div class="d-block w-100 mt-3 border-top border-1">
+    </div>
+    <EditForm Model="@searchModel">
+        <div class="d-flex flex-row mt-3">
+            <span>Фильтры</span>
+            <span class="input-group-text border-0 mx-3">
+                Тип
+            </span>
+            <InputSelect type="search" class="form-control rounded m-width-200" @bind-Value="searchModel!.TypeName">
+                <option value="" selected>Нет</option>
+                @if (equipmentTypes is not null)
+                {
+                    foreach (var type in equipmentTypes)
+                    {
+                        <option value="@type.Name">@type.Name</option>
+                    }
+                }
+            </InputSelect>
+            <span class="input-group-text border-0 mx-3">
+                Статус
+            </span>
+            <InputSelect type="search" class="form-control rounded m-width-200" @bind-Value="searchModel!.StatusTitle">
+                <option value="" selected>Нет</option>
+                @if (statuses is not null)
+                {
+                    foreach (var status in statuses)
+                    {
+                        <option value="@status.Title">@status.Title</option>
+                    }
+                }
+            </InputSelect>
+        </div>
+    </EditForm>
+</div>
 <div class="navbar-dark">
     <AuthorizeView Roles="Admin">
         <Authorized>
@@ -16,19 +60,119 @@
                      href="/equipment/add">Добавить оборудование</NavLink>
         </Authorized>
     </AuthorizeView>
-    <EquipmentTable @ref="Table"
-                    HistoryRequested="OnHistoryRequested"
-                    EditRequested="OnEditRequested"                   
-                    DetailsRequested="OnDetailsRequestedAsync"
-                    EditEquipmentRequested="OnEditEquipmentRequested" />
+
+    <PagedTableBase TEntity="EquipmentResponse" Context="equipment" EntitySource="OnPageLoad" @ref="Table">
+        <HeaderTemplate>
+            <th>
+                <span>Тип</span>
+            </th>
+            <th>
+                <span>Артикул</span>
+            </th>
+            <th>
+                <span>Серийный номер</span>
+            </th>
+            <th>
+                <span>Описание</span>
+            </th>
+            <th>
+                <span>Статус</span>
+            </th>
+            <th>
+
+            </th>
+        </HeaderTemplate>
+        <RowTemplate>
+            <td>
+                <span>@equipment.Type</span>
+            </td>
+            <td>
+                <span>@equipment.Article</span>
+            </td>
+            <td>
+                <span>@equipment.SerialNumber</span>
+            </td>
+            <td>
+                <textarea draggable="false"
+                          readonly="readonly">@equipment.Description</textarea>
+            </td>
+            <td>
+                <strong>@equipment.CurrentStatusTitle</strong>
+                @if (equipment.EmployeeFullname is not null)
+                {
+                    <span> (@equipment.EmployeeFullname)</span>
+                }
+            </td>
+            <td>
+                <button class="btn btn-primary"
+                @onclick="() => OnHistoryRequested(equipment)">
+                    <span class="oi oi-info"></span> Детали
+                </button>
+                <AuthorizeView Roles="Admin">
+                    <Authorized>
+                        <button class="btn btn-primary"
+                        @onclick="() => OnEditRequested(equipment)">
+                            <span class="oi oi-pencil"></span> Изменить статус
+                        </button>
+                        <button class="btn btn-primary"
+                        @onclick="() => OnEditEquipmentRequested(equipment)">
+                            <span class="oi oi-pencil"></span> Изменить
+                        </button>
+                    </Authorized>
+                </AuthorizeView>
+                <button class="btn btn-primary"
+                @onclick="() => OnHistoryRequested(equipment)">
+                    <span class="oi oi-list-rich"></span> История
+                </button>
+            </td>
+        </RowTemplate>
+    </PagedTableBase>    
 </div>
   
 @code {
-    [Parameter]
-    public EquipmentTable? Table { get; set; }
+    private const int PageSize = 20;
+
+    private string? searchQuery;
+    private SearchEquipmentModel searchModel = new();
+
+    private IEnumerable<EquipmentTypeResponse>? equipmentTypes;
+    private IEnumerable<StatusResponse>? statuses;
+
+    private PagedTableBase<EquipmentResponse> Table { get; set; } = null!;
+
     [CascadingParameter]
     private IModalService Modal { get; set; } = null!;
 
+    protected override async Task OnInitializedAsync()
+    {        
+        await LoadEquipmentTypes();
+        await LoadStatuses();
+    }
+
+    private async Task<PagedListResponse<EquipmentResponse>> OnPageLoad(int page = 1)
+    {
+        return await EquipmentService
+        .GetAsync(page, PageSize, searchQuery)!;
+
+    }
+
+    private async Task LoadEquipmentTypes()
+    {
+        var response = await EquipmentTypeService.GetAllAsync();
+        if (response is not null)
+        {
+            equipmentTypes = response;
+        }
+    }
+
+    private async Task LoadStatuses()
+    {
+        var response = await statusService.GetAll();
+        if (response is not null)
+        {
+            statuses = response;
+        }
+    }
 
     private void OnEditRequested(EquipmentResponse equipment)
     {
@@ -55,5 +199,33 @@
     private void OnEditEquipmentRequested(EquipmentResponse equipment)
     {
         Navigation.NavigateTo($"{PagePaths.Equipment.Edit}/{equipment.Id}");
+    }
+
+    private async Task OnSearchBarInput(ChangeEventArgs e)
+    {
+        searchQuery = e.Value?.ToString();
+        await Table.NotifyAsync();
+    }
+
+    private bool EquipmentTypeSearchSelector(EquipmentResponse equipment)
+    {
+        if (string.IsNullOrWhiteSpace(searchModel!.TypeName))
+            return true;
+
+        return equipment.Type == searchModel!.TypeName;
+    }
+
+    private bool EquipmentStatusSearchSelector(EquipmentResponse equipment)
+    {
+        if (string.IsNullOrWhiteSpace(searchModel!.StatusTitle))
+            return true;
+
+        return equipment.CurrentStatusTitle == searchModel!.StatusTitle;
+    }
+
+    private class SearchEquipmentModel
+    {
+        public string TypeName { get; set; } = string.Empty;
+        public string StatusTitle { get; set; } = string.Empty;
     }
 }

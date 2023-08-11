@@ -1,28 +1,42 @@
 ﻿@using EquimentManagement.Contracts.Responses;
 @typeparam TEntity
 
-<table class="table table-hover">
-    <thead>
-        <tr>
-            @HeaderTemplate
-        </tr>
-    </thead>
-    <tbody>
-        @if (pagedList is null)
-        {
-            <LoadingCircle />
-        }
-        else
-        {
-            @foreach (var entity in pagedList.Items)
+<div class="overflow-scroll" style="height: 65vh;">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                @HeaderTemplate
+            </tr>
+        </thead>
+        <tbody>
+            @if (pagedList is null)
             {
-                <tr>
-                    @RowTemplate?.Invoke(entity)
-                </tr>
+                <LoadingCircle />
             }
-        }
-    </tbody>
-</table>
+            else
+            {
+                @foreach (var entity in pagedList.Items)
+                {
+                    <tr>
+                        @RowTemplate?.Invoke(entity)
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>    
+</div>
+<nav aria-label="page navigation">
+    <ul class="pagination justify-content-center">
+        <li class="page-item @(pagedList?.Page == 1? "disabled" : "")">
+            <a class="page-link" tabindex="-1" @onclick=OnPreviousPageClicked>Назад</a>
+        </li>
+        <li class="page-item"><a class="page-link">@pagedList?.Page</a></li>
+        <li class="page-item">
+            <a class="page-link @((pagedList?.IsLastPage ?? false)? "disabled" : "")"
+            @onclick=OnNextPageClicked>Дальше</a>
+        </li>
+    </ul>
+</nav>
 
 @code {
     private PagedListResponse<TEntity>? pagedList;
@@ -35,7 +49,18 @@
     [Parameter]
     public RenderFragment<TEntity>? RowTemplate { get; set; }
 
-    protected async Task OnPreviousPageClicked()
+    protected override async Task OnInitializedAsync()
+    {
+        pagedList = await EntitySource(1);
+    }
+
+    public async Task NotifyAsync()
+    {
+        pagedList = await EntitySource(pagedList?.Page ?? 1);
+        StateHasChanged();
+    }
+
+    private async Task OnPreviousPageClicked()
     {
         if (pagedList?.Page < 1)
             return;
@@ -43,7 +68,7 @@
         StateHasChanged();
     }
 
-    protected async Task OnNextPageClicked()
+    private async Task OnNextPageClicked()
     {
         if (pagedList?.IsLastPage ?? true)
             return;

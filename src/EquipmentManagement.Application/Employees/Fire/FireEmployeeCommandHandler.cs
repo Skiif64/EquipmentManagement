@@ -3,18 +3,18 @@ using EquipmentManagement.Application.Exceptions;
 using EquipmentManagement.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace EquipmentManagement.Application.Employees.Delete;
+namespace EquipmentManagement.Application.Employees.Fire;
 
-public class DeleteEmployeeCommandHandler : ICommandHandler<DeleteEmployeeCommand, Guid>
+public class FireEmployeeCommandHandler : ICommandHandler<FireEmployeeCommand, Guid>
 {
     private readonly IApplicationDbContext _context;
 
-    public DeleteEmployeeCommandHandler(IApplicationDbContext context)
+    public FireEmployeeCommandHandler(IApplicationDbContext context)
     {
         _context = context;
     }
 
-    public async Task<Guid> Handle(DeleteEmployeeCommand request, CancellationToken cancellationToken)
+    public async Task<Guid> Handle(FireEmployeeCommand request, CancellationToken cancellationToken)
     {
         var employee = await _context
             .Set<Employee>()

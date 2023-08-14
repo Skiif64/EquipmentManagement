@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
 using EquimentManagement.Contracts.Requests;
 using EquimentManagement.Contracts.Responses;
-using EquipmentManagement.Application;
-using EquipmentManagement.Application.Abstractions;
 using EquipmentManagement.Application.Employees.Add;
-using EquipmentManagement.Application.Employees.Delete;
+using EquipmentManagement.Application.Employees.Fire;
 using EquipmentManagement.Application.Employees.Get;
 using EquipmentManagement.Application.Employees.GetAll;
 using EquipmentManagement.Application.Employees.Restore;
@@ -69,9 +67,9 @@ namespace EquipmentManagement.WebApi.Controllers
 
         [HttpPatch("delete")]
         [Authorize(Roles = Roles.Admin)]
-        public async Task<ActionResult<Guid>> DeleteByIdAsync(DeleteEmployeeRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<Guid>> DeleteByIdAsync(FireEmployeeRequest request, CancellationToken cancellationToken)
         {
-            var command = new DeleteEmployeeCommand(request.EmployeeId);
+            var command = new FireEmployeeCommand(request.EmployeeId);
             var resultId = await _sender.Send(command, cancellationToken);
             return Ok(resultId);
         }

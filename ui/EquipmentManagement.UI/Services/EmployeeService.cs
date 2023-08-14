@@ -23,7 +23,7 @@ public class EmployeeService : IEmployeeService
 
     public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var request = new DeleteEmployeeRequest
+        var request = new FireEmployeeRequest
         {
             EmployeeId = id
         };

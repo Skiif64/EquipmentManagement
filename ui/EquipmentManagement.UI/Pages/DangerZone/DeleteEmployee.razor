@@ -1,0 +1,64 @@
+﻿@page "/dangerzone/employees"
+@using EquimentManagement.Contracts.Responses;
+@using EquipmentManagement.UI.Abstractions;
+@using EquipmentManagement.UI.Shared.Modal;
+@using EquipmentManagement.UI.Shared.Tables;
+@inject IEmployeeService EmployeeService;
+@attribute [Authorize(Roles = "Admin")]
+<h3>Удаление сотрудников</h3>
+<PagedTableBase TEntity="EmployeeResponse" Context="employee" EntitySource="LoadPageAsync" @ref="Table">
+            <HeaderTemplate>                
+                    <th>
+                        <div class="d-flex w-100">
+                            <span class="text-center">ФИО</span>
+                        </div>
+                    </th>
+                    <th>
+                        <span class="text-center">Статус</span>
+                    </th>
+                    <th>
+                        <div class="d-flex w-100">
+                            <span class="text-center">Действия</span>
+                        </div>
+                    </th>                
+            </HeaderTemplate>
+            <RowTemplate>                
+                    <td>
+                        <span>@employee.Lastname @employee.Firstname @employee.Patronymic</span>
+                    </td>
+                    <td>
+                        <span>@(employee.Status == EmployeeStatusResponse.Active ? "Активен" : "Уволен")</span>
+                    </td>
+                    <td>                        
+                        <button class="btn btn-danger"
+                        @onclick="async () => await OnDeleteRequested(employee)">
+                            <span class="oi oi-trash"></span> Удалить
+                        </button>
+                    </td>                
+            </RowTemplate>
+        </PagedTableBase>
+@code {
+    [CascadingParameter]
+    private IModalService Modal { get; set; } = null!;
+    private PagedTableBase<EmployeeResponse> Table { get; set; } = null!;
+
+    private async Task<PagedListResponse<EmployeeResponse>> LoadPageAsync(int page = 1)
+    {
+        return await EmployeeService.GetAsync(page, 20);
+    }
+
+    private async Task OnDeleteRequested(EmployeeResponse employee)
+    {
+        var parameters = new ModalParameters()
+        .Add(nameof(DangerDeleteModal.EntityName), $"({employee.Lastname} {employee.Firstname} {employee.Patronymic})")
+        .Add(nameof(DangerDeleteModal.DangerMessage), "удаление всех назначений оборудования, связанных с данным сотрудником");
+        var modal = Modal.Show<DangerDeleteModal>("Внимание", parameters);
+        var result = await modal.Result;
+        if (result.Confirmed)
+        {
+            await EmployeeService.DeleteAsync(employee.Id);
+            await Table.NotifyAsync();
+            StateHasChanged();
+        }        
+    }
+}

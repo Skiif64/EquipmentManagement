@@ -42,11 +42,11 @@ namespace EquipmentManagement.WebApi.Controllers
             return Ok(id);
         }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<EmployeeResponse>>> GetAsync(int page, int pageSize, CancellationToken cancellationToken)
+        public async Task<ActionResult<IEnumerable<EmployeeResponse>>> GetAsync(int page, int pageSize, string? query, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var employees = await _sender.Send(new GetEmployeeQuery(page, pageSize), cancellationToken);
+            var employees = await _sender.Send(new GetEmployeeQuery(page, pageSize, query), cancellationToken);
             var response = _mapper.Map<PagedListResponse<EmployeeResponse>>(employees);
             return Ok(response);
         }

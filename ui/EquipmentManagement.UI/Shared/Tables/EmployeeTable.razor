@@ -118,10 +118,10 @@ else
 
     private async Task LoadEmployeesAsync()
     {
-        var response = await EmployeeService.GetAllAsync();
+        var response = await EmployeeService.GetAsync(1, 20);
         if (response is not null)
         {
-            employees = new ObservableCollection<EmployeeResponse>(response);
+            employees = new ObservableCollection<EmployeeResponse>(response.Items);
             employees.CollectionChanged += (sender, e) => StateHasChanged();
         }
     }

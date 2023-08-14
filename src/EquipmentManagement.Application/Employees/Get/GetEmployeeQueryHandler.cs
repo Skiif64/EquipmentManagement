@@ -19,8 +19,26 @@ public class GetEmployeeQueryHandler : IQueryHandler<GetEmployeeQuery, PagedList
             .OrderBy(x => x.Status)
             .ThenBy(x => x.Lastname)
             .ThenBy(x => x.Firstname)
+            .AsEnumerable()
+            .Where(x => EmployeeSelector(x, request.SearchQuery))
+            .AsQueryable()
             ;
 
-        return await PagedList<Employee>.CreateAsync(set, request.Page, request.PageSize);        
+        return PagedList<Employee>.Create(set, request.Page, request.PageSize);        
+    }
+
+    private static bool EmployeeSelector(Employee employee, string? searchQuery)
+    {
+        var query = searchQuery ?? string.Empty;
+        const StringComparison comparsion = StringComparison.InvariantCultureIgnoreCase;
+        if (employee.Lastname.Contains(query, comparsion))
+            return true;
+        if (employee.Firstname.Contains(query, comparsion))
+            return true;
+        if (employee.Patronymic is not null
+            && employee.Patronymic.Contains(query, comparsion))
+            return true;
+
+        return false;
     }
 }

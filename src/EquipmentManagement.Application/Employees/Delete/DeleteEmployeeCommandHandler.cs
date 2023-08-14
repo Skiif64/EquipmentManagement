@@ -20,6 +20,14 @@ internal sealed class DeleteEmployeeCommandHandler : ICommandHandler<DeleteEmplo
             .SingleOrDefaultAsync(x => x.Id == request.Id, cancellationToken)
             ?? throw new NotFoundException("Employee");
 
+        var records = _context
+            .Set<EquipmentRecord>()
+            .Where(x => x.EmployeeId == request.Id);
+
+        _context
+            .Set<EquipmentRecord>()
+            .RemoveRange(records);
+
         _context
             .Set<Employee>()
             .Remove(employee);

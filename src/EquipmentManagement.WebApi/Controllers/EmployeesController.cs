@@ -2,6 +2,7 @@
 using EquimentManagement.Contracts.Requests;
 using EquimentManagement.Contracts.Responses;
 using EquipmentManagement.Application.Employees.Add;
+using EquipmentManagement.Application.Employees.Delete;
 using EquipmentManagement.Application.Employees.Fire;
 using EquipmentManagement.Application.Employees.Get;
 using EquipmentManagement.Application.Employees.GetAll;
@@ -55,6 +56,16 @@ namespace EquipmentManagement.WebApi.Controllers
             var employee = await _sender.Send(new GetEmployeeQuery(id), cancellationToken);
             var response = _mapper.Map<EmployeeResponse>(employee);
             return Ok(response);
+        }
+
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> DeleteEmployeeAsync(Guid id, CancellationToken cancellationToken)
+        {
+            var command = new DeleteEmployeeCommand(id);
+
+            await _sender.Send(command, cancellationToken);
+
+            return NoContent();
         }
 
         [HttpPatch("update")]

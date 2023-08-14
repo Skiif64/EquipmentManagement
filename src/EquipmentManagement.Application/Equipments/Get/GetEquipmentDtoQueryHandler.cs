@@ -3,6 +3,7 @@ using EquipmentManagement.Application.Abstractions;
 using EquipmentManagement.Application.Exceptions;
 using EquipmentManagement.Domain.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace EquipmentManagement.Application.Equipments.Get;
 
@@ -24,6 +25,16 @@ public class GetEquipmentDtoQueryHandler
     public async Task<PagedList<EquipmentDto>> Handle(GetEquipmentDtoQuery request,
         CancellationToken cancellationToken)
     {
+        var filters = request.Filter?.Split("-");
+        string? typeFilter = null;
+        string? statusFilter = null;
+        if(filters is not null)
+        {
+            if(filters.Length > 0)
+                typeFilter = filters[0];
+            if(filters.Length > 1)
+                statusFilter = filters[1];
+        }
         var records = _context
             .Set<EquipmentRecord>()  
             .AsNoTracking()
@@ -51,6 +62,9 @@ public class GetEquipmentDtoQueryHandler
                 TypeId = x.Equipment.TypeId,
             })
             .Where(record => SearchSelector(record, request.SearchCriteria))
+            .Where(record => EquipmentTypeSearchSelector(record, typeFilter) 
+            && EquipmentStatusSearchSelector(record, statusFilter))
+            
             .AsQueryable()
             ?? throw new NotFoundException("Records");        
             
@@ -79,5 +93,23 @@ public class GetEquipmentDtoQueryHandler
             return true;
 
         return false;
+    }
+
+    private bool EquipmentTypeSearchSelector(EquipmentDto equipment, string? typeFilter)
+    {
+        if (string.IsNullOrWhiteSpace(typeFilter))
+            return true;
+
+        return equipment.Type.Name
+            .Contains(typeFilter, StringComparison.InvariantCultureIgnoreCase);
+    }
+
+    private bool EquipmentStatusSearchSelector(EquipmentDto equipment, string? statusFilter)
+    {
+        if (string.IsNullOrWhiteSpace(statusFilter))
+            return true;
+
+        return equipment.CurrentStatus?.Title
+            .Contains(statusFilter, StringComparison.InvariantCultureIgnoreCase) ?? false;
     }
 }

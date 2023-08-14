@@ -147,13 +147,25 @@
     {        
         await LoadEquipmentTypes();
         await LoadStatuses();
+        searchModel.FieldChanged += async () => await OnFilterSelected();
     }
 
     private async Task<PagedListResponse<EquipmentResponse>> OnPageLoad(int page = 1)
     {
-        return await EquipmentService
-        .GetAsync(page, PageSize, searchQuery)!;
+        var filter = "";
+        if (!string.IsNullOrWhiteSpace(searchModel.TypeName))
+            filter += searchModel.TypeName;
+        if (!string.IsNullOrWhiteSpace(searchModel.StatusTitle))
+            filter += "-" + searchModel.StatusTitle;
 
+        return await EquipmentService
+        .GetAsync(page, PageSize, searchQuery, filter)!;
+
+    }
+
+    private async Task OnFilterSelected()
+    {
+        await Table.NotifyAsync();
     }
 
     private async Task LoadEquipmentTypes()
@@ -205,27 +217,30 @@
     {
         searchQuery = e.Value?.ToString();
         await Table.NotifyAsync();
-    }
-
-    private bool EquipmentTypeSearchSelector(EquipmentResponse equipment)
-    {
-        if (string.IsNullOrWhiteSpace(searchModel!.TypeName))
-            return true;
-
-        return equipment.Type == searchModel!.TypeName;
-    }
-
-    private bool EquipmentStatusSearchSelector(EquipmentResponse equipment)
-    {
-        if (string.IsNullOrWhiteSpace(searchModel!.StatusTitle))
-            return true;
-
-        return equipment.CurrentStatusTitle == searchModel!.StatusTitle;
-    }
+    }    
 
     private class SearchEquipmentModel
     {
-        public string TypeName { get; set; } = string.Empty;
-        public string StatusTitle { get; set; } = string.Empty;
+        public event Action? FieldChanged;
+        private string? _typeName;
+        public string? TypeName
+        {
+            get => _typeName;
+            set
+            {
+                _typeName = value;
+                FieldChanged?.Invoke();
+            }
+        }
+        private string? _statusTitle;
+        public string? StatusTitle
+        {
+            get => _statusTitle;
+            set
+            {
+                _statusTitle = value;
+                FieldChanged?.Invoke();
+            }
+        }
     }
 }

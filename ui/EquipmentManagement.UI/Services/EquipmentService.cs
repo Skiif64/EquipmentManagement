@@ -27,10 +27,10 @@ public class EquipmentService : IEquipmentService
     }
 
     public async Task<PagedListResponse<EquipmentResponse>?> GetAsync(
-        int page = 1, int pageSize = 10, string? criteria = null, CancellationToken cancellationToken = default)
+        int page = 1, int pageSize = 10, string? criteria = null, string? filter = null, CancellationToken cancellationToken = default)
     {        
         var equipments = await _client.GetFromJsonAsync<PagedListResponse<EquipmentResponse>>(
-            $"/api/equipment/?page={page}&pageSize={pageSize}&criteria={criteria}", cancellationToken);        
+            $"/api/equipment/?page={page}&pageSize={pageSize}&criteria={criteria}&filter={filter}", cancellationToken);        
         
         return equipments;
     }

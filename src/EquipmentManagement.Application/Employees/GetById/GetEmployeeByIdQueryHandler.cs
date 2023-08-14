@@ -2,18 +2,18 @@
 using EquipmentManagement.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace EquipmentManagement.Application.Employees.Get;
+namespace EquipmentManagement.Application.Employees.GetById;
 
-public class GetEmployeeQueryHandler : IQueryHandler<GetEmployeeQuery, Employee?>
+public class GetEmployeeByIdQueryHandler : IQueryHandler<GetEmployeeByIdQuery, Employee?>
 {
     private readonly IApplicationDbContext _context;
 
-    public GetEmployeeQueryHandler(IApplicationDbContext context)
+    public GetEmployeeByIdQueryHandler(IApplicationDbContext context)
     {
         _context = context;
     }
 
-    public async Task<Employee?> Handle(GetEmployeeQuery request, CancellationToken cancellationToken)
+    public async Task<Employee?> Handle(GetEmployeeByIdQuery request, CancellationToken cancellationToken)
     {
         var employee = await _context
             .Set<Employee>()

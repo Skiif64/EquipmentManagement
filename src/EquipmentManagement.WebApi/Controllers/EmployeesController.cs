@@ -4,8 +4,8 @@ using EquimentManagement.Contracts.Responses;
 using EquipmentManagement.Application.Employees.Add;
 using EquipmentManagement.Application.Employees.Delete;
 using EquipmentManagement.Application.Employees.Fire;
-using EquipmentManagement.Application.Employees.Get;
 using EquipmentManagement.Application.Employees.GetAll;
+using EquipmentManagement.Application.Employees.GetById;
 using EquipmentManagement.Application.Employees.Restore;
 using EquipmentManagement.Application.Employees.Update;
 using EquipmentManagement.Auth;
@@ -53,7 +53,7 @@ namespace EquipmentManagement.WebApi.Controllers
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<EmployeeResponse>> GetEmployeeById(Guid id, CancellationToken cancellationToken)
         {
-            var employee = await _sender.Send(new GetEmployeeQuery(id), cancellationToken);
+            var employee = await _sender.Send(new GetEmployeeByIdQuery(id), cancellationToken);
             var response = _mapper.Map<EmployeeResponse>(employee);
             return Ok(response);
         }

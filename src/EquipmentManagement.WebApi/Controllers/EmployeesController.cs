@@ -4,7 +4,7 @@ using EquimentManagement.Contracts.Responses;
 using EquipmentManagement.Application.Employees.Add;
 using EquipmentManagement.Application.Employees.Delete;
 using EquipmentManagement.Application.Employees.Fire;
-using EquipmentManagement.Application.Employees.GetAll;
+using EquipmentManagement.Application.Employees.Get;
 using EquipmentManagement.Application.Employees.GetById;
 using EquipmentManagement.Application.Employees.Restore;
 using EquipmentManagement.Application.Employees.Update;
@@ -12,7 +12,6 @@ using EquipmentManagement.Auth;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using static EquipmentManagement.UI.Utils.PagePaths;
 
 namespace EquipmentManagement.WebApi.Controllers
 {
@@ -42,11 +41,11 @@ namespace EquipmentManagement.WebApi.Controllers
             return Ok(id);
         }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<EmployeeResponse>>> GetAllAsync(CancellationToken cancellationToken)
+        public async Task<ActionResult<IEnumerable<EmployeeResponse>>> GetAllAsync(int page, int pageSize, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var employees = await _sender.Send(new GetAllEmployeeQuery(), cancellationToken);
+            var employees = await _sender.Send(new GetEmployeeQuery(page, pageSize), cancellationToken);
             var response = _mapper.Map<IEnumerable<EmployeeResponse>>(employees);
             return Ok(response);
         }

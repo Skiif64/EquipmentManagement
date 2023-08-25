@@ -2,7 +2,7 @@
 using EquimentManagement.Contracts.Requests;
 using EquimentManagement.Contracts.Responses;
 using EquipmentManagement.Application.EquipmentRecords.Add;
-using EquipmentManagement.Application.Equipments.Add;
+using EquipmentManagement.Application.Equipments.Create;
 using EquipmentManagement.Application.Equipments.Delete;
 using EquipmentManagement.Application.Equipments.Get;
 using EquipmentManagement.Application.Equipments.GetByEmployeeId;
@@ -66,7 +66,7 @@ public class EquipmentController : ControllerBase
 
         var author = User.Identity?.Name;
         request.Author = author ?? "неизвестно";
-        var command = _mapper.Map<AddEquipmentCommand>(request);
+        var command = _mapper.Map<CreateEquipmentCommand>(request);
         var id = await _sender.Send(command, cancellationToken);
 
         var statusCommand = new GetOrCreateStatusCommand

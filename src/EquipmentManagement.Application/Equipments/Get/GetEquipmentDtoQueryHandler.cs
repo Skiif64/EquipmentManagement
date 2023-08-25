@@ -10,15 +10,12 @@ public class GetEquipmentDtoQueryHandler
     : IQueryHandler<GetEquipmentDtoQuery, PagedList<EquipmentDto>>
 {
     private const int Page = 1;
-    private const int PageSize = 10;
-    private const string Order = "ASC";
-    private readonly IApplicationDbContext _context;
-    private readonly IMapper _mapper;
+    private const int PageSize = 10;    
+    private readonly IApplicationDbContext _context;    
 
-    public GetEquipmentDtoQueryHandler(IApplicationDbContext context, IMapper mapper)
+    public GetEquipmentDtoQueryHandler(IApplicationDbContext context)
     {
-        _context = context;
-        _mapper = mapper;
+        _context = context;        
     }
 
     public async Task<PagedList<EquipmentDto>> Handle(GetEquipmentDtoQuery request,

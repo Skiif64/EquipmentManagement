@@ -67,23 +67,7 @@ public class EquipmentController : ControllerBase
         var author = User.Identity?.Name;
         request.Author = author ?? "неизвестно";
         var command = _mapper.Map<CreateEquipmentCommand>(request);
-        var id = await _sender.Send(command, cancellationToken);
-
-        var statusCommand = new GetOrCreateStatusCommand
-        {
-            Title = DefaultStatusName
-        };
-
-        var status = await _sender.Send(statusCommand, cancellationToken);
-
-        var recordCommand = new AddEquipmentRecordCommand
-        {
-            EquipmentId = id,
-            ModifyAuthor = author ?? "неизвестно",
-            StatusId = status.Id
-        };
-
-        await _sender.Send(recordCommand, cancellationToken);
+        var id = await _sender.Send(command, cancellationToken); 
        
         return Ok(id);
     }

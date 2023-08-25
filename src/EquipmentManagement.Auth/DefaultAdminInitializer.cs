@@ -4,20 +4,20 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 namespace EquipmentManagement.Auth;
-internal class DefaultAdminInitializer : IMigrationableDatabase
+internal class DefaultAdminInitializer : IDatabaseSeeder
 {
     private const string AdminLogin = "AdminUsername";
     private const string AdminPassword = "AdminPassword";
     private readonly IConfiguration _configuration;
-    private readonly IUserDbContext _context;
+    private readonly IApplicationDbContext _context;
 
-    public DefaultAdminInitializer(IConfiguration configuration, IUserDbContext userDbContext)
+    public DefaultAdminInitializer(IConfiguration configuration, IApplicationDbContext userDbContext)
     {
         _configuration = configuration;
         _context = userDbContext;
     }
 
-    public void Migrate()
+    public void Seed()
     {
         var user = CreateAdminUser();
         if(!_context.Set<ApplicationUser>()
@@ -29,7 +29,7 @@ internal class DefaultAdminInitializer : IMigrationableDatabase
         }
     }
 
-    public async Task MigrateAsync(CancellationToken cancellationToken)
+    public async Task SeedAsync(CancellationToken cancellationToken)
     {
         var user = CreateAdminUser();
         if (!await _context.Set<ApplicationUser>()

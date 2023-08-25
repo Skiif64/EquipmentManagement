@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore;
 namespace EquipmentManagement.Application.ApplicationUsers.SignIn;
 internal class SignInCommandHandler : ICommandHandler<SignInCommand, AuthenticationResult>
 {
-    private readonly IUserDbContext _context;
+    private readonly IApplicationDbContext _context;
     private readonly IJwtTokenProvider _tokenProvider;
 
-    public SignInCommandHandler(IUserDbContext context, IJwtTokenProvider tokenProvider)
+    public SignInCommandHandler(IApplicationDbContext context, IJwtTokenProvider tokenProvider)
     {
         _context = context;
         _tokenProvider = tokenProvider;

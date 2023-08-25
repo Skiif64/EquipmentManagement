@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore;
 namespace EquipmentManagement.Application.ApplicationUsers.RefreshAccessToken;
 internal class RefreshAccessTokenCommandHandler : ICommandHandler<RefreshAccessTokenCommand, AuthenticationResult>
 {
-    private readonly IUserDbContext _context;
+    private readonly IApplicationDbContext _context;
     private readonly IJwtTokenProvider _tokenProvider;
 
-    public RefreshAccessTokenCommandHandler(IUserDbContext context, IJwtTokenProvider tokenProvider)
+    public RefreshAccessTokenCommandHandler(IApplicationDbContext context, IJwtTokenProvider tokenProvider)
     {
         _context = context;
         _tokenProvider = tokenProvider;

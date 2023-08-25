@@ -1,8 +1,8 @@
 ﻿using EquipmentManagement.Application.Abstractions;
 
-namespace EquipmentManagement.Application.Equipments.Add;
+namespace EquipmentManagement.Application.Equipments.Create;
 
-public class AddEquipmentCommand : ICommand<Guid>
+public class CreateEquipmentCommand : ICommand<Guid>
 {
     public Guid TypeId { get; init; }
     public string Article { get; init; } = string.Empty;
@@ -10,9 +10,9 @@ public class AddEquipmentCommand : ICommand<Guid>
     public string? Description { get; set; }
     public string Author { get; set; } = string.Empty;
     public DateTimeOffset CreatedAt { get; set; }
-    public IEnumerable<string>? ImageNames { get; set; }
+    public IEnumerable<string> ImageNames { get; set; } = Enumerable.Empty<string>();
 
-    public AddEquipmentCommand()
+    public CreateEquipmentCommand()
     {
         CreatedAt = DateTimeOffset.UtcNow;
     }

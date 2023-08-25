@@ -27,7 +27,7 @@ public class DbJournalFactory : IJournalFactory, IDisposable
         if (_disposed)
             throw new ObjectDisposedException(nameof(DbJournalFactory));
         return _journal
-            ?? throw new ArgumentNullException("Journal is not created.");
+            ?? Create("Неизвестно");
     }
 
     public void Dispose() 

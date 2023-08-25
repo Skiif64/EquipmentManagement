@@ -2,7 +2,7 @@
 using EquipmentManagement.Application.ApplicationUsers.Register;
 using EquipmentManagement.Application.Employees.Add;
 using EquipmentManagement.Application.EquipmentRecords.Add;
-using EquipmentManagement.Application.Equipments.Add;
+using EquipmentManagement.Application.Equipments.Create;
 using EquipmentManagement.Application.EquipmentTypes.Add;
 using EquipmentManagement.Application.Models;
 using EquipmentManagement.Application.Statuses.Add;
@@ -15,7 +15,7 @@ public class ApplicationMappingProfile : Profile
     public ApplicationMappingProfile()
     {
         CreateMap<AddEmployeeCommand, Employee>();
-        CreateMap<AddEquipmentCommand, Equipment>();
+        CreateMap<CreateEquipmentCommand, Equipment>();
         CreateMap<AddEquipmentRecordCommand, EquipmentRecord>();
         CreateMap<AddStatusCommand, Status>();        
 

@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore;
 namespace EquipmentManagement.Application.ApplicationUsers.Register;
 internal class RegisterCommandHandler : ICommandHandler<RegisterCommand, AuthenticationResult>
 {
-    private readonly IUserDbContext _context;
+    private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
     private readonly IJournal _journal;
 
-    public RegisterCommandHandler(IUserDbContext context, IMapper mapper, IJournal journal)
+    public RegisterCommandHandler(IApplicationDbContext context, IMapper mapper, IJournal journal)
     {
         _context = context;
         _mapper = mapper;

@@ -1,12 +1,12 @@
 ﻿using EquipmentManagement.Application.Abstractions;
 
 namespace EquipmentManagement.Application.Employees.Delete;
-
-public class DeleteEmployeeCommand : ICommand<Guid>
+public class DeleteEmployeeCommand : ICommand
 {
-    public Guid EmployeeId { get; set; }
+    public Guid Id { get; }
+
     public DeleteEmployeeCommand(Guid id)
     {
-        EmployeeId = id;
+        Id = id;
     }
 }

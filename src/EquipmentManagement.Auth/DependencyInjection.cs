@@ -14,10 +14,7 @@ public static class DependencyInjection
     {
         var connectionString = configuration.GetConnectionString("Users");
         var jwtOptions = new JwtTokenOptions();
-        configuration.GetRequiredSection("Jwt").Bind(jwtOptions);
-        services.AddDbContext<IUserDbContext, UsersDbContext>(opt => opt
-        .UseNpgsql(connectionString, cfg => cfg
-        .MigrationsAssembly(typeof(UsersDbContext).Assembly.FullName)));
+        configuration.GetRequiredSection("Jwt").Bind(jwtOptions);        
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(opt => opt.TokenValidationParameters = new()
             {
@@ -34,9 +31,8 @@ public static class DependencyInjection
                     Encoding.UTF8.GetBytes(jwtOptions.SecretKey))
             });
 
-        services.AddTransient<IJwtTokenProvider, JwtTokenProvider>();        
-        services.AddTransient<IMigrationableDatabase, UsersDbContext>();
-        services.AddTransient<IMigrationableDatabase, DefaultAdminInitializer>();
+        services.AddTransient<IJwtTokenProvider, JwtTokenProvider>();
+        services.AddTransient<IDatabaseSeeder, DefaultAdminInitializer>();
        
         return services;
     }

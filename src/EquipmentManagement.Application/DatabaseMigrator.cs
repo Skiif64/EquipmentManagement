@@ -4,26 +4,26 @@ namespace EquipmentManagement.Application;
 
 internal class DatabaseMigrator : IDatabaseMigrator
 {
-    private readonly IEnumerable<IMigrationableDatabase> _databases;
+    private readonly IEnumerable<IDatabaseSeeder> _seeders;
 
-    public DatabaseMigrator(IEnumerable<IMigrationableDatabase> databases)
+    public DatabaseMigrator(IEnumerable<IDatabaseSeeder> seeders)
     {
-        _databases = databases;
+        _seeders = seeders;
     }
 
     public void Invoke()
     {
-        foreach (var database in _databases)
+        foreach (var database in _seeders)
         {
-            database.Migrate();
+            database.Seed();
         }
     }
 
     public async Task InvokeAsync(CancellationToken cancellationToken)
     {
-        foreach (var database in _databases)
+        foreach (var seeder in _seeders)
         {
-            await database.MigrateAsync(cancellationToken);
+            await seeder.SeedAsync(cancellationToken);
         }
     }
 }

@@ -4,9 +4,9 @@ using EquipmentManagement.Application.Models;
 namespace EquipmentManagement.Application.ApplicationUsers.GetAll;
 internal class GetAllUsersQueryHandler : IQueryHandler<GetAllUsersQuery, IEnumerable<ApplicationUser>>
 {
-    private readonly IUserDbContext _context;
+    private readonly IApplicationDbContext _context;
 
-    public GetAllUsersQueryHandler(IUserDbContext context)
+    public GetAllUsersQueryHandler(IApplicationDbContext context)
     {
         _context = context;
     }

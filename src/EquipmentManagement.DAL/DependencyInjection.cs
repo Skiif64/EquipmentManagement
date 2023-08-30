@@ -15,8 +15,7 @@ public static class DependencyInjection
         services.AddDbContext<IApplicationDbContext, ApplicationDbContext>(opt => opt
         .UseNpgsql(connectionString, cfg => cfg
         .MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)
-        .UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
-        services.AddTransient<IMigrationableDatabase, ApplicationDbContext>();
+        .UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));        
         services.AddTransient<IImageStorage, ImageStorage>();
         return services;
     }

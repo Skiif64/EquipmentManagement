@@ -1,13 +1,15 @@
 ﻿using AutoMapper;
 using EquimentManagement.Contracts.Requests;
 using EquimentManagement.Contracts.Responses;
+using EquipmentManagement.Application;
 using EquipmentManagement.Application.ApplicationUsers.Register;
 using EquipmentManagement.Application.ApplicationUsers.SignIn;
 using EquipmentManagement.Application.Employees.Add;
 using EquipmentManagement.Application.Employees.Update;
 using EquipmentManagement.Application.EquipmentRecords.Add;
 using EquipmentManagement.Application.EquipmentRecords.Update;
-using EquipmentManagement.Application.Equipments.Add;
+using EquipmentManagement.Application.Equipments;
+using EquipmentManagement.Application.Equipments.Create;
 using EquipmentManagement.Application.Equipments.Update;
 using EquipmentManagement.Application.EquipmentTypes.Add;
 using EquipmentManagement.Application.Images.RemoveByNames;
@@ -22,7 +24,7 @@ public class WebApiMappingProfile : Profile
     public WebApiMappingProfile()
     {
         CreateMap<AddEmployeeRequest, AddEmployeeCommand>();
-        CreateMap<AddEquipmentRequest, AddEquipmentCommand>();
+        CreateMap<AddEquipmentRequest, CreateEquipmentCommand>();
         CreateMap<AddEquipmentRecordRequest, AddEquipmentRecordCommand>();
         CreateMap<AddStatusRequest, AddStatusCommand>();
         CreateMap<UpdateEquipmentRecordRequest, UpdateEquipmentRecordCommand>();
@@ -31,20 +33,18 @@ public class WebApiMappingProfile : Profile
         CreateMap<DeleteImagesRequest, RemoveImagesCommand>();
         CreateMap<UpdateEquipmentRequest, UpdateEquipmentCommand>();
 
+        CreateMap(typeof(PagedList<>), typeof(PagedListResponse<>));
+
         CreateMap<Employee, EmployeeResponse>();
-        CreateMap<Equipment, EquipmentResponse>()
-            .ForMember(dest => dest.LastRecordId,
-            opt => opt.MapFrom(src => (src.LastRecord != null) ? src.LastRecord.Id : default))
+        CreateMap<Equipment, EquipmentResponse>()            
             .ForMember(dest => dest.Type,
             opt => opt.MapFrom(src => src.Type.Name));
-        CreateMap<EquipmentWithStatus, EquipmentWithStatusResponse>()
-            .ForMember(dest => dest.LastRecordId,
-            opt => opt.MapFrom(src => (src.LastRecord != null) ? src.LastRecord.Id : default))
-            .ForMember(dest => dest.EmployeeId,
-            opt => opt.MapFrom(src => (src.LastRecord != null) ? src.LastRecord.EmployeeId : null))
-            .ForMember(dest => dest.ImageNames,
-            opt => opt.MapFrom(src => src.Images.Select(x => x.FullImagePath)))
-            .IncludeBase<Equipment, EquipmentResponse>();
+
+        CreateMap<EquipmentDto, EquipmentResponse>()
+            .IncludeBase<Equipment, EquipmentResponse>()
+            .ForMember(dest => dest.EmployeeFullname, 
+            opt => opt.MapFrom(src => (src.CurrentEmployee != null) ? src.CurrentEmployee.Fullname : default));
+              
         CreateMap<EquipmentRecord, EquipmentRecordResponse>()
             .ForMember(dest => dest.EmployeeFullname,
             opt => opt.MapFrom(src => (src.Employee != null) ? src.Employee.Fullname : default))

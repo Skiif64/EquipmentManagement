@@ -22,8 +22,7 @@ internal class UpdateEquipmentCommandHandler : ICommandHandler<UpdateEquipmentCo
         var equipment = await _context
             .Set<Equipment>()
             .Where(x => x.Id == request.EquipmentId)
-            .Include(x => x.Images)
-            .Include(x => x.Records)            
+            .Include(x => x.Images)                     
             .SingleOrDefaultAsync(x => x.Id == request.EquipmentId, cancellationToken)
             ?? throw new NotFoundException("Equipment");
         

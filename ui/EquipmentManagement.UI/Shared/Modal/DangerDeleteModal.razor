@@ -1,0 +1,17 @@
+﻿<p class="p-2"><span class="text-danger">Внимание!</span> вы уверены, что хотите удалить 
+    <strong>@EntityName</strong>? Данное действие необратимо и может повлечь за собой @DangerMessage.</p>
+    <p>Продолжить?</p>
+<button class="btn btn-danger" @onclick="SubmitAsync">Да</button>
+<button class="btn btn-primary" @onclick="CloseAsync">Отмена</button>
+
+@code {
+    [CascadingParameter]
+    private BlazoredModalInstance Instance { get; set; } = null!;
+    [Parameter]
+    public string EntityName { get; set; } = null!;
+    [Parameter]
+    public string DangerMessage { get; set; } = "некоторые последствия";
+
+    private async Task CloseAsync() => await Instance.CancelAsync();
+    private async Task SubmitAsync() => await Instance.CloseAsync();
+}

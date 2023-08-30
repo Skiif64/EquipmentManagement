@@ -4,8 +4,7 @@ using EquipmentManagement.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace EquipmentManagement.Application.Employees.Delete;
-
-public class DeleteEmployeeCommandHandler : ICommandHandler<DeleteEmployeeCommand, Guid>
+internal sealed class DeleteEmployeeCommandHandler : ICommandHandler<DeleteEmployeeCommand>
 {
     private readonly IApplicationDbContext _context;
 
@@ -14,17 +13,25 @@ public class DeleteEmployeeCommandHandler : ICommandHandler<DeleteEmployeeComman
         _context = context;
     }
 
-    public async Task<Guid> Handle(DeleteEmployeeCommand request, CancellationToken cancellationToken)
+    public async Task Handle(DeleteEmployeeCommand request, CancellationToken cancellationToken)
     {
         var employee = await _context
             .Set<Employee>()
-            .Include(x => x.Records)
-            .SingleOrDefaultAsync(x => x.Id == request.EmployeeId, cancellationToken);
-        if (employee is null)
-            throw new NotFoundException("Employee");
-        employee.Status = EmployeeStatus.Fired;
-        _context.Set<Employee>().Update(employee);
+            .SingleOrDefaultAsync(x => x.Id == request.Id, cancellationToken)
+            ?? throw new NotFoundException("Employee");
+
+        var records = _context
+            .Set<EquipmentRecord>()
+            .Where(x => x.EmployeeId == request.Id);
+
+        _context
+            .Set<EquipmentRecord>()
+            .RemoveRange(records);
+
+        _context
+            .Set<Employee>()
+            .Remove(employee);
+
         await _context.SaveChangesAsync(cancellationToken);
-        return employee.Id;
     }
 }

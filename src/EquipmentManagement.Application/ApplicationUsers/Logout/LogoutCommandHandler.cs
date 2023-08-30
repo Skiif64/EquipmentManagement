@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 namespace EquipmentManagement.Application.ApplicationUsers.Logout;
 internal class LogoutCommandHandler : ICommandHandler<LogoutCommand>
 {
-    private readonly IUserDbContext _context;
+    private readonly IApplicationDbContext _context;
 
-    public LogoutCommandHandler(IUserDbContext context)
+    public LogoutCommandHandler(IApplicationDbContext context)
     {
         _context = context;
     }

@@ -22,6 +22,42 @@ namespace EquipmentManagement.DAL.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("EquipmentManagement.Application.Models.ApplicationUser", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsBlocked")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Login")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PasswordSalt")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("RefreshToken")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Login")
+                        .IsUnique();
+
+                    b.ToTable("Users");
+                });
+
             modelBuilder.Entity("EquipmentManagement.Application.Models.JournalRecord", b =>
                 {
                     b.Property<Guid>("Id")
@@ -214,7 +250,7 @@ namespace EquipmentManagement.DAL.Migrations
                         .HasForeignKey("EmployeeId");
 
                     b.HasOne("EquipmentManagement.Domain.Models.Equipment", "Equipment")
-                        .WithMany("Records")
+                        .WithMany()
                         .HasForeignKey("EquipmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -251,8 +287,6 @@ namespace EquipmentManagement.DAL.Migrations
             modelBuilder.Entity("EquipmentManagement.Domain.Models.Equipment", b =>
                 {
                     b.Navigation("Images");
-
-                    b.Navigation("Records");
                 });
 
             modelBuilder.Entity("EquipmentManagement.Domain.Models.EquipmentType", b =>

@@ -1,14 +1,12 @@
 ﻿using AutoMapper;
 using EquimentManagement.Contracts.Requests;
 using EquimentManagement.Contracts.Responses;
-using EquipmentManagement.Application;
-using EquipmentManagement.Application.Abstractions;
 using EquipmentManagement.Application.EquipmentRecords.Add;
-using EquipmentManagement.Application.Equipments.Add;
+using EquipmentManagement.Application.Equipments.Create;
+using EquipmentManagement.Application.Equipments.Delete;
 using EquipmentManagement.Application.Equipments.Get;
-using EquipmentManagement.Application.Equipments.GetAll;
-using EquipmentManagement.Application.Equipments.GetAllWithStatus;
 using EquipmentManagement.Application.Equipments.GetByEmployeeId;
+using EquipmentManagement.Application.Equipments.GetById;
 using EquipmentManagement.Application.Equipments.GetFree;
 using EquipmentManagement.Application.Equipments.Update;
 using EquipmentManagement.Application.Statuses.GetOrCreate;
@@ -35,17 +33,17 @@ public class EquipmentController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<EquipmentWithStatusResponse>>> GetAllAsync(CancellationToken cancellationToken)
+    public async Task<ActionResult<IEnumerable<EquipmentResponse>>> GetAsync(int? page, int? pageSize, string? order, string? criteria, string? filter, CancellationToken cancellationToken)
     {
-        var equipments = await _sender.Send(new GetAllEquipmentWithStatusQuery(), cancellationToken);
-        var response = _mapper.Map<IEnumerable<EquipmentWithStatusResponse>>(equipments);
+        var equipments = await _sender.Send(new GetEquipmentDtoQuery(page, pageSize, order, criteria, filter), cancellationToken);
+        var response = _mapper.Map<PagedListResponse<EquipmentResponse>>(equipments);
         return Ok(response);
     }
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<EquipmentWithStatusResponse>> GetById(Guid id, CancellationToken cancellationToken)
+    public async Task<ActionResult<EquipmentResponse>> GetById(Guid id, CancellationToken cancellationToken)
     {
         var equipment = await _sender.Send(new GetEquipmentByIdQuery(id), cancellationToken);
-        var response = _mapper.Map<EquipmentWithStatusResponse>(equipment);
+        var response = _mapper.Map<EquipmentResponse>(equipment);
         return Ok(response);
     }
 
@@ -68,24 +66,8 @@ public class EquipmentController : ControllerBase
 
         var author = User.Identity?.Name;
         request.Author = author ?? "неизвестно";
-        var command = _mapper.Map<AddEquipmentCommand>(request);
-        var id = await _sender.Send(command, cancellationToken);
-
-        var statusCommand = new GetOrCreateStatusCommand
-        {
-            Title = DefaultStatusName
-        };
-
-        var status = await _sender.Send(statusCommand, cancellationToken);
-
-        var recordCommand = new AddEquipmentRecordCommand
-        {
-            EquipmentId = id,
-            ModifyAuthor = author ?? "неизвестно",
-            StatusId = status.Id
-        };
-
-        await _sender.Send(recordCommand, cancellationToken);
+        var command = _mapper.Map<CreateEquipmentCommand>(request);
+        var id = await _sender.Send(command, cancellationToken); 
        
         return Ok(id);
     }
@@ -106,6 +88,16 @@ public class EquipmentController : ControllerBase
     {
         var command = _mapper.Map<UpdateEquipmentCommand>(request);
         await _sender.Send(command, cancellationToken);
-        return Ok();
+        return NoContent();
+    }
+
+    [Authorize(Roles = Roles.Admin)]
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> DeleteAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var command = new DeleteEquipmentByIdCommand(id);
+
+        await _sender.Send(command, cancellationToken);
+        return NoContent();
     }
 }

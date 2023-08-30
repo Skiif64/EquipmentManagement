@@ -1,6 +1,7 @@
 ﻿using EquimentManagement.Contracts.Requests;
 using EquimentManagement.Contracts.Responses;
 using EquipmentManagement.UI.Abstractions;
+using System.Collections.Generic;
 using System.Net.Http.Json;
 using System.Runtime.CompilerServices;
 
@@ -23,7 +24,13 @@ public class EmployeeService : IEmployeeService
 
     public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var request = new DeleteEmployeeRequest
+        var response = await _client.DeleteAsync($"/api/employees/{id}", cancellationToken);
+        response.EnsureSuccessStatusCode();
+    }
+
+    public async Task FireAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        var request = new FireEmployeeRequest
         {
             EmployeeId = id
         };
@@ -32,10 +39,17 @@ public class EmployeeService : IEmployeeService
         response.EnsureSuccessStatusCode();
     }
 
-    public async Task<IEnumerable<EmployeeResponse>?> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<PagedListResponse<EmployeeResponse>> GetAsync(int page, int pageSize, string? query = "", CancellationToken cancellationToken = default)
     {
-        var employees = await _client.GetFromJsonAsync<IEnumerable<EmployeeResponse>>("/api/employees", cancellationToken);
-        return employees;
+        var employees = await _client.GetFromJsonAsync<PagedListResponse<EmployeeResponse>>(
+            $"/api/employees?page={page}&pageSize={pageSize}&query={query}", cancellationToken);
+        return employees!;
+    }
+
+    public async Task<IEnumerable<EmployeeResponse>> GetAllAsync(CancellationToken cancellationToken = default)
+    {
+        var employees = await _client.GetFromJsonAsync<IEnumerable<EmployeeResponse>>("/api/employees/all", cancellationToken);
+        return employees!;
     }
 
     public async Task<EmployeeResponse?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)

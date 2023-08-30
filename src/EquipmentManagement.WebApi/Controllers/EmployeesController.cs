@@ -1,19 +1,18 @@
 ﻿using AutoMapper;
 using EquimentManagement.Contracts.Requests;
 using EquimentManagement.Contracts.Responses;
-using EquipmentManagement.Application;
-using EquipmentManagement.Application.Abstractions;
 using EquipmentManagement.Application.Employees.Add;
 using EquipmentManagement.Application.Employees.Delete;
+using EquipmentManagement.Application.Employees.Fire;
 using EquipmentManagement.Application.Employees.Get;
 using EquipmentManagement.Application.Employees.GetAll;
+using EquipmentManagement.Application.Employees.GetById;
 using EquipmentManagement.Application.Employees.Restore;
 using EquipmentManagement.Application.Employees.Update;
 using EquipmentManagement.Auth;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using static EquipmentManagement.UI.Utils.PagePaths;
 
 namespace EquipmentManagement.WebApi.Controllers
 {
@@ -43,10 +42,17 @@ namespace EquipmentManagement.WebApi.Controllers
             return Ok(id);
         }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<EmployeeResponse>>> GetAllAsync(CancellationToken cancellationToken)
+        public async Task<ActionResult<IEnumerable<EmployeeResponse>>> GetAsync(int page, int pageSize, string? query, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+            var employees = await _sender.Send(new GetEmployeeQuery(page, pageSize, query), cancellationToken);
+            var response = _mapper.Map<PagedListResponse<EmployeeResponse>>(employees);
+            return Ok(response);
+        }
+        [HttpGet("all")]
+        public async Task<ActionResult<IEnumerable<EmployeeResponse>>> GetAllAsync(CancellationToken cancellationToken)
+        {
             var employees = await _sender.Send(new GetAllEmployeeQuery(), cancellationToken);
             var response = _mapper.Map<IEnumerable<EmployeeResponse>>(employees);
             return Ok(response);
@@ -54,9 +60,19 @@ namespace EquipmentManagement.WebApi.Controllers
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<EmployeeResponse>> GetEmployeeById(Guid id, CancellationToken cancellationToken)
         {
-            var employee = await _sender.Send(new GetEmployeeQuery(id), cancellationToken);
+            var employee = await _sender.Send(new GetEmployeeByIdQuery(id), cancellationToken);
             var response = _mapper.Map<EmployeeResponse>(employee);
             return Ok(response);
+        }
+        [Authorize(Roles = Roles.Admin)]
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> DeleteEmployeeAsync(Guid id, CancellationToken cancellationToken)
+        {
+            var command = new DeleteEmployeeCommand(id);
+
+            await _sender.Send(command, cancellationToken);
+
+            return NoContent();
         }
 
         [HttpPatch("update")]
@@ -69,14 +85,15 @@ namespace EquipmentManagement.WebApi.Controllers
 
         [HttpPatch("delete")]
         [Authorize(Roles = Roles.Admin)]
-        public async Task<ActionResult<Guid>> DeleteByIdAsync(DeleteEmployeeRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<Guid>> FireByIdAsync(FireEmployeeRequest request, CancellationToken cancellationToken)
         {
-            var command = new DeleteEmployeeCommand(request.EmployeeId);
+            var command = new FireEmployeeCommand(request.EmployeeId);
             var resultId = await _sender.Send(command, cancellationToken);
             return Ok(resultId);
         }
 
         [HttpPatch("restore")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult<Guid>> RestoreByIdAsync(RestoreEmployeeRequest request, CancellationToken cancellationToken)
         {
             var command = new RestoreEmployeeCommand(request.EmployeeId);

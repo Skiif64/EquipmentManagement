@@ -3,11 +3,16 @@ using EquipmentManagement.Domain.Models;
 
 namespace EquipmentManagement.Application.Employees.Get;
 
-public class GetEmployeeQuery : IQuery<Employee?>
+public class GetEmployeeQuery : IQuery<PagedList<Employee>>
 {
-    public Guid Id { get; set; }
-	public GetEmployeeQuery(Guid id)
-	{
-		Id = id;
-	}
+    public int Page { get; }
+    public int PageSize { get; }
+    public string? SearchQuery { get; }
+
+    public GetEmployeeQuery(int page, int pageSize, string? searchQuery = null)
+    {
+        Page = page;
+        PageSize = pageSize;
+        SearchQuery = searchQuery;
+    }
 }

@@ -11,7 +11,7 @@ public class Employee : BaseModel
     public EmployeeStatus Status { get; set; }
     public virtual IList<EquipmentRecord> Records { get; set; } = null!;
     
-    protected Employee() : base()
+    public Employee() : base()
     {
 
     }

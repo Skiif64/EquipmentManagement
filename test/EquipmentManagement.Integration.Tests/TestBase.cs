@@ -4,7 +4,7 @@ using EquipmentManagement.Integration.Tests.Fixtures;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace SignalRChatApp.IntegrationTests;
+namespace EquipmentManagement.Integration.Tests;
 
 public abstract class TestBase : IAsyncLifetime, IClassFixture<TestApplicationFactory>
 {
@@ -22,7 +22,7 @@ public abstract class TestBase : IAsyncLifetime, IClassFixture<TestApplicationFa
 
     protected virtual async Task SeedData<TEntity>(IEnumerable<TEntity> data)
         where TEntity : BaseModel
-    {        
+    {
         await Context.Set<TEntity>().AddRangeAsync(data);
         await Context.SaveChangesAsync(default);
     }

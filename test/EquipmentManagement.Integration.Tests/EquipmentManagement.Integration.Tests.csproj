@@ -32,5 +32,6 @@
     <ProjectReference Include="..\..\src\EquipmentManagement.Application\EquipmentManagement.Application.csproj" />
     <ProjectReference Include="..\..\src\EquipmentManagement.DAL\EquipmentManagement.DAL.csproj" />
     <ProjectReference Include="..\..\src\EquipmentManagement.WebApi\EquipmentManagement.WebApi.csproj" />
+    <ProjectReference Include="..\EquipmentManagement.Tests.Shared\EquipmentManagement.Tests.Shared.csproj" />
   </ItemGroup> 
 </Project>

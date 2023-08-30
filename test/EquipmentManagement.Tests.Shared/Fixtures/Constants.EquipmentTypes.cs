@@ -1,6 +1,6 @@
 ﻿using EquipmentManagement.Domain.Models;
 
-namespace EquipmentManagement.Integration.Tests.Fixtures;
+namespace EquipmentManagement.Tests.Shared.Fixtures;
 public static partial class Constants
 {
     public static class EquipmentTypes

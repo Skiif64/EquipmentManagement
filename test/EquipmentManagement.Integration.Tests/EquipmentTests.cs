@@ -2,7 +2,7 @@
 using EquipmentManagement.Domain.Models;
 using EquipmentManagement.Integration.Tests.Fixtures;
 using Microsoft.EntityFrameworkCore;
-using SignalRChatApp.IntegrationTests;
+using EquipmentManagement.Tests.Shared.Fixtures;
 
 namespace EquipmentManagement.Integration.Tests;
 public class EquipmentTests : TestBase
